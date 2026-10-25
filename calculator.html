@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>입찰 총비용 계산기 | 공매물</title><meta name="description" content="온비드 동산 공매 입찰보증금·부가세·운반비까지 더한 총 필요 금액을 계산합니다.">
+<link rel="stylesheet" href="style.css"></head><body>
+<header class="top"><div class="wrap"><a class="logo" href="index.html">공매<b>물</b></a><nav class="menu"><a href="guide/index.html">입찰 가이드</a><a href="about.html">서비스 안내</a></nav></div></header>
+<div class="wrap">
+<h1>입찰 총비용 계산기</h1>
+
+<section class="blk"><p>동산 공매는 낙찰가만으로 끝나지 않습니다. 입찰보증금, 부가세(과세 물건인 경우), 운반·인수 비용을 더한 총액을 미리 가늠해 보세요. 실제 비율과 조건은 물건마다 공고가 기준입니다.</p></section>
+<div class="calcbox">
+<label>최저입찰가격 (원)</label><input type="number" id="cLow" placeholder="예: 13587750" min="0">
+<label>예상 낙찰가 (원)</label><input type="number" id="cBid" placeholder="예: 14000000" min="0">
+<label>운반·인수 예상 비용 (원)</label><input type="number" id="cMove" placeholder="예: 150000" min="0">
+<label class="chk"><input type="checkbox" id="cVat"> 부가세 과세 물건입니다 (낙찰가의 10% 별도)</label>
+<div class="calcres" id="cRes">금액을 입력하면 자동으로 계산됩니다.</div>
+</div>
+<section class="blk"><h2>읽는 법</h2><p>입찰보증금은 보통 최저입찰가격의 10%이며, 낙찰되면 대금에 충당되고 떨어지면 돌려받습니다. 잔금은 총 대금에서 보증금을 뺀 금액으로, 공고가 정한 기한 안에 내야 합니다. 동산은 부동산과 달리 원칙적으로 취득세가 붙지 않지만, 건설기계처럼 등록 대상 물건은 예외가 있을 수 있어 원공고와 관할 기관 확인이 필요합니다. 부가세는 공고 기관과 물건 종류에 따라 낙찰가에 포함되기도, 별도이기도 하므로 공고의 대금 조건을 확인하세요.</p></section>
+
+</div>
+<footer><div class="wrap">
+공매물은 공공데이터포털이 제공하는 한국자산관리공사(캠코) 온비드 동산 물건 정보를 모아 보여주는 민간 안내 서비스로, 온비드·캠코와 무관합니다.<br>
+물건 정보 출처: 공공데이터포털 온비드 동산 물건목록 (기준 2026-10-25, 매시간 갱신되는 원본과 시차가 있을 수 있습니다). 사진은 각 공고의 썸네일이며, 권리자가 삭제를 요청하면 즉시 조치합니다. 문의 kdg2844@gmail.com<br>
+입찰 참가와 낙찰의 책임은 입찰자 본인에게 있으며, 최종 조건은 반드시 온비드 원공고에서 확인하세요. · <a href="about.html">서비스 안내</a> · <a href="guide/index.html">입찰 가이드</a> · <a href="calculator.html">총비용 계산기</a> · <a href="privacy.html">개인정보처리방침</a> · <a href="terms.html">이용약관</a>
+</div></footer>
+<script>
+function fmt(v){return v.toLocaleString()+'원';}
+function calc(){
+ var low=+document.getElementById('cLow').value||0;
+ var bid=+document.getElementById('cBid').value||0;
+ var move=+document.getElementById('cMove').value||0;
+ var vat=document.getElementById('cVat').checked?Math.round(bid*0.1):0;
+ var depo=Math.round(low*0.1);
+ var total=bid+vat+move;
+ var rest=total-depo;
+ var h='';
+ if(!low&&!bid){h='금액을 입력하면 자동으로 계산됩니다.';}
+ else{
+  h+='입찰보증금(최저가의 10%): <b>'+fmt(depo)+'</b><br>';
+  h+='예상 낙찰가: '+fmt(bid)+'<br>';
+  if(vat)h+='부가세(10%): '+fmt(vat)+'<br>';
+  if(move)h+='운반·인수: '+fmt(move)+'<br>';
+  h+='총 필요 금액: <b>'+fmt(total)+'</b><br>';
+  h+='낙찰 뒤 낼 잔금(총액 − 보증금): <b>'+fmt(Math.max(rest,0))+'</b>';
+ }
+ document.getElementById('cRes').innerHTML=h;
+}
+['cLow','cBid','cMove','cVat'].forEach(function(id){document.getElementById(id).addEventListener('input',calc);document.getElementById(id).addEventListener('change',calc);});
+</script>
+</body></html>

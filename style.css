@@ -35,6 +35,20 @@ section.blk p,section.blk li{font-size:15px;line-height:1.65;color:#333}
 .bg.blue{background:#eef4ff;color:#2456c8}.bg.red{background:#fdeef1;color:#e4002b}.bg.dark{background:#111;color:#fff}
 footer{border-top:1px solid #eee;margin-top:40px;padding:20px 0 40px;font-size:12px;color:#999;line-height:1.7}
 footer a{color:#555}
+.note2{font-size:13px;color:#555}
+.note2 a{color:#e4002b;font-weight:700}
+.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.gcard{display:block;border:1px solid #e5e5e5;border-radius:12px;padding:16px;text-decoration:none;color:#111;background:#fff}
+.gcard:hover{border-color:#e4002b}
+.gcard b{display:block;font-size:15px;margin-bottom:6px;line-height:1.45}
+.gcard span{font-size:13px;color:#767676;line-height:1.55}
+.calcbox{border:1px solid #e5e5e5;border-radius:12px;padding:20px;max-width:560px;background:#fff}
+.calcbox label{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}
+.calcbox label:first-child{margin-top:0}
+.calcbox input[type=number]{width:100%;padding:11px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit;box-sizing:border-box}
+.calcbox .chk{display:flex;gap:8px;align-items:center;font-weight:400;font-size:14px}
+.calcres{margin-top:18px;background:#f7f8fa;border-radius:10px;padding:16px;font-size:14px;line-height:1.9}
+.calcres b{color:#e4002b;font-size:16px}
 .badge{display:inline-block;background:#141414;color:#fff;border-radius:6px;padding:3px 9px;font-size:12px;font-weight:700;margin-right:6px}
 .badge.red{background:#e4002b}
 .hero2{position:relative;background:#101216;color:#fff;overflow:hidden}
