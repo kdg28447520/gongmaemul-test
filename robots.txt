@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kdg28447520.github.io/gongmaemul-test/sitemap.xml
