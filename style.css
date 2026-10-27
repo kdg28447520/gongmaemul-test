@@ -35,6 +35,12 @@ section.blk p,section.blk li{font-size:15px;line-height:1.65;color:#333}
 .bg.blue{background:#eef4ff;color:#2456c8}.bg.red{background:#fdeef1;color:#e4002b}.bg.dark{background:#111;color:#fff}
 footer{border-top:1px solid #eee;margin-top:40px;padding:20px 0 40px;font-size:12px;color:#999;line-height:1.7}
 footer a{color:#555}
+.adbanner{margin-top:48px;background:#fff5f6;border-top:1px solid #f6dde1;border-bottom:1px solid #f6dde1}
+.adbanner .in{max-width:1240px;margin:0 auto;padding:34px 20px;text-align:center}
+.adbanner h2{font-size:22px;font-weight:900;letter-spacing:-.5px;margin:0 0 8px;color:#111}
+.adbanner p{font-size:15px;color:#555;line-height:1.6;margin:0 0 18px}
+.adbanner .adbtn{display:inline-block;background:#e4002b;color:#fff;text-decoration:none;font-weight:800;font-size:17px;padding:14px 30px;border-radius:999px}
+.adbanner .adbtn:hover{background:#b80022}
 .note2{font-size:13px;color:#555}
 .note2 a{color:#e4002b;font-weight:700}
 .gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
