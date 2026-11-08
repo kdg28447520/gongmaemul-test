@@ -159,24 +159,24 @@ gtag('config', 'G-5BX965ZGDG');
 </main>
 </div></div>
 
-<!-- [공매물 하단 제휴: 폰가비 공매 입찰/임장용 세컨폰 S급 최저가 (단가 10,000원)] -->
+<!-- [공매물 하단 제휴: 청소대장 두식이 입주/이사 전문 청소 (단가 16,500원)] -->
 <div class="wrap" style="margin: 36px auto 20px;">
-  <div style="background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border:1.5px solid #cbd5e1;border-radius:18px;padding:20px 24px;box-shadow:0 4px 14px rgba(15, 23, 42, 0.06);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
+  <div style="background:linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);border:1.5px solid #86efac;border-radius:18px;padding:20px 24px;box-shadow:0 4px 14px rgba(22, 101, 52, 0.08);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">
     <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 280px;">
-      <div style="width:48px;height:48px;border-radius:14px;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📱</div>
+      <div style="width:48px;height:48px;border-radius:14px;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">✨</div>
       <div style="min-width:0;">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;">
-          <span style="background:#0f172a;color:#fff;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;">공매 입찰·임장 필수</span>
-          <span style="color:#475569;font-size:12px;font-weight:700;">폰가비 단독 제휴</span>
+          <span style="background:#16a34a;color:#fff;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;">공매 낙찰·입주 필수</span>
+          <span style="color:#15803d;font-size:12px;font-weight:700;">청소대장 두식이 제휴</span>
         </div>
-        <h3 style="font-size:16px;font-weight:800;color:#0f172a;margin:0;line-height:1.35;">임장 사진 촬영 & 입찰 전용 세컨폰! S급 자급제 중고폰 최저가</h3>
-        <div style="font-size:12px;color:#64748b;line-height:1.4;">약정 부담 없는 자급제 공기계 최저가 구매 & 집에서 잠자는 중고폰 최고가 팔기</div>
+        <h3 style="font-size:16px;font-weight:800;color:#14532d;margin:0;line-height:1.35;">낙찰 후 입주·이사 필수! 새집증후군 & 공가 묵은 때 전문 청소</h3>
+        <div style="font-size:12px;color:#166534;line-height:1.4;">전문 청소 장비 & 친환경 세제 무상 피톤치드 살균 케어 · 정찰제 무료 비교견적</div>
       </div>
     </div>
-    <a href="https://iryan.kr/t8hcque9eh" target="_blank" rel="noopener noreferrer" style="background:#0f172a;color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 10px rgba(15,23,42,0.3);white-space:nowrap;flex-shrink:0;">
-      폰가비 특가 보기 ↗
+    <a href="https://iryan.kr/t8hcquq1ru" target="_blank" rel="noopener noreferrer" style="background:#16a34a;color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 10px rgba(22,163,74,0.3);white-space:nowrap;flex-shrink:0;">
+      무료 청소 견적 받기 ↗
     </a>
-  <div style="text-align: right; margin-top: 6px; font-size: 11px; color: #94a3b8;">* 제휴 마케팅 활동의 일환으로 일정액의 수수료를 제공받을 수 있습니다.</div>
+  <div style="text-align: right; margin-top: 6px; font-size: 11px; color: #15803d;">* 제휴 마케팅 활동의 일환으로 일정액의 수수료를 제공받을 수 있습니다.</div>
   </div>
 </div>
 
@@ -356,5 +356,18 @@ document.querySelectorAll('.frow').forEach(r=>r.addEventListener('click',()=>{
 }));
 document.querySelectorAll('#sorts span').forEach(s=>s.addEventListener('click',()=>{document.querySelectorAll('#sorts span').forEach(x=>x.classList.remove('on'));s.classList.add('on');state.sort=s.dataset.sort;state.preview=false;render();}));
 render();
+
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href*="iryan.kr"]');
+  if (a && typeof gtag === 'function') {
+    var label = (a.innerText || a.getAttribute('aria-label') || 'affiliate').trim().replace(/\s+/g, ' ').slice(0, 50);
+    gtag('event', 'tenping_click', {
+      'event_category': 'affiliate_cpa',
+      'event_label': label,
+      'affiliate_url': a.href,
+      'page_path': window.location.pathname
+    });
+  }
+});
 </script>
 </body></html>
