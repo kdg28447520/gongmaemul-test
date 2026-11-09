@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="referrer" content="no-referrer">
   <title>동곤 스테이 · donggon stay (Airbnb Cleanroom Edition)</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
@@ -629,9 +630,9 @@
         <span class="icon">✨</span>
         <span class="label">전체</span>
       </div>
-      <div class="cat-item" onclick="filterCategory('hanok', this)">
-        <span class="icon">🏯</span>
-        <span class="label">한옥</span>
+      <div class="cat-item" onclick="filterCategory('luxury', this)">
+        <span class="icon">🏰</span>
+        <span class="label">럭셔리 빌라</span>
       </div>
       <div class="cat-item" onclick="filterCategory('beach', this)">
         <span class="icon">🌊</span>
@@ -644,10 +645,6 @@
       <div class="cat-item" onclick="filterCategory('cabin', this)">
         <span class="icon">🌲</span>
         <span class="label">숲속 통나무집</span>
-      </div>
-      <div class="cat-item" onclick="filterCategory('luxury', this)">
-        <span class="icon">🏰</span>
-        <span class="label">럭셔리 빌라</span>
       </div>
       <div class="cat-item" onclick="filterCategory('camping', this)">
         <span class="icon">⛺</span>
@@ -739,163 +736,111 @@
   </nav>
 
   <script>
-    // 12개 실사 감성 숙소 데이터베이스 (Unsplash 고화질 큐레이션)
+    // 8개 감성 실사 숙소 데이터베이스 (로컬 검증 에셋 1:1 직결)
     const ROOMS = [
       {
         id: 1,
-        category: 'hanok',
-        title: '종로 서촌 감성 한옥 스테이 · 락고재',
-        location: '서울 종로구 서촌',
-        distance: '경복궁 도보 5분',
+        category: 'luxury',
+        title: '가평 북한강 럭셔리 인피니티 풀빌라',
+        location: '경기도 가평군 설악면',
+        distance: '북한강 조망 1선',
         date: '11월 15일~20일',
-        price: 285000,
-        rating: 4.97,
+        price: 390000,
+        rating: 4.98,
         superhost: true,
-        img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80',
-        desc: '100년 된 고택을 모던하게 복원한 서촌 프라이빗 독채 한옥입니다. 편백나무 욕조와 다도 세트가 준비되어 있습니다.'
+        img: 'assets/stay1.jpg',
+        desc: '최고급 이탈리아 가구와 통유리 층고 5m 리버뷰를 자랑하는 프리미엄 펜트하우스입니다. 실내 스파 자쿠지와 야외 인피니티 풀을 완비했습니다.'
       },
       {
         id: 2,
         category: 'beach',
-        title: '양양 인구해변 파노라마 오션뷰 독채',
+        title: '강원도 양양 인구해변 파노라마 오션 스테이',
         location: '강원도 양양군 현남면',
-        distance: '인구해변 바로 앞 10m',
+        distance: '인구해변 도보 30초',
         date: '11월 18일~23일',
-        price: 320000,
+        price: 280000,
         rating: 4.95,
         superhost: true,
-        img: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=900&q=80',
-        desc: '침대에 누워 동해 일출을 감상하는 전면 통창 오션뷰 빌라입니다. 서핑 보드 렌탈 및 단독 테라스 바비큐가 가능합니다.'
+        img: 'assets/stay2.jpg',
+        desc: '침대에 누워 동해의 붉은 일출을 감상하는 전면 통창 오션뷰 빌라입니다. 테라스에서 바다를 보며 즐기는 바비큐가 환상적입니다.'
       },
       {
         id: 3,
-        category: 'cabin',
-        title: '평창 대관령 자작나무 숲속 통나무 빌라',
-        location: '강원도 평창군 대관령면',
-        distance: '자작나무 숲 도보 3분',
+        category: 'city',
+        title: '서울 성수동 아크로 서울포레스트 감성 스위트',
+        location: '서울 성동구 성수동',
+        distance: '서울숲역 직결',
         date: '11월 12일~17일',
-        price: 210000,
-        rating: 4.92,
-        superhost: false,
-        img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80',
-        desc: '해발 700m 청정 고원에 자리한 북유럽 노르딕 스타일 우든 캐빈입니다. 벽난로 불멍과 별자리 관측이 환상적입니다.'
+        price: 450000,
+        rating: 4.96,
+        superhost: true,
+        img: 'assets/stay3.jpg',
+        desc: '서울숲과 한강이 동시에 내려다보이는 초고층 시티뷰 펜트하우스입니다. 와인 셀러 및 뱅앤올룹슨 사운드 시스템 완비.'
       },
       {
         id: 4,
-        category: 'pool',
-        title: '제주 애월 온수 인피니티 풀빌라',
+        category: 'cabin',
+        title: '제주 애월 숲속 아늑한 힐링 독채 코티지',
         location: '제주도 제주시 애월읍',
-        distance: '애월 한담산책로 차량 5분',
-        date: '11월 22일~27일',
-        price: 450000,
+        distance: '한담산책로 차량 5분',
+        date: '11월 20일~25일',
+        price: 220000,
         rating: 4.99,
         superhost: true,
-        img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=900&q=80',
-        desc: '사계절 34도 온수로 유지되는 12m 단독 인피니티 풀을 갖춘 럭셔리 하우스입니다. 애월 붉은 노을이 한눈에 들어옵니다.'
+        img: 'assets/stay4.jpg',
+        desc: '돌담 너머 밤하늘의 은하수를 감상할 수 있는 따뜻한 감성 독채입니다. 프라이빗 자쿠지와 빔프로젝터가 준비되어 있습니다.'
       },
       {
         id: 5,
-        category: 'luxury',
-        title: '가평 북한강 리버뷰 프라이빗 펜트하우스',
-        location: '경기도 가평군 설악면',
-        distance: '북한강 조망 1선',
-        date: '11월 14일~19일',
-        price: 390000,
-        rating: 4.88,
-        superhost: true,
-        img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
-        desc: '최고급 이탈리아 가구와 통유리 층고 5m 리버뷰를 자랑하는 프리미엄 펜트하우스입니다. 실내 스파 자쿠지 완비.'
+        category: 'country',
+        title: '남해 다랭이마을 고즈넉한 툇마루 바다 스테이',
+        location: '경남 남해군 남면',
+        distance: '다랭이논 바다 뷰',
+        date: '11월 16일~21일',
+        price: 165000,
+        rating: 4.92,
+        superhost: false,
+        img: 'assets/stay5.jpg',
+        desc: '포근한 온돌방과 고즈넉한 툇마루에서 즐기는 에메랄드 남해 바다 뷰 촌캉스입니다. 가마솥 삼겹살 체험이 가능합니다.'
       },
       {
         id: 6,
-        category: 'camping',
-        title: '포천 산정호수 돔 글램핑 & 야외 시네마',
-        location: '경기도 포천시 영북면',
-        distance: '산정호수 도보 10분',
-        date: '11월 16일~21일',
-        price: 175000,
-        rating: 4.91,
-        superhost: false,
-        img: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=900&q=80',
-        desc: '호텔급 침구류와 개별 냉난방, 빔프로젝터 야외 영화관을 갖춘 럭셔리 지오데식 돔 글램핑입니다.'
+        category: 'luxury',
+        title: '부산 해운대 마린시티 오션 테라스 펜트',
+        location: '부산 해운대구 우동',
+        distance: '동백섬 도보 5분',
+        date: '11월 22일~27일',
+        price: 420000,
+        rating: 4.97,
+        superhost: true,
+        img: 'assets/stay6.jpg',
+        desc: '광안대교의 찬란한 야경이 파노라마로 펼쳐지는 최고급 테라스 하우스입니다.'
       },
       {
         id: 7,
-        category: 'city',
-        title: '부산 해운대 엘시티 스카이라인 펜트',
-        location: '부산 해운대구 중동',
-        distance: '해운대 해수욕장 직결',
-        date: '11월 20일~25일',
-        price: 490000,
-        rating: 4.96,
+        category: 'pool',
+        title: '경주 보문호수 프라이빗 온수풀 빌라',
+        location: '경북 경주시 신평동',
+        distance: '보문호수 바로 앞',
+        date: '11월 19일~24일',
+        price: 350000,
+        rating: 4.94,
         superhost: true,
-        img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80',
-        desc: '해운대 앞바다와 광안대교 야경이 360도로 펼쳐지는 초고층 스카이 스위트입니다. 와인 셀러 및 최고급 오디오 구비.'
+        img: 'assets/stay7.jpg',
+        desc: '사계절 35도 따뜻한 온수풀과 잔디 정원이 어우러진 프라이빗 패밀리 풀빌라입니다.'
       },
       {
         id: 8,
-        category: 'country',
-        title: '남해 다랭이마을 툇마루 감성 촌캉스',
-        location: '경남 남해군 남면',
-        distance: '다랭이논 바다 뷰',
-        date: '11월 19일~24일',
-        price: 155000,
-        rating: 4.94,
+        category: 'camping',
+        title: '포천 백운계곡 별빛 글램핑 & 돔 빌리지',
+        location: '경기도 포천시 이동면',
+        distance: '백운계곡 도보 2분',
+        date: '11월 14일~19일',
+        price: 185000,
+        rating: 4.91,
         superhost: false,
-        img: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=900&q=80',
-        desc: '할머니 댁의 포근한 온돌방과 고즈넉한 툇마루에서 즐기는 바다 뷰 촌캉스입니다. 가마솥 솥뚜껑 삼겹살 체험 제공.'
-      },
-      {
-        id: 9,
-        category: 'hanok',
-        title: '경주 황리단길 돌담길 프라이빗 한옥',
-        location: '경북 경주시 황남동',
-        distance: '황리단길 메인 로드 2분',
-        date: '11월 25일~30일',
-        price: 260000,
-        rating: 4.98,
-        superhost: true,
-        img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=900&q=80',
-        desc: '은은한 솔향 가득한 서까래와 대나무 중정 정원이 어우러진 경주 감성 독채 한옥입니다.'
-      },
-      {
-        id: 10,
-        category: 'beach',
-        title: '제주 협재 비양도 일몰 뷰 글라스하우스',
-        location: '제주도 제주시 한림읍',
-        distance: '협재 해변 도보 1분',
-        date: '11월 17일~22일',
-        price: 340000,
-        rating: 4.97,
-        superhost: true,
-        img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=900&q=80',
-        desc: '에메랄드빛 협재 바다와 비양도가 바로 눈앞에 걸리는 통유리 글라스 하우스입니다.'
-      },
-      {
-        id: 11,
-        category: 'cabin',
-        title: '춘천 소양강 물안개 숲속 캐빈',
-        location: '강원도 춘천시 사북면',
-        distance: '소양강 호수변 50m',
-        date: '11월 21일~26일',
-        price: 195000,
-        rating: 4.89,
-        superhost: false,
-        img: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=80',
-        desc: '이른 아침 피어오르는 몽환적인 소양강 물안개를 보며 커피 한잔의 여유를 즐길 수 있는 독립형 캐빈입니다.'
-      },
-      {
-        id: 12,
-        category: 'pool',
-        title: '여수 돌산도 밤바다 프라이빗 풀빌라',
-        location: '전남 여수시 돌산읍',
-        distance: '돌산대교 10분',
-        date: '11월 23일~28일',
-        price: 375000,
-        rating: 4.95,
-        superhost: true,
-        img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
-        desc: '여수 밤바다의 반짝이는 야경과 함께 따뜻한 온수풀에서 힐링할 수 있는 프라이빗 독채 풀빌라입니다.'
+        img: 'assets/stay8.jpg',
+        desc: '호텔급 침구류와 개별 샤워실, 화목 난로 불멍 세트가 완비된 럭셔리 지오데식 돔 글램핑입니다.'
       }
     ];
 
