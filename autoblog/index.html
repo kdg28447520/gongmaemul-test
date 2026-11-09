@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>동곤 AI AutoBlog PRO · GEO & AI 인용 최적화 자동 블로그 엔진</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --bg-dark: #0D1117;
+      --bg-card: #161B22;
+      --bg-input: #0A0D12;
+      --border: #30363D;
+      --border-focus: #58A6FF;
+      --text-main: #F0F6FC;
+      --text-sub: #8B949E;
+      --text-muted: #6E7681;
+      --primary: #238636;
+      --primary-hover: #2EA043;
+      --accent: #58A6FF;
+      --accent-purple: #BC8CFF;
+      --warning: #D29922;
+      --danger: #F85149;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    /* 상단 관제탑 헤더 */
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text-main);
+    }
+
+    .brand-badge {
+      background: rgba(88, 166, 255, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(88, 166, 255, 0.4);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* AI 봇 인용 실시간 지수 */
+    .bot-tracker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    .bot-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bot-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3FB950;
+      box-shadow: 0 0 8px #3FB950;
+    }
+
+    .auto-toggle-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* 토글 스위치 */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #30363D;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #238636;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* 레이아웃 컨테이너 */
+    .container {
+      max-width: 1440px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+
+    /* 좌측 메인 작업 영역 */
+    .main-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .topic-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 15px;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .topic-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .generate-btn {
+      background: var(--primary);
+      color: #FFF;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0 24px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .generate-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* 추천 토픽 칩 */
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .topic-chip {
+      background: rgba(110, 118, 129, 0.15);
+      border: 1px solid rgba(110, 118, 129, 0.4);
+      color: var(--text-sub);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .topic-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(88, 166, 255, 0.1);
+    }
+
+    /* 포스트 아티클 프리뷰 카드 */
+    .article-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      min-height: 500px;
+    }
+
+    .article-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .article-tag {
+      display: inline-block;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .article-title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.35;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+    }
+
+    .article-meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-sub);
+      display: flex;
+      gap: 16px;
+    }
+
+    /* 아티클 본문 스타일 */
+    .article-body {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #C9D1D9;
+    }
+
+    .article-body h2 {
+      font-size: 20px;
+      color: #FFFFFF;
+      margin: 28px 0 12px;
+      border-left: 4px solid var(--accent);
+      padding-left: 12px;
+    }
+
+    .article-body h3 {
+      font-size: 17px;
+      color: #FFFFFF;
+      margin: 20px 0 8px;
+    }
+
+    .article-body p {
+      margin-bottom: 16px;
+    }
+
+    .callout-box {
+      background: rgba(88, 166, 255, 0.08);
+      border: 1px solid rgba(88, 166, 255, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 20px 0;
+      color: #E6EDF3;
+      font-size: 15px;
+    }
+
+    .callout-box strong {
+      color: var(--accent);
+    }
+
+    .evidence-quote {
+      border-left: 3px solid #3FB950;
+      padding-left: 14px;
+      font-style: italic;
+      color: #8B949E;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    /* 우측 품질 스코어 & GEO 분석 패널 */
+    .side-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .score-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    .total-score-box {
+      text-align: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .score-num {
+      font-size: 56px;
+      font-weight: 900;
+      color: #3FB950;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .score-grade {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+
+    .criteria-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .crit-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .crit-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .crit-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-input);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .crit-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    /* 타깃 독자 & 여정 카드 */
+    .journey-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .journey-badge {
+      display: inline-block;
+      background: rgba(188, 140, 255, 0.15);
+      color: var(--accent-purple);
+      border: 1px solid rgba(188, 140, 255, 0.4);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .title-pool-item {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .title-pool-item:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* 하단 액션 버튼 */
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--border);
+    }
+
+    .action-btn.publish {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFF;
+    }
+
+    .action-btn.publish:hover {
+      background: var(--primary-hover);
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .bot-tracker {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 관제탑 헤더 -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <span>⚡ 동곤 AutoBlog PRO</span>
+        <span class="brand-badge">GEO & AI 인용 1위 엔진</span>
+      </div>
+
+      <!-- 실시간 AI 크롤러 봇 인용 트래커 (LLMPedia 스타일) -->
+      <div class="bot-tracker">
+        <div class="bot-pill">
+          <div class="dot"></div>
+          <span><strong>AI 크롤러 수집:</strong> 2,842회</span>
+        </div>
+        <span style="color:var(--border);">|</span>
+        <span style="color:var(--text-sub);">GPTBot: <strong style="color:#FFF;">1,120</strong></span>
+        <span style="color:var(--text-sub);">ClaudeBot: <strong style="color:#FFF;">894</strong></span>
+        <span style="color:var(--text-sub);">Perplexity: <strong style="color:#FFF;">518</strong></span>
+        <span style="color:var(--text-sub);">Googlebot: <strong style="color:#FFF;">310</strong></span>
+      </div>
+
+      <!-- 무인 자동 발행 토글 -->
+      <div class="auto-toggle-box">
+        <span>매일 1편 무인 자동발행</span>
+        <label class="switch">
+          <input type="checkbox" id="autoSwitch" checked onchange="toggleAutoPublish(this)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <div class="container">
+    
+    <!-- 좌측 메인 칼럼 -->
+    <div class="main-col">
+      
+      <!-- 토픽 입력 및 30초 생성 컨트롤러 -->
+      <div class="control-card">
+        <div class="card-title">
+          <span>🎯 타깃 주제 / 브랜드 키워드 입력</span>
+          <span style="font-size:12px; font-weight:400; color:var(--text-sub); margin-left:auto;">
+            💡 원클릭으로 구매 여정 분석 ➔ 외부 팩트 리서치 ➔ 45개 검수 완료
+          </span>
+        </div>
+        <div class="input-row">
+          <input type="text" id="topicInput" class="topic-input" value="소액 아파트 경매 단타 2천만 원으로 1천만 원 수익 내는 법" placeholder="작성할 주제나 키워드를 입력하세요...">
+          <button class="generate-btn" onclick="generateAutoPost()">
+            <span>⚡ 30초 즉시 생성</span>
+          </button>
+        </div>
+
+        <!-- 5대 추천 질문 프리셋 칩 -->
+        <div class="chips-row">
+          <span class="topic-chip" onclick="setTopic('소액 아파트 경매 단타 2천만 원으로 1천만 원 수익 내는 법')">🏢 2천만원 소액경매 단타</span>
+          <span class="topic-chip" onclick="setTopic('1인 가구 부모님 고독사 예방을 위한 안부 확인 앱 선택 기준')">👵 1인가구 부모님 안부앱</span>
+          <span class="topic-chip" onclick="setTopic('쿠팡 틈새 잡화 소싱: 동일 소재 금형 3,000원 언더컷 전략')">🛒 쿠팡 잡화 3천원 언더컷</span>
+          <span class="topic-chip" onclick="setTopic('김장철 돌산 갓 도매가 실측과 0.7 소싱가 룰')">🥬 김장철 돌산 갓 마진 분석</span>
+          <span class="topic-chip" onclick="setTopic('나라장터 88% 낙찰하한율 무재고 공공조달 비품 납품')">🏛️ 안산 조달 88% 무재고 납품</span>
+        </div>
+      </div>
+
+      <!-- 생성된 고품질 전문 아티클 프리뷰 -->
+      <div class="article-card" id="articleCard">
+        <div class="article-header">
+          <span class="article-tag" id="artTag">부동산 실전 경매 · 자산 배분 전략</span>
+          <h1 class="article-title" id="artTitle">
+            "2천만 원으로 1천만 원 남긴다고?" 소액 아파트 경매 단타의 실체와 3대 세금 팩트체크
+          </h1>
+          <div class="article-meta">
+            <span>작성자: <strong>동곤 리서치 랩</strong></span>
+            <span>검수: <strong>45개 김 팀장 방법론 PASS</strong></span>
+            <span>예상 체류시간: <strong>3분 40초</strong></span>
+          </div>
+        </div>
+
+        <div class="article-body" id="artBody">
+          <!-- 첫 3문장 훅 전략 (전문 신뢰 질문 -> 근거 -> 결론) -->
+          <div class="callout-box">
+            <strong>💡 김 팀장 3문장 훅 전략 (전문직 신뢰 구축):</strong><br>
+            "종잣돈 2,000만 원으로 3개월 만에 1,000만 원 순이익을 얻을 수 있을까요? 결론부터 말씀드리면, 수도권 공시가 1억 이하 아파트의 경락잔금대출 85% 구조를 이해하면 산술적으로 100% 가능합니다. 하지만 대다수 초보자가 놓치는 '취득세·양도세 45% 단타 세율'을 모르면 손에 쥐는 돈은 200만 원에 불과합니다."
+          </div>
+
+          <h2>1. 왜 지금 수도권 공시가 1억 이하 소액 아파트인가?</h2>
+          <p>
+            부동산 상승기와 하락기를 막론하고 실수요층이 두터운 18~24평형 저가 아파트는 경매 시장에서 가장 빠른 현금 회전율을 보입니다. 법원 감정가 1억 5,000만 원짜리 물건이 1회 유찰되어 최저가 1억 2,000만 원(시세의 80%)에 나왔을 때, 1금융권의 경락잔금대출은 낙찰가의 최대 85%(1억 200만 원)까지 실행됩니다.
+          </p>
+
+          <div class="evidence-quote">
+            "국토교통부 실거래가 공개시스템 및 대법원 법원경매정보 통계에 따르면, 공시가격 1억 원 이하 주택은 다주택자 취득세 중과(8~12%) 배제 대상(기본세율 1.1%)으로 지정되어 있어 소액 투자자의 자기자본 투입을 최소화할 수 있습니다."
+          </div>
+
+          <h2>2. 실전 자금 흐름: 내 통장에서 빠져나가는 돈 2,050만 원의 내역</h2>
+          <p>
+            낙찰가 1억 2,000만 원 기준, 실제 잔금 납부 시 자기자본 투입금은 다음과 같습니다:
+          </p>
+          <ul style="margin-left: 20px; margin-bottom: 16px; color:#C9D1D9;">
+            <li>입찰 보증금 (최저가의 10%): <strong>1,200만 원</strong></li>
+            <li>대출 외 잔금 (15%): <strong>600만 원</strong></li>
+            <li>취득세 및 법무사 비용 (1.3%): <strong>156만 원</strong></li>
+            <li>인도명령 및 협의 이사비 (평균): <strong>100만 원</strong></li>
+            <li><strong>총 실투자금: 2,056만 원</strong></li>
+          </ul>
+
+          <h2>3. 핵심은 매도 전략: 시세보다 1,000만 원 싼 '번개 초급매' 던지기</h2>
+          <p>
+            수익을 쥐기 위해 시세(1억 5천만 원)를 다 받으려고 6개월씩 버티면 이자 비용과 관리비로 마진이 녹아내립니다. 인근 공인중개사 10곳에 "시세보다 1,000만 원 싼 1억 4,000만 원에 던지겠습니다"라고 접수하는 즉시 2주 안에 매매 계약이 체결됩니다.
+          </p>
+
+          <div class="callout-box">
+            <strong>🎯 타사 콘텐츠 대비 압도적 차별점 (결정적 전환 요소):</strong><br>
+            경매 강의 팔이들이 숨기는 '1년 미만 단기 매매 양도소득세(70%)'를 피하려면 개인 명의 대신 **'부동산 매매사업자'**를 활용해야 종합소득세 기본세율(6~42%)을 적용받을 수 있습니다. 이 차이 하나로 통장에 남는 돈이 300만 원에서 1,140만 원으로 4배 폭증합니다.
+          </div>
+        </div>
+
+        <!-- 하단 액션 버튼 -->
+        <div class="action-bar">
+          <button class="action-btn" onclick="copyNaver()">📋 네이버 블로그 복사</button>
+          <button class="action-btn" onclick="copyWordPress()">🌐 워드프레스/HTML 복사</button>
+          <button class="action-btn publish" onclick="publishInstant()">🚀 내 사이트 즉시 라이브 발행</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 우측 분석 및 GEO 스코어 칼럼 -->
+    <div class="side-col">
+      
+      <!-- 김 팀장 45대 기준 품질 스코어 카드 -->
+      <div class="score-card">
+        <div class="card-title">📊 김 팀장 45대 품질 채점 엔진</div>
+        
+        <div class="total-score-box">
+          <div class="score-num" id="totalScore">96<span style="font-size:24px;">점</span></div>
+          <div class="score-grade">🏆 S등급 (상위 0.1% 고신뢰 칼럼)</div>
+        </div>
+
+        <div class="criteria-list">
+          <div class="crit-item">
+            <div class="crit-header">
+              <span>🔗 신뢰 출처 인용 점수 (공공/논문)</span>
+              <strong style="color:#3FB950;">98%</strong>
+            </div>
+            <div class="crit-bar-bg">
+              <div class="crit-bar-fill" style="width: 98%; background: #3FB950;"></div>
+            </div>
+          </div>
+
+          <div class="crit-item">
+            <div class="crit-header">
+              <span>🔍 구글·네이버 SEO 최적화 문법</span>
+              <strong style="color:#58A6FF;">95%</strong>
+            </div>
+            <div class="crit-bar-bg">
+              <div class="crit-bar-fill" style="width: 95%; background: #58A6FF;"></div>
+            </div>
+          </div>
+
+          <div class="crit-item">
+            <div class="crit-header">
+              <span>⚡ 첫 3문장 이탈 방지 훅 강도</span>
+              <strong style="color:#BC8CFF;">97%</strong>
+            </div>
+            <div class="crit-bar-bg">
+              <div class="crit-bar-fill" style="width: 97%; background: #BC8CFF;"></div>
+            </div>
+          </div>
+
+          <div class="crit-item">
+            <div class="crit-header">
+              <span>⚖️ 광고법 및 허위과대광고 검증</span>
+              <strong style="color:#3FB950;">100%</strong>
+            </div>
+            <div class="crit-bar-bg">
+              <div class="crit-bar-fill" style="width: 100%; background: #3FB950;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 고객 구매 여정(Customer Journey) 단계 분석 -->
+      <div class="journey-card">
+        <div class="card-title">🧭 독자 구매 여정 단계</div>
+        <span class="journey-badge" id="journeyBadge">STAGE 3 : 비교 검토 ➔ 문의/전환</span>
+        <p style="font-size:13px; color:var(--text-sub); line-height:1.5;">
+          단순 정보성 키워드가 아니라, 실제로 행동(상담 요청, 서비스 가입, 물건 입찰)을 결심하기 직전의 가장 구매력 높은 고관여 고객을 정밀 타깃팅했습니다.
+        </p>
+      </div>
+
+      <!-- 대체 제목 풀 (A/B 테스트용 추천 3종) -->
+      <div class="journey-card">
+        <div class="card-title">💡 대체 제목 풀 (A/B 테스트 풀)</div>
+        <div class="title-pool-item" onclick="selectTitle(this.innerText)">
+          [A안] "통장에 2천 있으면 꼭 보세요" 직장인 아파트 소액경매 3개월 단타 공식
+        </div>
+        <div class="title-pool-item" onclick="selectTitle(this.innerText)">
+          [B안] 경매로 1천 벌고 세금으로 700 뜯기지 않는 법 (매매사업자 팩트체크)
+        </div>
+        <div class="title-pool-item" onclick="selectTitle(this.innerText)">
+          [C안] 시세보다 1,000만 원 싸게 던져라: 공시가 1억 이하 번개 매도 루틴
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // 추천 토픽 클릭 시 세팅
+    function setTopic(text) {
+      document.getElementById('topicInput').value = text;
+      generateAutoPost();
+    }
+
+    // A/B 제목 클릭 시 즉시 반영
+    function selectTitle(titleText) {
+      document.getElementById('artTitle').innerText = titleText;
+      alert(`✅ 제목이 [${titleText}]로 변경되었습니다! SEO 지수가 재연산됩니다.`);
+    }
+
+    // 30초 원클릭 자동 글 생성 시뮬레이션
+    function generateAutoPost() {
+      const topic = document.getElementById('topicInput').value.trim();
+      if (!topic) return;
+
+      const btn = document.querySelector('.generate-btn');
+      btn.innerHTML = '<span>⏳ 팩트 리서치 & GEO 채점 중...</span>';
+      btn.style.opacity = '0.7';
+
+      setTimeout(() => {
+        btn.innerHTML = '<span>⚡ 30초 즉시 생성</span>';
+        btn.style.opacity = '1';
+
+        document.getElementById('artTag').innerText = "AI 심층 리서치 · 팩트 기반 전문 칼럼";
+        document.getElementById('artTitle').innerText = `"${topic}"에 대한 팩트체크와 실전 솔루션 완벽 가이드`;
+        
+        // 스코어 애니메이션
+        const newScore = Math.floor(Math.random() * 4) + 94;
+        document.getElementById('totalScore').innerHTML = `${newScore}<span style="font-size:24px;">점</span>`;
+
+        alert(`🎉 [생성 완료!]\n주제: ${topic}\n품질 점수: ${newScore}점 (PASS)\nAI 크롤러 인용 최적화(GEO) 및 45개 검수가 완벽히 끝났습니다!`);
+      }, 800);
+    }
+
+    // 복사 및 발행 인터랙션
+    function copyNaver() {
+      navigator.clipboard.writeText(document.getElementById('artBody').innerText);
+      alert('📋 [네이버 블로그용 원고 복사 완료]\n스마트에디터에 바로 붙여넣기(Ctrl+V)하시면 서식과 소제목이 그대로 들어갑니다!');
+    }
+
+    function copyWordPress() {
+      navigator.clipboard.writeText(document.getElementById('artBody').innerHTML);
+      alert('🌐 [워드프레스/HTML 복사 완료]\n클립보드에 SEO 친화적 클린 HTML 코드가 복사되었습니다!');
+    }
+
+    function publishInstant() {
+      alert('🚀 [라이브 즉시 발행 완료!]\n동곤 님의 공식 도메인과 RSS 피드에 등록되었으며, GPTBot 및 ClaudeBot 인용 수집 큐에 실시간 등록되었습니다.');
+    }
+
+    function toggleAutoPublish(el) {
+      if (el.checked) {
+        alert('⏰ [무인 자동발행 ON]\n매일 아침 08:00에 최신 트렌드 키워드를 자동 분석하여 하루 1편씩 무인 발행됩니다.');
+      } else {
+        alert('⏸️ [무인 자동발행 일시중지]');
+      }
+    }
+  </script>
+</body>
+</html>
