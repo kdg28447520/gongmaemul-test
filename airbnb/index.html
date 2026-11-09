@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>동곤 스테이 · donggon stay (Airbnb Cleanroom Edition)</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --primary: #FF385C;
+      --primary-dark: #D70466;
+      --text-main: #222222;
+      --text-sub: #717171;
+      --border-light: #EBEBEB;
+      --bg-light: #F7F7F7;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+      --shadow-lg: 0 8px 28px rgba(0,0,0,0.18);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #FFFFFF;
+      color: var(--text-main);
+      line-height: 1.4;
+      padding-bottom: 80px;
+    }
+
+    /* 상단 글로벌 헤더 */
+    header {
+      position: sticky;
+      top: 0;
+      background: #FFFFFF;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .header-top {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+    }
+
+    .logo svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--primary);
+    }
+
+    /* 플로팅 검색바 */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 8px 10px 8px 18px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      cursor: pointer;
+    }
+
+    .search-bar:hover {
+      box-shadow: var(--shadow-md);
+      border-color: #DDD;
+    }
+
+    .search-item {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 0 14px;
+      white-space: nowrap;
+    }
+
+    .search-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border-light);
+    }
+
+    .search-item.sub {
+      color: var(--text-sub);
+      font-weight: 400;
+    }
+
+    .search-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 우측 유저 메뉴 */
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .host-btn {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: background 0.15s;
+    }
+
+    .host-btn:hover {
+      background: var(--bg-light);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 5px 6px 5px 12px;
+      background: #FFF;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+
+    .user-pill:hover {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .user-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #717171;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* 카테고리 슬라이더 */
+    .categories-bar {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 28px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .categories-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-sub);
+      text-decoration: none;
+      cursor: pointer;
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .cat-item .icon {
+      font-size: 22px;
+      transition: transform 0.2s;
+    }
+
+    .cat-item .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .cat-item:hover,
+    .cat-item.active {
+      color: var(--text-main);
+      border-bottom-color: var(--text-main);
+    }
+
+    .cat-item:hover .icon {
+      transform: scale(1.1);
+    }
+
+    /* 메인 컨테이너 */
+    main {
+      max-width: 1280px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+    }
+
+    /* 숙소 그리드 (데스크톱 4열, 태블릿 3열, 모바일 2열) */
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px 20px;
+    }
+
+    .room-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .img-box {
+      width: 100%;
+      aspect-ratio: 20 / 19;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      background: #EAEAEA;
+    }
+
+    .img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .room-card:hover .img-box img {
+      transform: scale(1.04);
+    }
+
+    /* 위시리스트 하트 버튼 */
+    .heart-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: transform 0.2s;
+    }
+
+    .heart-btn:active {
+      transform: scale(0.85);
+    }
+
+    .heart-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: rgba(0, 0, 0, 0.4);
+      stroke: #FFFFFF;
+      stroke-width: 2;
+      transition: fill 0.2s;
+    }
+
+    .heart-btn.liked svg {
+      fill: var(--primary);
+      stroke: var(--primary);
+    }
+
+    /* 슈퍼호스트 뱃지 */
+    .badge-superhost {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    /* 카드 정보 */
+    .room-info {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .room-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .rating span.star {
+      color: #222;
+    }
+
+    .room-desc {
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+
+    .room-date {
+      color: var(--text-sub);
+      font-size: 13px;
+    }
+
+    .room-price {
+      margin-top: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .room-price span {
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    /* 상세 모달 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      border-radius: var(--radius-lg);
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: translateY(30px) scale(0.96); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .modal-img-banner {
+      width: 100%;
+      height: 340px;
+      position: relative;
+    }
+
+    .modal-img-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .modal-amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .amenity-chip {
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .modal-price-box {
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .book-btn {
+      background: linear-gradient(135deg, #FF385C 0%, #D70466 100%);
+      color: #FFF;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(255, 56, 92, 0.4);
+      transition: all 0.2s;
+    }
+
+    .book-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 56, 92, 0.5);
+    }
+
+    /* 모바일 하단 플로팅 탭바 */
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-light);
+      display: none;
+      justify-content: space-around;
+      padding: 8px 0;
+      z-index: 99;
+    }
+
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-sub);
+      background: none;
+      border: none;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* 반응형 브레이크포인트 */
+    @media (max-width: 1024px) {
+      .rooms-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-top {
+        padding: 12px 16px;
+      }
+      .host-btn, .search-divider, .search-item.sub {
+        display: none;
+      }
+      .search-bar {
+        padding: 6px 8px 6px 14px;
+      }
+      .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px 14px;
+      }
+      .mobile-bottom-nav {
+        display: flex;
+      }
+      main {
+        padding: 0 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .rooms-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 10px;
+      }
+      .room-title-row {
+        font-size: 13px;
+      }
+      .room-price {
+        font-size: 13px;
+      }
+      .modal-img-banner {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header>
+    <div class="header-top">
+      <div class="logo" onclick="filterCategory('all')">
+        <svg viewBox="0 0 32 32">
+          <path d="M16 1c2.008 0 3.463.963 4.751 3.269l.533 1.025c1.954 3.83 6.114 12.54 7.1 14.836l.145.353c.667 1.591.91 2.479.96 3.391.096 1.802-.555 3.51-1.795 4.717C26.435 29.816 24.646 30.5 22.5 30.5c-2.457 0-4.593-.935-6.5-2.83-1.907 1.895-4.043 2.83-6.5 2.83-2.146 0-3.935-.684-5.194-1.909-1.24-1.207-1.891-2.915-1.795-4.717.05-.912.293-1.8.96-3.391l.145-.353c.986-2.296 5.146-11.006 7.1-14.836l.533-1.025C12.537 1.963 13.992 1 16 1zm0 2c-1.397 0-2.392.658-3.349 2.378l-.51 1.011c-1.94 3.793-6.096 12.497-7.07 14.77l-.141.343c-.611 1.458-.813 2.18-.853 2.898-.067 1.258.397 2.43 1.252 3.262.868.845 2.115 1.338 3.671 1.338 2.052 0 3.864-.813 5.485-2.464l.515-.536.515.536c1.621 1.651 3.433 2.464 5.485 2.464 1.556 0 2.803-.493 3.671-1.338.855-.832 1.319-2.004 1.252-3.262-.04-.718-.242-1.44-.853-2.898l-.141-.343c-.974-2.273-5.13-10.977-7.07-14.77l-.51-1.011C18.392 3.658 17.397 3 16 3zm0 13c2.761 0 5 2.239 5 5 0 2.378-1.66 4.368-3.882 4.865l-.368.067-.375.045-.375-.045C13.66 25.368 12 23.378 12 21c0-2.761 2.239-5 5-5zm0 2c-1.657 0-3 1.343-3 3 0 1.441 1.018 2.645 2.383 2.932l.279.043.338.025.338-.025c1.365-.287 2.383-1.491 2.383-2.932 0-1.657-1.343-3-3-3z"/>
+        </svg>
+        <span>donggon stay</span>
+      </div>
+
+      <!-- 플로팅 검색 필터 바 -->
+      <div class="search-bar" onclick="alert('🔍 에어비앤비 클린룸: 전국 5,300여 개 감성 숙소 실시간 매칭 중!')">
+        <div class="search-item">어디든지</div>
+        <div class="search-divider"></div>
+        <div class="search-item">언제든 일주일</div>
+        <div class="search-divider"></div>
+        <div class="search-item sub">게스트 추가</div>
+        <button class="search-btn" aria-label="검색">
+          <svg viewBox="0 0 32 32" style="width:14px;height:14px;fill:none;stroke:#FFF;stroke-width:4;">
+            <circle cx="14" cy="14" r="10"/>
+            <path d="M21 21l8 8"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 우측 유저 메뉴 -->
+      <div class="user-menu">
+        <button class="host-btn" onclick="alert('🏡 동곤 스테이 호스트 모드: 내 독채 숙소 등록이 곧 열립니다.')">호스트 되기</button>
+        <div class="user-pill" onclick="alert('👤 동곤 님 계정: VIP 슈퍼 게스트 로그인 완료')">
+          <svg viewBox="0 0 32 32" style="width:16px;height:16px;fill:none;stroke:#717171;stroke-width:3;">
+            <path d="M4 8h24M4 16h24M4 24h24"/>
+          </svg>
+          <div class="user-avatar">동곤</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 카테고리 가로 스크롤 바 -->
+    <div class="categories-bar" id="categoryBar">
+      <div class="cat-item active" onclick="filterCategory('all', this)">
+        <span class="icon">✨</span>
+        <span class="label">전체</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('hanok', this)">
+        <span class="icon">🏯</span>
+        <span class="label">한옥</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('beach', this)">
+        <span class="icon">🌊</span>
+        <span class="label">해변 바로 앞</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('pool', this)">
+        <span class="icon">🏊</span>
+        <span class="label">멋진 수영장</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('cabin', this)">
+        <span class="icon">🌲</span>
+        <span class="label">숲속 통나무집</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('luxury', this)">
+        <span class="icon">🏰</span>
+        <span class="label">럭셔리 빌라</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('camping', this)">
+        <span class="icon">⛺</span>
+        <span class="label">글램핑</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('city', this)">
+        <span class="icon">🏙️</span>
+        <span class="label">도심 스카이라인</span>
+      </div>
+      <div class="cat-item" onclick="filterCategory('country', this)">
+        <span class="icon">🌾</span>
+        <span class="label">촌캉스</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 숙소 카드 그리드 -->
+  <main>
+    <div class="rooms-grid" id="roomsGrid">
+      <!-- 자바스크립트로 12개 실사 감성 숙소 동적 렌더링 -->
+    </div>
+  </main>
+
+  <!-- 숙소 상세 모달 -->
+  <div class="modal-overlay" id="roomModal" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-img-banner">
+        <img id="modalImg" src="" alt="숙소 대표 사진">
+      </div>
+      <div class="modal-body">
+        <div class="modal-header-row">
+          <div>
+            <h2 class="modal-title" id="modalTitle">숙소 이름</h2>
+            <p class="room-desc" id="modalLoc" style="margin-top:4px;">위치 정보</p>
+          </div>
+          <div class="rating" id="modalRating" style="font-size:16px;">
+            <span class="star">★</span> 4.98 (후기 142개)
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border-light); padding-top:14px;">
+          <h4 style="font-size:15px; margin-bottom:8px;">호스트 및 공간 소개</h4>
+          <p id="modalDesc" style="color:var(--text-sub); font-size:14px; line-height:1.6;">
+            동곤 스테이가 엄선한 감성 독채 공간입니다. 프라이빗한 자쿠지와 통창 숲 뷰, 바비큐 시설을 완비했습니다.
+          </p>
+        </div>
+
+        <div>
+          <h4 style="font-size:15px; margin-bottom:8px;">인기 편의시설</h4>
+          <div class="modal-amenities" id="modalAmenities">
+            <span class="amenity-chip">🛁 프라이빗 자쿠지</span>
+            <span class="amenity-chip">🥩 단독 바비큐장</span>
+            <span class="amenity-chip">📶 기가 와이파이</span>
+            <span class="amenity-chip">🚗 무료 전용 주차</span>
+            <span class="amenity-chip">☕ 웰컴 네스프레소</span>
+          </div>
+        </div>
+
+        <div class="modal-price-box">
+          <div>
+            <div id="modalPrice" style="font-size:20px; font-weight:800; color:var(--text-main);">₩240,000 <span style="font-size:14px; font-weight:400; color:var(--text-sub);">/박</span></div>
+            <div style="font-size:12px; color:var(--primary); font-weight:600; margin-top:2px;">⚡ 슈퍼호스트 특가 예약 가능</div>
+          </div>
+          <button class="book-btn" onclick="confirmBooking()">즉시 예약하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 모바일 하단 탭바 -->
+  <nav class="mobile-bottom-nav">
+    <button class="nav-btn active">
+      <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="5"/></svg>
+      <span>둘러보기</span>
+    </button>
+    <button class="nav-btn" onclick="alert('❤️ 위시리스트: 담아둔 숙소 3곳이 보관되어 있습니다.')">
+      <svg viewBox="0 0 32 32"><path d="M16 28l-2.4-2.2C5.1 18.2 0 13.6 0 8C0 3.5 3.5 0 8 0c2.5 0 5 1.2 6.5 3.1C16 1.2 18.5 0 21 0c4.5 0 8 3.5 8 8 0 5.6-5.1 10.2-13.6 17.8L16 28z"/></svg>
+      <span id="wishCountNav">위시리스트 (3)</span>
+    </button>
+    <button class="nav-btn" onclick="alert('✈️ 예약 내역: 11월 20일 강원도 양양 오션스테이 예약 확정')">
+      <svg viewBox="0 0 32 32"><path d="M4 6h24v20H4z" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M10 2v8M22 2v8"/></svg>
+      <span>예약</span>
+    </button>
+    <button class="nav-btn" onclick="alert('👤 동곤 님의 프로필 관리')">
+      <svg viewBox="0 0 32 32"><circle cx="16" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M4 28c0-6.6 5.4-12 12-12s12 5.4 12 12" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+      <span>프로필</span>
+    </button>
+  </nav>
+
+  <script>
+    // 12개 실사 감성 숙소 데이터베이스 (Unsplash 고화질 큐레이션)
+    const ROOMS = [
+      {
+        id: 1,
+        category: 'hanok',
+        title: '종로 서촌 감성 한옥 스테이 · 락고재',
+        location: '서울 종로구 서촌',
+        distance: '경복궁 도보 5분',
+        date: '11월 15일~20일',
+        price: 285000,
+        rating: 4.97,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80',
+        desc: '100년 된 고택을 모던하게 복원한 서촌 프라이빗 독채 한옥입니다. 편백나무 욕조와 다도 세트가 준비되어 있습니다.'
+      },
+      {
+        id: 2,
+        category: 'beach',
+        title: '양양 인구해변 파노라마 오션뷰 독채',
+        location: '강원도 양양군 현남면',
+        distance: '인구해변 바로 앞 10m',
+        date: '11월 18일~23일',
+        price: 320000,
+        rating: 4.95,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=900&q=80',
+        desc: '침대에 누워 동해 일출을 감상하는 전면 통창 오션뷰 빌라입니다. 서핑 보드 렌탈 및 단독 테라스 바비큐가 가능합니다.'
+      },
+      {
+        id: 3,
+        category: 'cabin',
+        title: '평창 대관령 자작나무 숲속 통나무 빌라',
+        location: '강원도 평창군 대관령면',
+        distance: '자작나무 숲 도보 3분',
+        date: '11월 12일~17일',
+        price: 210000,
+        rating: 4.92,
+        superhost: false,
+        img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=900&q=80',
+        desc: '해발 700m 청정 고원에 자리한 북유럽 노르딕 스타일 우든 캐빈입니다. 벽난로 불멍과 별자리 관측이 환상적입니다.'
+      },
+      {
+        id: 4,
+        category: 'pool',
+        title: '제주 애월 온수 인피니티 풀빌라',
+        location: '제주도 제주시 애월읍',
+        distance: '애월 한담산책로 차량 5분',
+        date: '11월 22일~27일',
+        price: 450000,
+        rating: 4.99,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=900&q=80',
+        desc: '사계절 34도 온수로 유지되는 12m 단독 인피니티 풀을 갖춘 럭셔리 하우스입니다. 애월 붉은 노을이 한눈에 들어옵니다.'
+      },
+      {
+        id: 5,
+        category: 'luxury',
+        title: '가평 북한강 리버뷰 프라이빗 펜트하우스',
+        location: '경기도 가평군 설악면',
+        distance: '북한강 조망 1선',
+        date: '11월 14일~19일',
+        price: 390000,
+        rating: 4.88,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
+        desc: '최고급 이탈리아 가구와 통유리 층고 5m 리버뷰를 자랑하는 프리미엄 펜트하우스입니다. 실내 스파 자쿠지 완비.'
+      },
+      {
+        id: 6,
+        category: 'camping',
+        title: '포천 산정호수 돔 글램핑 & 야외 시네마',
+        location: '경기도 포천시 영북면',
+        distance: '산정호수 도보 10분',
+        date: '11월 16일~21일',
+        price: 175000,
+        rating: 4.91,
+        superhost: false,
+        img: 'https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=900&q=80',
+        desc: '호텔급 침구류와 개별 냉난방, 빔프로젝터 야외 영화관을 갖춘 럭셔리 지오데식 돔 글램핑입니다.'
+      },
+      {
+        id: 7,
+        category: 'city',
+        title: '부산 해운대 엘시티 스카이라인 펜트',
+        location: '부산 해운대구 중동',
+        distance: '해운대 해수욕장 직결',
+        date: '11월 20일~25일',
+        price: 490000,
+        rating: 4.96,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80',
+        desc: '해운대 앞바다와 광안대교 야경이 360도로 펼쳐지는 초고층 스카이 스위트입니다. 와인 셀러 및 최고급 오디오 구비.'
+      },
+      {
+        id: 8,
+        category: 'country',
+        title: '남해 다랭이마을 툇마루 감성 촌캉스',
+        location: '경남 남해군 남면',
+        distance: '다랭이논 바다 뷰',
+        date: '11월 19일~24일',
+        price: 155000,
+        rating: 4.94,
+        superhost: false,
+        img: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=900&q=80',
+        desc: '할머니 댁의 포근한 온돌방과 고즈넉한 툇마루에서 즐기는 바다 뷰 촌캉스입니다. 가마솥 솥뚜껑 삼겹살 체험 제공.'
+      },
+      {
+        id: 9,
+        category: 'hanok',
+        title: '경주 황리단길 돌담길 프라이빗 한옥',
+        location: '경북 경주시 황남동',
+        distance: '황리단길 메인 로드 2분',
+        date: '11월 25일~30일',
+        price: 260000,
+        rating: 4.98,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=900&q=80',
+        desc: '은은한 솔향 가득한 서까래와 대나무 중정 정원이 어우러진 경주 감성 독채 한옥입니다.'
+      },
+      {
+        id: 10,
+        category: 'beach',
+        title: '제주 협재 비양도 일몰 뷰 글라스하우스',
+        location: '제주도 제주시 한림읍',
+        distance: '협재 해변 도보 1분',
+        date: '11월 17일~22일',
+        price: 340000,
+        rating: 4.97,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=900&q=80',
+        desc: '에메랄드빛 협재 바다와 비양도가 바로 눈앞에 걸리는 통유리 글라스 하우스입니다.'
+      },
+      {
+        id: 11,
+        category: 'cabin',
+        title: '춘천 소양강 물안개 숲속 캐빈',
+        location: '강원도 춘천시 사북면',
+        distance: '소양강 호수변 50m',
+        date: '11월 21일~26일',
+        price: 195000,
+        rating: 4.89,
+        superhost: false,
+        img: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=80',
+        desc: '이른 아침 피어오르는 몽환적인 소양강 물안개를 보며 커피 한잔의 여유를 즐길 수 있는 독립형 캐빈입니다.'
+      },
+      {
+        id: 12,
+        category: 'pool',
+        title: '여수 돌산도 밤바다 프라이빗 풀빌라',
+        location: '전남 여수시 돌산읍',
+        distance: '돌산대교 10분',
+        date: '11월 23일~28일',
+        price: 375000,
+        rating: 4.95,
+        superhost: true,
+        img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80',
+        desc: '여수 밤바다의 반짝이는 야경과 함께 따뜻한 온수풀에서 힐링할 수 있는 프라이빗 독채 풀빌라입니다.'
+      }
+    ];
+
+    let likedSet = new Set([1, 2, 4]); // 기본 좋아요 3건
+    let currentCategory = 'all';
+
+    function renderRooms(rooms) {
+      const grid = document.getElementById('roomsGrid');
+      grid.innerHTML = '';
+
+      rooms.forEach(room => {
+        const isLiked = likedSet.has(room.id);
+        const card = document.createElement('div');
+        card.className = 'room-card';
+        card.onclick = () => openModal(room);
+
+        card.innerHTML = `
+          <div class="img-box">
+            <img src="${room.img}" alt="${room.title}" loading="lazy">
+            ${room.superhost ? '<div class="badge-superhost">슈퍼호스트</div>' : ''}
+            <button class="heart-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(event, ${room.id}, this)">
+              <svg viewBox="0 0 32 32">
+                <path d="M16 28l-2.4-2.2C5.1 18.2 0 13.6 0 8C0 3.5 3.5 0 8 0c2.5 0 5 1.2 6.5 3.1C16 1.2 18.5 0 21 0c4.5 0 8 3.5 8 8 0 5.6-5.1 10.2-13.6 17.8L16 28z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="room-info">
+            <div class="room-title-row">
+              <span>${room.location}</span>
+              <div class="rating">
+                <span class="star">★</span>
+                <span>${room.rating}</span>
+              </div>
+            </div>
+            <div class="room-desc">${room.distance}</div>
+            <div class="room-date">${room.date}</div>
+            <div class="room-price">
+              ₩${room.price.toLocaleString()} <span>/박</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleLike(e, id, btn) {
+      e.stopPropagation();
+      if (likedSet.has(id)) {
+        likedSet.delete(id);
+        btn.classList.remove('liked');
+      } else {
+        likedSet.add(id);
+        btn.classList.add('liked');
+      }
+      document.getElementById('wishCountNav').innerText = `위시리스트 (${likedSet.size})`;
+    }
+
+    function filterCategory(cat, elem) {
+      currentCategory = cat;
+      if (elem) {
+        document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+        elem.classList.add('active');
+      }
+      if (cat === 'all') {
+        renderRooms(ROOMS);
+      } else {
+        const filtered = ROOMS.filter(r => r.category === cat);
+        renderRooms(filtered);
+      }
+    }
+
+    let selectedRoom = null;
+    function openModal(room) {
+      selectedRoom = room;
+      document.getElementById('modalImg').src = room.img;
+      document.getElementById('modalTitle').innerText = room.title;
+      document.getElementById('modalLoc').innerText = `${room.location} · ${room.distance}`;
+      document.getElementById('modalRating').innerHTML = `<span class="star">★</span> ${room.rating} (슈퍼호스트 평점)`;
+      document.getElementById('modalDesc').innerText = room.desc;
+      document.getElementById('modalPrice').innerHTML = `₩${room.price.toLocaleString()} <span style="font-size:14px; font-weight:400; color:var(--text-sub);">/박</span>`;
+      document.getElementById('roomModal').classList.add('active');
+    }
+
+    function closeModal(e) {
+      document.getElementById('roomModal').classList.remove('active');
+    }
+
+    function confirmBooking() {
+      if (!selectedRoom) return;
+      alert(`🎉 [예약 완료]\n${selectedRoom.title}\n일정: ${selectedRoom.date}\n1박 요금: ₩${selectedRoom.price.toLocaleString()}\n\n동곤 님의 숙소 예약이 성공적으로 접수되었습니다!`);
+      closeModal();
+    }
+
+    // 초기 렌더링
+    renderRooms(ROOMS);
+  </script>
+</body>
+</html>
