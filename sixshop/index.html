@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>동곤 Sixshop PRO · 머릿속 아이디어를 3초 만에 쇼핑몰로 만드는 AI 웹빌더</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --bg-base: #0B0C0E;
+      --bg-panel: #14161A;
+      --bg-card: #1D2127;
+      --bg-input: #0F1115;
+      --border: #2B303A;
+      --border-accent: #6366F1;
+      --text-main: #FFFFFF;
+      --text-sub: #94A3B8;
+      --text-muted: #64748B;
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --accent-cyan: #06B6D4;
+      --accent-pink: #EC4899;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* 상단 내비게이션 */
+    header {
+      background: rgba(20, 22, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, #4F46E5, #06B6D4);
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-btn.active {
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #262B33;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4F46E5, #6366F1);
+      border: none;
+      color: #FFF;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+    }
+
+    /* 메인 3단 워크스페이스 레이아웃 */
+    .workspace {
+      display: grid;
+      grid-template-columns: 320px 1fr 300px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* 좌측: AI 프롬프트 & 블록 툴바 */
+    .sidebar-left {
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .prompt-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .prompt-input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 14px;
+      line-height: 1.5;
+      outline: none;
+      resize: none;
+      height: 70px;
+    }
+
+    .prompt-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .ai-gen-btn {
+      background: linear-gradient(135deg, #06B6D4, #3B82F6);
+      border: none;
+      color: #FFF;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+
+    .ai-gen-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* 디자인 블록 팔레트 */
+    .blocks-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .block-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .block-item:hover {
+      border-color: var(--border-accent);
+      background: #232830;
+      transform: translateY(-1px);
+    }
+
+    .block-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .block-badge {
+      font-size: 11px;
+      color: var(--accent-cyan);
+    }
+
+    /* 중앙: 인터랙티브 캔버스 (실시간 렌더러) */
+    .canvas-container {
+      background: #060709;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .mockup-frame {
+      width: 100%;
+      max-width: 900px;
+      background: #000000;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .mockup-frame.mobile-mode {
+      max-width: 400px;
+      border-radius: 36px;
+      border: 4px solid #334155;
+    }
+
+    /* 렌더링될 실제 쇼핑몰 블록들 */
+    .site-hero {
+      position: relative;
+      padding: 80px 40px;
+      text-align: center;
+      background: radial-gradient(circle at top, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+      border-bottom: 1px solid #1E293B;
+    }
+
+    .site-hero .hero-tag {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818CF8;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .site-hero h1 {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .site-hero p {
+      font-size: 16px;
+      color: #94A3B8;
+      max-width: 540px;
+      margin: 0 auto 28px;
+      outline: none;
+    }
+
+    .site-hero .cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .hero-btn {
+      background: #4F46E5;
+      color: #FFF;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 999px;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+
+    .hero-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* 상품 2열 그리드 블록 */
+    .site-products {
+      padding: 50px 32px;
+    }
+
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 24px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: #111419;
+      border: 1px solid #1E293B;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: #6366F1;
+      box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #1E293B;
+    }
+
+    .product-body {
+      padding: 16px;
+    }
+
+    .product-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .product-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: #38BDF8;
+    }
+
+    .discount-badge {
+      background: rgba(239, 68, 68, 0.2);
+      color: #F87171;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* 우측: 스마트 커머스 & AI 운영 관제 패널 */
+    .sidebar-right {
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .metric-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .metric-val {
+      font-size: 28px;
+      font-weight: 900;
+      color: #38BDF8;
+    }
+
+    .metric-sub {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .setting-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .color-picker-box {
+      display: flex;
+      gap: 8px;
+    }
+
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.2s;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.15);
+    }
+
+    .color-dot.active {
+      border-color: #FFF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 헤더 -->
+  <header>
+    <div class="brand-box">
+      <span class="logo-badge">SIXSHOP AI CLONE</span>
+      <span class="brand-title">동곤 Sixshop PRO 빌더</span>
+    </div>
+
+    <!-- 모바일 / 데스크톱 프리뷰 전환 토글 -->
+    <div class="header-center">
+      <button class="view-btn active" onclick="setViewMode('desktop')">🖥️ 데스크톱 뷰</button>
+      <button class="view-btn" onclick="setViewMode('mobile')">📱 모바일(폴드) 뷰</button>
+    </div>
+
+    <!-- 우측 배포 액션 -->
+    <div class="header-actions">
+      <button class="btn-secondary" onclick="exportCode()">📋 HTML 코드 복사</button>
+      <button class="btn-primary" onclick="publishStore()">🚀 1초 라이브 배포</button>
+    </div>
+  </header>
+
+  <!-- 3단 워크스페이스 -->
+  <div class="workspace">
+    
+    <!-- 좌측 사이드바: 프롬프트 & 블록 팔레트 -->
+    <div class="sidebar-left">
+      <div>
+        <div class="section-title">✨ AI 원클릭 스토어 생성</div>
+        <div class="prompt-box">
+          <textarea id="promptText" class="prompt-input" placeholder="원하는 쇼핑몰 스타일을 한 줄로 적어보세요... (예: 애플 스타일의 미니멀 텀블러 스토어 만들어줘)"></textarea>
+          <button class="ai-gen-btn" onclick="aiGenerateStore()">
+            <span>⚡ AI 원클릭 전체 리빌드</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">🧱 디자인 블록 추가 (클릭/드래그)</div>
+        <div class="blocks-grid">
+          <div class="block-item" onclick="addBlock('hero')">
+            <div class="block-info">
+              <span>🖼️ 대형 히어로 배너</span>
+            </div>
+            <span class="block-badge">+ 추가</span>
+          </div>
+
+          <div class="block-item" onclick="addBlock('products')">
+            <div class="block-info">
+              <span>🛍️ 2열 상품 그리드 (BEST)</span>
+            </div>
+            <span class="block-badge">+ 추가</span>
+          </div>
+
+          <div class="block-item" onclick="addBlock('review')">
+            <div class="block-info">
+              <span>⭐ 실시간 포토 리뷰 슬라이더</span>
+            </div>
+            <span class="block-badge">+ 추가</span>
+          </div>
+
+          <div class="block-item" onclick="addBlock('story')">
+            <div class="block-info">
+              <span>📖 브랜드 철학 & 스토리</span>
+            </div>
+            <span class="block-badge">+ 추가</span>
+          </div>
+
+          <div class="block-item" onclick="addBlock('cta')">
+            <div class="block-info">
+              <span>🎯 긴급 마감 할인 타이머 CTA</span>
+            </div>
+            <span class="block-badge">+ 추가</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 중앙: 실시간 캔버스 (WYSIWYG 렌더러) -->
+    <div class="canvas-container">
+      <div class="mockup-frame" id="mockupFrame">
+        
+        <!-- 히어로 배너 블록 -->
+        <section class="site-hero" id="heroBlock">
+          <div class="hero-tag">2026 WINTER EXCLUSIVE</div>
+          <h1 contenteditable="true" id="heroTitle">본질에 집중한 미니멀 오브제</h1>
+          <p contenteditable="true" id="heroDesc">
+            군더더기를 덜어내고 일상의 밀도를 높입니다.<br>
+            식스샵 프로 수준의 감각적인 쇼핑몰을 3초 만에 만나보세요.
+          </p>
+          <div class="cta-group">
+            <a href="javascript:void(0)" class="hero-btn" onclick="alert('🛍️ [구매 페이지 이동 시뮬레이션]')">컬렉션 보러가기 →</a>
+          </div>
+        </section>
+
+        <!-- 2열 상품 그리드 블록 -->
+        <section class="site-products" id="productsBlock">
+          <div class="products-header">
+            <div>
+              <div style="font-size:12px; color:#818CF8; font-weight:700; margin-bottom:4px;">CURATED SELECTION</div>
+              <h2 style="font-size:22px; font-weight:800;">베스트 아이템</h2>
+            </div>
+            <span style="font-size:13px; color:#94A3B8; cursor:pointer;">전체보기 ➔</span>
+          </div>
+
+          <div class="products-grid">
+            
+            <div class="product-card" onclick="alert('스탠리 2in1 컵홀더 상세페이지로 이동')">
+              <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80" class="product-img" alt="텀블러">
+              <div class="product-body">
+                <div class="product-title">스탠리 호환 대구경 풀메탈 컵홀더</div>
+                <div class="product-price-row">
+                  <div class="product-price">28,900원</div>
+                  <span class="discount-badge">31% OFF</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card" onclick="alert('차량용 컵홀더 트레이 상세페이지로 이동')">
+              <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80" class="product-img" alt="트레이">
+              <div class="product-body">
+                <div class="product-title">올인원 회전식 차량용 멀티 트레이</div>
+                <div class="product-price-row">
+                  <div class="product-price">19,500원</div>
+                  <span class="discount-badge">42% OFF</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-card" onclick="alert('김장철 갓 소싱 상품으로 이동')">
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80" class="product-img" alt="모던오브제">
+              <div class="product-body">
+                <div class="product-title">프리미엄 1인 미니 데스크 오브제</div>
+                <div class="product-price-row">
+                  <div class="product-price">34,000원</div>
+                  <span class="discount-badge">15% OFF</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- 우측 사이드바: AI 커머스 운영 에이전트 -->
+    <div class="sidebar-right">
+      <div class="section-title">📊 실시간 AI 커머스 분석</div>
+      
+      <div class="metric-card">
+        <div class="metric-title">예상 구매 전환율 (CR)</div>
+        <div class="metric-val">4.8%</div>
+        <div class="metric-sub">동종 업계 평균(1.2%) 대비 +3.6%p 우위</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-title">모바일 로딩 속도 (LCP)</div>
+        <div class="metric-val" style="color:#34D399;">0.4s</div>
+        <div class="metric-sub">초경량 단일 빌드로 이탈률 0% 방어</div>
+      </div>
+
+      <div class="section-title" style="margin-top:10px;">🎨 브랜드 테마 커스텀</div>
+      <div class="setting-group">
+        <div class="setting-row">
+          <span>포인트 컬러</span>
+          <div class="color-picker-box">
+            <div class="color-dot active" style="background:#4F46E5;" onclick="changeTheme('#4F46E5')"></div>
+            <div class="color-dot" style="background:#06B6D4;" onclick="changeTheme('#06B6D4')"></div>
+            <div class="color-dot" style="background:#EC4899;" onclick="changeTheme('#EC4899')"></div>
+            <div class="color-dot" style="background:#10B981;" onclick="changeTheme('#10B981')"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 뷰포트 토글 (데스크톱 vs 모바일 폴드)
+    function setViewMode(mode) {
+      const frame = document.getElementById('mockupFrame');
+      const btns = document.querySelectorAll('.view-btn');
+      btns.forEach(b => b.classList.remove('active'));
+
+      if (mode === 'mobile') {
+        frame.classList.add('mobile-mode');
+        btns[1].classList.add('active');
+      } else {
+        frame.classList.remove('mobile-mode');
+        btns[0].classList.add('active');
+      }
+    }
+
+    // AI 원클릭 스토어 리빌드
+    function aiGenerateStore() {
+      const prompt = document.getElementById('promptText').value.trim();
+      if (!prompt) {
+        alert('💡 원하는 스타일이나 상품을 입력해주세요!\n예: "애플 감성의 풀메탈 차량용 컵홀더 샵 만들어줘"');
+        return;
+      }
+
+      const btn = document.querySelector('.ai-gen-btn');
+      btn.innerText = '⚡ AI 디자인 렌더링 중...';
+      btn.style.opacity = '0.7';
+
+      setTimeout(() => {
+        btn.innerText = '⚡ AI 원클릭 전체 리빌드';
+        btn.style.opacity = '1';
+
+        document.getElementById('heroTitle').innerText = `"${prompt}" 완벽 구현 스토어`;
+        document.getElementById('heroDesc').innerText = `식스샵 프로 수준의 모션 그래픽과 고전환 카피라이팅이 100% 자동 생성되었습니다.`;
+        alert(`🎉 [식스샵 AI 리빌드 완료!]\n입력하신 컨셉에 맞춰 쇼핑몰 디자인과 카피라이팅이 즉시 갱신되었습니다!`);
+      }, 700);
+    }
+
+    // 블록 추가
+    function addBlock(type) {
+      const frame = document.getElementById('mockupFrame');
+      if (type === 'review') {
+        const rev = document.createElement('div');
+        rev.style.padding = '40px 32px';
+        rev.style.borderTop = '1px solid #1E293B';
+        rev.innerHTML = `
+          <div style="font-size:12px; color:#818CF8; font-weight:700;">REAL CUSTOMER REVIEWS</div>
+          <h2 style="font-size:22px; font-weight:800; margin: 6px 0 20px;">실제 구매자 평점 4.9점</h2>
+          <div style="background:#111419; padding:20px; border-radius:12px; border:1px solid #1E293B;">
+            <div style="color:#FBBF24; font-size:14px; margin-bottom:8px;">★★★★★ 5.0</div>
+            <p style="font-size:14px; color:#CBD5E1; line-height:1.6;">"진짜 배송 빠르고 퀄리티 대박입니다. 차에 꽂아두니까 흔들림 전혀 없고 스탠리 텀블러 딱 들어가요!"</p>
+            <div style="font-size:12px; color:#64748B; margin-top:10px;">김*곤 님 · 2026.11.10 구매</div>
+          </div>
+        `;
+        frame.appendChild(rev);
+        alert('⭐ 포토 리뷰 슬라이더 블록이 추가되었습니다!');
+      } else {
+        alert(`🧱 [${type.toUpperCase()}] 블록이 캔버스 하단에 추가되었습니다!`);
+      }
+    }
+
+    // 테마 컬러 변경
+    function changeTheme(color) {
+      document.querySelector('.hero-btn').style.background = color;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    // 코드 내보내기 & 배포
+    function exportCode() {
+      navigator.clipboard.writeText(document.getElementById('mockupFrame').outerHTML);
+      alert('📋 [쇼핑몰 HTML 코드 복사 완료]\n어디든 붙여넣기만 하면 그대로 구동되는 클린 코드가 클립보드에 복사되었습니다!');
+    }
+
+    function publishStore() {
+      alert('🚀 [라이브 쇼핑몰 배포 성공!]\ngongmaemul.co.kr/sixshop/ 공식 도메인에 0.4초 초고속으로 라이브 개통되었습니다!');
+    }
+  </script>
+</body>
+</html>
