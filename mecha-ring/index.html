@@ -1,762 +1,341 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <title>동곤의 메카 링 배틀러 PRO (3D Mecha Ring Battler)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Pretendard:wght@400;600;800;900&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      background: #090a0f;
-      color: #fff;
-      font-family: 'Pretendard', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      overflow-x: hidden;
-    }
-    header {
-      width: 100%;
-      max-width: 480px;
-      padding: 12px 16px 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 10;
-    }
-    .brand-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 900;
-      color: #38bdf8;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
-    }
-    .credit-badge {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid #334155;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #facc15;
-    }
-
-    /* 3D 뷰포트 컨테이너 */
-    .game-viewport {
-      width: 100%;
-      max-width: 480px;
-      height: 380px;
-      position: relative;
-      background: radial-gradient(circle at center, #1e1b4b 0%, #090a0f 80%);
-      border-top: 1px solid #1e293b;
-      border-bottom: 1px solid #1e293b;
-      overflow: hidden;
-    }
-    #threeCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    /* 배틀 모드 상단 HUD (체력바) */
-    .battle-hud {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      display: none;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      z-index: 20;
-    }
-    .hp-card {
-      flex: 1;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 10px;
-      padding: 6px 10px;
-      backdrop-filter: blur(8px);
-    }
-    .hp-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-    .hp-header.p1 { color: #38bdf8; }
-    .hp-header.p2 { color: #ef4444; }
-    .hp-bar-outer {
-      width: 100%;
-      height: 8px;
-      background: #334155;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .hp-bar-inner {
-      height: 100%;
-      transition: width 0.2s ease;
-    }
-    .hp-p1 { background: linear-gradient(90deg, #38bdf8, #2563eb); width: 100%; }
-    .hp-p2 { background: linear-gradient(90deg, #f87171, #dc2626); width: 100%; }
-
-    .vs-badge {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 900;
-      color: #facc15;
-      text-shadow: 0 0 8px #facc15;
-    }
-
-    /* 전투 중 오버레이 텍스트 (타격/빅토리) */
-    .battle-msg-overlay {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #facc15;
-      text-shadow: 0 0 20px #ef4444;
-      pointer-events: none;
-      display: none;
-      z-index: 30;
-      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    @keyframes popIn {
-      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
-    /* 컨트롤 패널 */
-    .control-panel {
-      width: 100%;
-      max-width: 480px;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* 탭 전환 (정비창 / 파츠상점) */
-    .mode-tabs {
-      display: flex;
-      gap: 8px;
-      background: #1e293b;
-      padding: 4px;
-      border-radius: 12px;
-    }
-    .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      padding: 8px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .tab-btn.active {
-      background: #0284c7;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
-    }
-
-    /* 파츠 선택 리스트 */
-    .parts-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    .part-card {
-      background: #1e293b;
-      border: 2px solid #334155;
-      border-radius: 10px;
-      padding: 8px 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .part-card.active {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.15);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-    }
-    .part-icon { font-size: 1.3rem; }
-    .part-name { font-size: 0.68rem; font-weight: 800; color: #f1f5f9; text-align: center; }
-    .part-stat { font-size: 0.58rem; color: #38bdf8; font-weight: 700; }
-
-    /* 액션 버튼 */
-    .action-row {
-      display: flex;
-      gap: 8px;
-    }
-    .main-btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      font-weight: 900;
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
-      transition: transform 0.1s;
-    }
-    .main-btn:active { transform: scale(0.98); }
-    .btn-battle {
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-    }
-    .btn-skill {
-      background: linear-gradient(135deg, #facc15, #d97706);
-      color: #1e1b4b;
-      display: none;
-      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
-      animation: pulseBtn 0.8s infinite;
-    }
-    @keyframes pulseBtn {
-      50% { transform: scale(1.03); }
-    }
-  </style>
-  <!-- Three.js CDN (jsdelivr + unpkg fallback) -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script>
-    if (typeof THREE === 'undefined') {
-      document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>');
-    }
-  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WALKER SERIES TYPE-A (032) 무장 환장 · 유닛 사이즈 · 액션 포즈 테스트 스튜디오 v04</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <!-- TOP HEADER: VARIATION LINEUP & SIMULATION BAR -->
+    <header class="top-header">
+      <div class="brand-box">
+        <span class="brand-badge">WALKER SERIES · TYPE-A (032)</span>
+        <h1>성인 탑승형 다목적 워커 무장 환장 · 유닛 사이즈 · 액션 포즈 스튜디오 v04</h1>
+      </div>
 
-  <header>
-    <div class="brand-title">
-      <span>🥊</span> MECHA BATTLE PRO
-    </div>
-    <div class="credit-badge">
-      🪙 코어 코인: <span id="coinCount">1,250</span> G
-    </div>
-  </header>
-
-  <div class="game-viewport">
-    <div class="battle-hud" id="battleHud">
-      <div class="hp-card">
-        <div class="hp-header p1">
-          <span id="p1Name">자오마루 (나)</span>
-          <span id="p1HpVal">100%</span>
-        </div>
-        <div class="hp-bar-outer">
-          <div class="hp-bar-inner hp-p1" id="p1HpBar"></div>
+      <!-- VARIATION LINEUP (기본형 / A1 / A2 / A3 / A4 / A5) -->
+      <div class="top-switch-group">
+        <span class="group-label">변형 라인업 환장</span>
+        <div class="segmented-pills" id="variantBar">
+          <button type="button" data-variant="type_a_base" class="pill-btn active">TYPE-A 기본형 (032)</button>
+          <button type="button" data-variant="a1_artillery" class="pill-btn">A1 화력지원 (155mm)</button>
+          <button type="button" data-variant="a2_assault" class="pill-btn">A2 돌파형 (Assault)</button>
+          <button type="button" data-variant="a3_recon" class="pill-btn">A3 정찰기동 (Recon)</button>
+          <button type="button" data-variant="a4_heavy_brawler" class="pill-btn">★ A4 신규FBX 강습형</button>
+          <button type="button" data-variant="a5_ew_recon" class="pill-btn">★ A5 신규FBX 레이더형</button>
         </div>
       </div>
-      <div class="vs-badge">VS</div>
-      <div class="hp-card">
-        <div class="hp-header p2">
-          <span>섀도우 타이탄</span>
-          <span id="p2HpVal">100%</span>
+
+      <!-- LIVE ANIMATION & CUTAWAY SWITCHES -->
+      <div class="top-switch-group">
+        <span class="group-label">모션 &amp; 투시</span>
+        <div class="segmented-pills" id="animModeBar">
+          <button type="button" data-anim="off" class="pill-btn active">포즈 고정</button>
+          <button type="button" data-anim="walk_cycle" class="pill-btn">▶ 보행 루프</button>
+          <button type="button" data-anim="combat_scan" class="pill-btn">▶ 사격 조준</button>
+          <button type="button" data-anim="recoil_test" class="pill-btn">▶ 포격 반동</button>
         </div>
-        <div class="hp-bar-outer">
-          <div class="hp-bar-inner hp-p2" id="p2HpBar"></div>
-        </div>
+        <button type="button" id="cutawayBtn" class="pill-btn ghost-toggle" title="성인 1인 탑승 조종석(3.2m×2.1m) 내부를 투시합니다">👨‍✈️ 조종석 투시</button>
+        <button type="button" id="dimGuideBtn" class="pill-btn ghost-toggle active" title="1.75m 성인 크기 비교 및 4.8m×2.4m×3.6m 치수 가이드를 표시합니다">📏 1.75m 크기비교</button>
       </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace-grid">
+      <!-- LEFT: WEAPON LOADOUT, UNIT/PART SCALES, POSE & COLOR WORKBENCH -->
+      <aside class="left-workbench">
+        <nav class="workbench-tabs" id="workbenchTabs">
+          <button type="button" data-tab="weapons" class="wb-tab active">
+            <span class="step-num">HARDPOINTS ①~⑤</span>
+            <strong>무장 환장</strong>
+          </button>
+          <button type="button" data-tab="scales" class="wb-tab">
+            <span class="step-num">UNIT &amp; PART SIZE</span>
+            <strong>유닛·부속 사이즈</strong>
+          </button>
+          <button type="button" data-tab="poses" class="wb-tab">
+            <span class="step-num">ACTION &amp; IK/FK</span>
+            <strong>자세·포즈</strong>
+          </button>
+          <button type="button" data-tab="palette" class="wb-tab">
+            <span class="step-num">COLOR &amp; I/O</span>
+            <strong>컬러·팔레트</strong>
+          </button>
+        </nav>
+
+        <!-- TAB 1: WEAPON SWAPPING SYSTEM (① ~ ⑤) + INLINE PART SCALE -->
+        <section id="tab-weapons" class="wb-panel active">
+          <div class="library-box">
+            <div class="lib-head">
+              <h3>📦 커스텀 무장 환장 프리셋 보관함</h3>
+              <span class="lib-count" id="loadoutLibCount">4개</span>
+            </div>
+            <div class="save-bar">
+              <input type="text" id="saveLoadoutName" placeholder="새 무장 조합 이름 (예: A2 중포격 커스텀)" />
+              <button type="button" id="saveLoadoutBtn" class="save-action-btn">+ 현재 무장 저장</button>
+            </div>
+            <div id="loadoutLibraryList" class="library-grid"></div>
+          </div>
+
+          <div id="hardpointControlsContainer" class="controls-stack"></div>
+        </section>
+
+        <!-- TAB 2: UNIT & ATTACHMENT SIZE ADJUSTMENT MENU -->
+        <section id="tab-scales" class="wb-panel">
+          <div class="control-card highlight-card">
+            <div class="card-title-row">
+              <h4>📐 체형 · 무장 비율 프리셋 (5종)</h4>
+              <button type="button" id="resetScaleBtn" class="mini-tag-btn">전체 1.0x 초기화</button>
+            </div>
+            <div id="scalePresetGrid" class="pose-preset-grid"></div>
+          </div>
+
+          <div class="control-card">
+            <div class="card-title-row">
+              <h4>🤖 기체 본체 유닛 사이즈 조절 (몸통 · 다리 · 골반폭)</h4>
+              <span class="badge-hint">실시간 치수 연동</span>
+            </div>
+            <div id="unitBodyScaleSliders" class="sliders-grid"></div>
+          </div>
+
+          <div class="control-card">
+            <div class="card-title-row">
+              <h4>🔫 무장 · 부속 모듈 개별 사이즈 조절 (① ~ ⑤)</h4>
+              <span class="badge-hint">하드포인트별 스케일</span>
+            </div>
+            <div id="attachmentScaleSliders" class="sliders-grid"></div>
+          </div>
+        </section>
+
+        <!-- TAB 3: ACTION POSE & JOINT ARTICULATION TESTBENCH -->
+        <section id="tab-poses" class="wb-panel">
+          <div class="control-card highlight-card">
+            <div class="card-title-row">
+              <h4>🎬 액션 포즈 프리셋 (애니메이션 연출 6종 + 기본형)</h4>
+              <span class="badge-hint">원클릭 포즈 전환</span>
+            </div>
+            <div id="posePresetGrid" class="pose-preset-grid"></div>
+          </div>
+
+          <div class="control-card">
+            <div class="card-title-row">
+              <h4>💥 무장 발포 · 미사일 발사 · 부스터 이펙트 연출</h4>
+            </div>
+            <div class="segmented-pills full-pills" id="fireEffectBar">
+              <button type="button" data-fx="none" class="pill-btn active">소등</button>
+              <button type="button" data-fx="cannon" class="pill-btn">💥 주포 발포</button>
+              <button type="button" data-fx="missile" class="pill-btn">🚀 미사일 발사</button>
+              <button type="button" data-fx="thruster" class="pill-btn">🔥 부스터 점화</button>
+              <button type="button" data-fx="all" class="pill-btn">⚡ 전탄 일제</button>
+            </div>
+          </div>
+
+          <div class="control-card">
+            <div class="card-title-row">
+              <h4>상체(조종석) · 차고 · 무장 각도 제어</h4>
+              <button type="button" id="resetPoseBtn" class="mini-tag-btn">3면도 기본자세 복귀</button>
+            </div>
+            <div id="torsoPoseSliders" class="sliders-grid"></div>
+          </div>
+
+          <div class="control-card">
+            <div class="card-title-row">
+              <h4>좌·우 역관절 다리 세밀 제어 (IK/FK)</h4>
+              <label class="sync-check">
+                <input type="checkbox" id="syncLegsCheck" />
+                <span>좌·우 대칭 동기화</span>
+              </label>
+            </div>
+            <div class="leg-columns">
+              <div class="leg-col">
+                <h5>좌측 다리 (Left Leg)</h5>
+                <div id="leftLegSliders" class="sliders-stack"></div>
+              </div>
+              <div class="leg-col">
+                <h5>우측 다리 (Right Leg)</h5>
+                <div id="rightLegSliders" class="sliders-stack"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="library-box">
+            <div class="lib-head">
+              <h3>💾 커스텀 포즈 보관함</h3>
+              <span class="lib-count" id="poseLibCount">0개</span>
+            </div>
+            <div class="save-bar">
+              <input type="text" id="savePoseName" placeholder="새 포즈 이름 (예: 엄폐 저격 자세)" />
+              <button type="button" id="savePoseBtn" class="save-action-btn">+ 현재 포즈 저장</button>
+            </div>
+            <div id="poseLibraryList" class="library-grid"></div>
+          </div>
+        </section>
+
+        <!-- TAB 4: COLOR PALETTE, CUSTOM COLOR PICKERS & EXPORT -->
+        <section id="tab-palette" class="wb-panel">
+          <div class="control-card">
+            <h4>기체 제식명</h4>
+            <div class="save-bar">
+              <input type="text" id="unitNameInput" value="WALKER SERIES TYPE-A (032)" placeholder="기체 제식명" />
+            </div>
+          </div>
+
+          <div id="paletteControlsContainer" class="controls-stack"></div>
+
+          <div class="control-card highlight-card">
+            <div class="card-title-row">
+              <h4>🎨 커스텀 도장 컬러 직접 지정 (GLB 텍스처 실시간 반영)</h4>
+              <button type="button" id="resetColorBtn" class="mini-tag-btn">시트 원본 컬러 복원</button>
+            </div>
+            <label class="sync-check" style="margin-bottom:4px;">
+              <input type="checkbox" id="useCustomColorsCheck" />
+              <span>커스텀 3색 도장 오버라이드 활성화 (색상 선택 시 자동 켜짐)</span>
+            </label>
+            <div class="color-picker-grid">
+              <label class="color-picker-item">
+                <span>주장갑 (Khaki/Tan)</span>
+                <div class="color-input-wrap">
+                  <input type="color" id="customArmorColor" value="#c5b89b" />
+                  <code id="customArmorHexLbl">#c5b89b</code>
+                </div>
+              </label>
+              <label class="color-picker-item">
+                <span>보조장갑 (Olive)</span>
+                <div class="color-input-wrap">
+                  <input type="color" id="customSubColor" value="#7a7d66" />
+                  <code id="customSubHexLbl">#7a7d66</code>
+                </div>
+              </label>
+              <label class="color-picker-item">
+                <span>포인트·렌즈 (Orange)</span>
+                <div class="color-input-wrap">
+                  <input type="color" id="customAccentColor" value="#d97925" />
+                  <code id="customAccentHexLbl">#d97925</code>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="control-card">
+            <h4>컬러 채도 · 웨더링 · 조명 노출 · 모션 속도</h4>
+            <div id="renderSlidersContainer" class="sliders-grid"></div>
+          </div>
+
+          <div class="library-box">
+            <div class="lib-head">
+              <h3>프로젝트 JSON 내보내기 / 불러오기</h3>
+            </div>
+            <div class="io-btn-row">
+              <button type="button" id="exportJsonBtn" class="secondary-btn">JSON 저장</button>
+              <label class="secondary-btn">
+                JSON 열기
+                <input type="file" id="importJsonInput" accept=".json" hidden />
+              </label>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- CENTER: 3D INTERACTIVE VIEWPORT -->
+      <main class="center-viewport">
+        <div class="viewport-wrap" id="viewportWrap">
+          <canvas id="mechaCanvas"></canvas>
+
+          <!-- TOP-LEFT FLOATING HUD: ACTIVE HARDPOINT LOADOUT (①~⑤) -->
+          <div class="hud-recipe-card">
+            <div class="hud-title-row">
+              <strong id="hudUnitName">WALKER SERIES TYPE-A (032)</strong>
+              <span class="hud-tag" id="hudPoseBadge">3면도 기본 직립</span>
+            </div>
+            <div class="hud-recipe-pills">
+              <span id="hudSlot1">① 주포: 120 mm급 주포 (메인 캐논)</span>
+              <span id="hudSlot2">② 보조무장: 30 mm급 보조 기관포 (트윈 ×2)</span>
+              <span id="hudSlot3">③ 미사일/포드: 우측 6발 미사일 포드 / 좌측 기본</span>
+              <span id="hudSlot45">④ 센서: EO/IR·레이더·LRF / ⑤ 장갑: 표준 평면화 모듈</span>
+            </div>
+          </div>
+
+          <!-- TOP-RIGHT FLOATING 3-VIEW CAMERA BAR (정면 / 우측면 / 후면 / 좌측면) -->
+          <div class="hud-camera-bar">
+            <button type="button" data-cam="iso" class="cam-btn active">쿼터뷰</button>
+            <button type="button" data-cam="front" class="cam-btn">정면 (Front)</button>
+            <button type="button" data-cam="right" class="cam-btn">우측면 (Right)</button>
+            <button type="button" data-cam="rear" class="cam-btn">후면 (Rear)</button>
+            <button type="button" data-cam="left" class="cam-btn">좌측면 (Left)</button>
+            <button type="button" data-cam="cockpit" class="cam-btn">조종석 클로즈업</button>
+            <button type="button" id="autoRotateBtn" class="cam-btn">턴테이블</button>
+            <button type="button" id="snapshotBtn" class="cam-btn accent">📷 PNG 캡처</button>
+          </div>
+
+          <!-- BOTTOM FLOATING TELEMETRY BAR (시트 좌측 상단 제원표 연동) -->
+          <div class="hud-telemetry-bar">
+            <div class="tele-item">
+              <span>외형 치수 (유닛 스케일 반영)</span>
+              <strong id="specDim">L 4.8 m × W 2.4 m × H 3.6 m</strong>
+            </div>
+            <div class="tele-item">
+              <span>몸통(조종석) 크기 · 승무원</span>
+              <strong id="specCockpit">L 3.2m × W 1.2m × H 2.1m (성인 1명)</strong>
+            </div>
+            <div class="tele-item">
+              <span>전투 중량 (무장·사이즈 반영)</span>
+              <strong id="specWeight">약 18.2 t (기본 15–18 t)</strong>
+            </div>
+            <div class="tele-item">
+              <span>전술 역할</span>
+              <strong id="specRole">다목적 (화력 지원 / 돌파 / 정찰)</strong>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- RIGHT: MASTER SHEET INSPECTOR & QUICK HARDPOINT MATRIX -->
+      <aside class="right-inspector">
+        <div class="ref-section">
+          <div class="ref-head">
+            <h3>📐 WALKER SERIES TYPE-A 공식 설정 시트</h3>
+          </div>
+          <div class="sheet-preview-box">
+            <img src="./references/walker_type_a.jpg" alt="WALKER SERIES TYPE-A Master Sheet" id="sheetImg" />
+            <span class="sheet-caption">시트 아래 버튼을 클릭하면 각 변형(A1/A2/A3)과 6종 액션 포즈를 즉시 재현합니다.</span>
+          </div>
+
+          <div class="quick-matrix-box">
+            <h4>⚡ 시트 내 변형 &amp; 신규 FBX 모듈 · 액션 빠른 호출</h4>
+            <div class="matrix-btns">
+              <button type="button" data-quick-var="type_a_base" class="mat-btn">기본형 (032)</button>
+              <button type="button" data-quick-var="a1_artillery" class="mat-btn">A1 화력지원 (155mm)</button>
+              <button type="button" data-quick-var="a2_assault" class="mat-btn">A2 돌파형 (12발 포드)</button>
+              <button type="button" data-quick-var="a3_recon" class="mat-btn">A3 정찰기동 (레이돔)</button>
+              <button type="button" data-quick-var="a4_heavy_brawler" class="mat-btn">★ A4 신규FBX 중장갑 강습</button>
+              <button type="button" data-quick-var="a5_ew_recon" class="mat-btn">★ A5 신규FBX 레이더·마스트</button>
+              <button type="button" data-quick-pose="walk_advance" class="mat-btn pose">포즈: 이동(전진)</button>
+              <button type="button" data-quick-pose="high_dash" class="mat-btn pose">포즈: 고속 기동(대시)</button>
+              <button type="button" data-quick-pose="kneel_fire" class="mat-btn pose">포즈: 고정 사격</button>
+              <button type="button" data-quick-pose="low_cover" class="mat-btn pose">포즈: 엄폐/저자세</button>
+              <button type="button" data-quick-pose="missile_salvo" class="mat-btn pose">포즈: 미사일 발사</button>
+              <button type="button" data-quick-pose="pivot_turn" class="mat-btn pose">포즈: 기동 전환</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-section">
+          <div class="prompt-head">
+            <h3>📝 현재 무장·사이즈·포즈 명세 프롬프트</h3>
+            <div class="lang-switch">
+              <button type="button" data-lang="ko" class="lang-btn active">KR</button>
+              <button type="button" data-lang="en" class="lang-btn">EN</button>
+              <button type="button" id="copyPromptBtn" class="copy-btn">복사</button>
+            </div>
+          </div>
+          <textarea id="promptOutput" readonly rows="5"></textarea>
+        </div>
+      </aside>
     </div>
-
-    <div class="battle-msg-overlay" id="battleMsgOverlay">KO! VICTORY!</div>
-
-    <canvas id="threeCanvas"></canvas>
   </div>
 
-  <div class="control-panel">
-    <div class="mode-tabs">
-      <button class="tab-btn active" id="tabHangar">🛠️ 로봇 정비창 (파츠 환장)</button>
-      <button class="tab-btn" id="tabRing">🥊 링 대전 기록실</button>
-    </div>
-
-    <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; display: flex; justify-content: space-between;">
-      <span>장착 무기 (WEAPON ARM) 선택</span>
-      <span style="color: #38bdf8;">드래그로 로봇 360° 회전</span>
-    </div>
-
-    <div class="parts-grid" id="partsGrid">
-      <div class="part-card active" data-weapon="fist">
-        <div class="part-icon">👊</div>
-        <div class="part-name">로켓 펀치</div>
-        <div class="part-stat">공+40 균형</div>
-      </div>
-      <div class="part-card" data-weapon="drill">
-        <div class="part-icon">🔩</div>
-        <div class="part-name">스파이럴 드릴</div>
-        <div class="part-stat">공+65 관통</div>
-      </div>
-      <div class="part-card" data-weapon="blade">
-        <div class="part-icon">⚔️</div>
-        <div class="part-name">플라즈마 소드</div>
-        <div class="part-stat">속도+30 2타</div>
-      </div>
-      <div class="part-card" data-weapon="cannon">
-        <div class="part-icon">💥</div>
-        <div class="part-name">헤비 버스터</div>
-        <div class="part-stat">치명+50 한방</div>
-      </div>
-    </div>
-
-    <div class="action-row">
-      <button class="main-btn btn-battle" id="btnStartBattle">
-        <span>🔥</span> 사각 링 입장 & 배틀 시작!
-      </button>
-      <button class="main-btn btn-skill" id="btnBurstSkill">
-        <span>⚡</span> 하이퍼 오버클럭 필살기!
-      </button>
-    </div>
-  </div>
-
-  <script>
-    // 오디오 신시사이저
-    const SFX = {
-      ctx: null,
-      init() {
-        if (!this.ctx) {
-          const AC = window.AudioContext || window.webkitAudioContext;
-          this.ctx = new AC();
-        }
-        if (this.ctx.state === 'suspended') this.ctx.resume();
-      },
-      play(freq, type = 'square', dur = 0.1, gainVal = 0.1) {
-        try {
-          this.init();
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + dur);
-        } catch(e){}
-      },
-      hit() {
-        this.play(120, 'sawtooth', 0.12, 0.2);
-        if (navigator.vibrate) navigator.vibrate(60);
-      },
-      slash() {
-        this.play(800, 'square', 0.08, 0.15);
-      },
-      burst() {
-        this.play(300, 'sawtooth', 0.3, 0.3);
-        if (navigator.vibrate) navigator.vibrate([80, 40, 150]);
-      },
-      victory() {
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 300]);
-        [523, 659, 783, 1046].forEach((f, i) => {
-          setTimeout(() => this.play(f, 'square', 0.2, 0.2), i * 140);
-        });
-      }
-    };
-
-    // Three.js 환경 구축
-    const container = document.querySelector('.game-viewport');
-    const canvas = document.getElementById('threeCanvas');
-
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x090a0f, 0.035);
-
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 4.5, 9);
-    camera.lookAt(0, 1.2, 0);
-
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-
-    // 조명
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-
-    const spotLight = new THREE.SpotLight(0x38bdf8, 2.5);
-    spotLight.position.set(0, 12, 4);
-    spotLight.angle = Math.PI / 3;
-    spotLight.penumbra = 0.5;
-    spotLight.castShadow = true;
-    scene.add(spotLight);
-
-    const spotLightRed = new THREE.SpotLight(0xef4444, 2.0);
-    spotLightRed.position.set(4, 10, -3);
-    spotLightRed.angle = Math.PI / 4;
-    scene.add(spotLightRed);
-
-    // 사각 배틀 링 구축
-    const ringGroup = new THREE.Group();
-
-    // 링 바닥 매트
-    const matGeo = new THREE.BoxGeometry(8, 0.4, 8);
-    const matMat = new THREE.MeshStandardMaterial({
-      color: 0x111827,
-      roughness: 0.4,
-      metalness: 0.6
-    });
-    const matMesh = new THREE.Mesh(matGeo, matMat);
-    matMesh.position.y = -0.2;
-    matMesh.receiveShadow = true;
-    ringGroup.add(matMesh);
-
-    // 링 캔버스 라인 (네온 사각형)
-    const lineGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(7.2, 0.05, 7.2));
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x38bdf8, linewidth: 2 });
-    const lineBox = new THREE.LineSegments(lineGeo, lineMat);
-    lineBox.position.y = 0.02;
-    ringGroup.add(lineBox);
-
-    // 코너 포스트 4개 & 로프
-    const cornerCoords = [
-      [-3.8, -3.8], [3.8, -3.8], [3.8, 3.8], [-3.8, 3.8]
-    ];
-    cornerCoords.forEach(([cx, cz], idx) => {
-      const postGeo = new THREE.CylinderGeometry(0.12, 0.12, 2.2, 16);
-      const postMat = new THREE.MeshStandardMaterial({
-        color: idx < 2 ? 0xef4444 : 0x38bdf8,
-        metalness: 0.8,
-        roughness: 0.2
-      });
-      const post = new THREE.Mesh(postGeo, postMat);
-      post.position.set(cx, 1.1, cz);
-      ringGroup.add(post);
-    });
-
-    // 3단 로프 연결
-    [0.6, 1.1, 1.6].forEach(ry => {
-      const ropePoints = [
-        new THREE.Vector3(-3.8, ry, -3.8),
-        new THREE.Vector3(3.8, ry, -3.8),
-        new THREE.Vector3(3.8, ry, 3.8),
-        new THREE.Vector3(-3.8, ry, 3.8),
-        new THREE.Vector3(-3.8, ry, -3.8)
-      ];
-      const ropeGeo = new THREE.BufferGeometry().setFromPoints(ropePoints);
-      const ropeMat = new THREE.LineBasicMaterial({ color: 0xfacc15, linewidth: 2 });
-      const rope = new THREE.Line(ropeGeo, ropeMat);
-      ringGroup.add(rope);
-    });
-
-    scene.add(ringGroup);
-
-    // 3D 로봇 빌더 함수 (절차적 메카닉 모델 생성)
-    function createMecha(primaryColor, glowColor, isPlayer = true) {
-      const bot = new THREE.Group();
-
-      const mainMat = new THREE.MeshStandardMaterial({
-        color: primaryColor,
-        metalness: 0.8,
-        roughness: 0.25
-      });
-      const darkMat = new THREE.MeshStandardMaterial({
-        color: 0x1e293b,
-        metalness: 0.9,
-        roughness: 0.3
-      });
-      const glowMat = new THREE.MeshStandardMaterial({
-        color: glowColor,
-        emissive: glowColor,
-        emissiveIntensity: 0.9
-      });
-
-      // 몸통 바디
-      const bodyGeo = new THREE.BoxGeometry(1.0, 1.1, 0.7);
-      const body = new THREE.Mesh(bodyGeo, mainMat);
-      body.position.y = 1.3;
-      body.castShadow = true;
-      bot.add(body);
-
-      // 가슴 아크 코어
-      const coreGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.1, 16);
-      const core = new THREE.Mesh(coreGeo, glowMat);
-      core.rotation.x = Math.PI / 2;
-      core.position.set(0, 1.4, 0.38);
-      bot.add(core);
-
-      // 머리 헤드
-      const headGeo = new THREE.BoxGeometry(0.65, 0.5, 0.6);
-      const head = new THREE.Mesh(headGeo, darkMat);
-      head.position.y = 2.15;
-      bot.add(head);
-
-      // 바이저 안광
-      const visorGeo = new THREE.BoxGeometry(0.5, 0.12, 0.1);
-      const visor = new THREE.Mesh(visorGeo, glowMat);
-      visor.position.set(0, 2.15, 0.31);
-      bot.add(visor);
-
-      // 어깨 견갑 2개
-      [-0.75, 0.75].forEach(x => {
-        const shGeo = new THREE.BoxGeometry(0.45, 0.45, 0.55);
-        const sh = new THREE.Mesh(shGeo, mainMat);
-        sh.position.set(x, 1.8, 0);
-        bot.add(sh);
-      });
-
-      // 팔 무기 마운트 (오른팔 / 왼팔)
-      const armGroup = new THREE.Group();
-      armGroup.position.set(0.8, 1.4, 0);
-      bot.rightArm = armGroup;
-      bot.add(armGroup);
-
-      const lArmGeo = new THREE.BoxGeometry(0.3, 0.7, 0.3);
-      const lArm = new THREE.Mesh(lArmGeo, darkMat);
-      lArm.position.set(-0.8, 1.3, 0);
-      bot.add(lArm);
-
-      // 다리 2개
-      [-0.32, 0.32].forEach(lx => {
-        const legGeo = new THREE.BoxGeometry(0.32, 0.85, 0.38);
-        const leg = new THREE.Mesh(legGeo, darkMat);
-        leg.position.set(lx, 0.45, 0);
-        bot.add(leg);
-      });
-
-      return bot;
-    }
-
-    // 플레이어 & 라이벌 로봇 스폰
-    const playerBot = createMecha(0x0284c7, 0x38bdf8, true);
-    playerBot.position.set(-1.6, 0, 0);
-    playerBot.rotation.y = Math.PI / 4;
-    scene.add(playerBot);
-
-    const enemyBot = createMecha(0x991b1b, 0xef4444, false);
-    enemyBot.position.set(1.6, 0, 0);
-    enemyBot.rotation.y = -Math.PI / 4;
-    scene.add(enemyBot);
-
-    // 무기 파츠 환장 시스템
-    function equipWeapon(type) {
-      // 기존 오른팔 클리어
-      while(playerBot.rightArm.children.length > 0) {
-        playerBot.rightArm.remove(playerBot.rightArm.children[0]);
-      }
-
-      const glowMat = new THREE.MeshStandardMaterial({
-        color: 0x38bdf8,
-        emissive: 0x38bdf8,
-        emissiveIntensity: 0.8
-      });
-      const metalMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
-
-      if (type === 'fist') {
-        const fistGeo = new THREE.BoxGeometry(0.4, 0.4, 0.6);
-        const fist = new THREE.Mesh(fistGeo, metalMat);
-        fist.position.z = 0.2;
-        playerBot.rightArm.add(fist);
-      } else if (type === 'drill') {
-        const drillGeo = new THREE.ConeGeometry(0.28, 0.8, 16);
-        const drill = new THREE.Mesh(drillGeo, glowMat);
-        drill.rotation.x = Math.PI / 2;
-        drill.position.z = 0.4;
-        playerBot.rightArm.add(drill);
-      } else if (type === 'blade') {
-        const bladeGeo = new THREE.BoxGeometry(0.08, 0.3, 1.1);
-        const blade = new THREE.Mesh(bladeGeo, glowMat);
-        blade.position.z = 0.5;
-        playerBot.rightArm.add(blade);
-      } else if (type === 'cannon') {
-        const canGeo = new THREE.CylinderGeometry(0.18, 0.22, 0.9, 16);
-        const cannon = new THREE.Mesh(canGeo, metalMat);
-        cannon.rotation.x = Math.PI / 2;
-        cannon.position.z = 0.4;
-        playerBot.rightArm.add(cannon);
-      }
-      SFX.slash();
-    }
-
-    equipWeapon('fist');
-
-    // 라이벌 무기 (스파이럴 드릴 고정)
-    const enemyWeapon = new THREE.Mesh(
-      new THREE.ConeGeometry(0.28, 0.8, 16),
-      new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 0.8 })
-    );
-    enemyWeapon.rotation.x = Math.PI / 2;
-    enemyWeapon.position.z = 0.4;
-    enemyBot.rightArm.add(enemyWeapon);
-
-    // 드래그로 회전 제어 (Hangar 모드)
-    let isDragging = false;
-    let prevMouseX = 0;
-    container.addEventListener('mousedown', (e) => { isDragging = true; prevMouseX = e.clientX; });
-    container.addEventListener('touchstart', (e) => { isDragging = true; prevMouseX = e.touches[0].clientX; });
-    window.addEventListener('mouseup', () => isDragging = false);
-    window.addEventListener('touchend', () => isDragging = false);
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging || gameState.mode === 'battle') return;
-      const deltaX = e.clientX - prevMouseX;
-      playerBot.rotation.y += deltaX * 0.015;
-      prevMouseX = e.clientX;
-    });
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging || gameState.mode === 'battle') return;
-      const deltaX = e.touches[0].clientX - prevMouseX;
-      playerBot.rotation.y += deltaX * 0.015;
-      prevMouseX = e.touches[0].clientX;
-    });
-
-    // 게임 상태 및 배틀 루프
-    const gameState = {
-      mode: 'hangar', // hangar | battle | end
-      p1Hp: 100,
-      p2Hp: 100,
-      animTime: 0
-    };
-
-    const btnStart = document.getElementById('btnStartBattle');
-    const btnSkill = document.getElementById('btnBurstSkill');
-    const battleHud = document.getElementById('battleHud');
-    const overlayMsg = document.getElementById('battleMsgOverlay');
-
-    btnStart.addEventListener('click', () => {
-      startBattle();
-    });
-
-    btnSkill.addEventListener('click', () => {
-      triggerBurstSkill();
-    });
-
-    function startBattle() {
-      gameState.mode = 'battle';
-      gameState.p1Hp = 100;
-      gameState.p2Hp = 100;
-      updateHpUI();
-
-      battleHud.style.display = 'flex';
-      btnStart.style.display = 'none';
-      btnSkill.style.display = 'flex';
-      overlayMsg.style.display = 'none';
-
-      // 링 중앙으로 마주보기 이동
-      playerBot.position.set(-1.4, 0, 0);
-      playerBot.rotation.y = Math.PI / 2;
-      enemyBot.position.set(1.4, 0, 0);
-      enemyBot.rotation.y = -Math.PI / 2;
-
-      // 배틀 BGM/효과음
-      SFX.slash();
-    }
-
-    function triggerBurstSkill() {
-      if (gameState.mode !== 'battle') return;
-      SFX.burst();
-
-      // 필살기: 라이벌에게 대폭 데미지
-      gameState.p2Hp = Math.max(0, gameState.p2Hp - 35);
-      updateHpUI();
-
-      // 넉백 연출
-      enemyBot.position.x += 0.4;
-      setTimeout(() => enemyBot.position.x -= 0.4, 200);
-
-      if (gameState.p2Hp <= 0) {
-        endBattle(true);
-      }
-    }
-
-    function updateHpUI() {
-      document.getElementById('p1HpVal').textContent = Math.round(gameState.p1Hp) + '%';
-      document.getElementById('p2HpVal').textContent = Math.round(gameState.p2Hp) + '%';
-      document.getElementById('p1HpBar').style.width = gameState.p1Hp + '%';
-      document.getElementById('p2HpBar').style.width = gameState.p2Hp + '%';
-    }
-
-    function endBattle(isWin) {
-      gameState.mode = 'end';
-      btnSkill.style.display = 'none';
-      btnStart.style.display = 'flex';
-      btnStart.innerHTML = '<span>🔄</span> 다시 정비창으로';
-
-      overlayMsg.style.display = 'block';
-      if (isWin) {
-        overlayMsg.textContent = 'KO! VICTORY!';
-        overlayMsg.style.color = '#38bdf8';
-        SFX.victory();
-        document.getElementById('coinCount').textContent = '1,550';
-      } else {
-        overlayMsg.textContent = 'DEFEAT...';
-        overlayMsg.style.color = '#ef4444';
-      }
-    }
-
-    // 파츠 카드 클릭 이벤트
-    document.querySelectorAll('.part-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.part-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        const weapon = card.getAttribute('data-weapon');
-        equipWeapon(weapon);
-      });
-    });
-
-    // 렌더 애니메이션 루프
-    let battleClock = 0;
-    function animate() {
-      requestAnimationFrame(animate);
-      battleClock += 0.05;
-
-      if (gameState.mode === 'hangar') {
-        // 정비창 서서히 숨쉬기 애니메이션
-        playerBot.position.y = Math.sin(battleClock * 2) * 0.04;
-      } else if (gameState.mode === 'battle') {
-        // 공방전 연타 모션
-        playerBot.position.x = -1.4 + Math.sin(battleClock * 8) * 0.15;
-        enemyBot.position.x = 1.4 - Math.sin(battleClock * 7) * 0.15;
-
-        // 주기적 일반 타격 교환
-        if (Math.sin(battleClock * 8) > 0.95) {
-          SFX.hit();
-          gameState.p2Hp = Math.max(0, gameState.p2Hp - 1.5);
-          gameState.p1Hp = Math.max(0, gameState.p1Hp - 0.8);
-          updateHpUI();
-
-          if (gameState.p2Hp <= 0) endBattle(true);
-          else if (gameState.p1Hp <= 0) endBattle(false);
-        }
-      }
-
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // 리사이즈 처리
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    });
-  </script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
