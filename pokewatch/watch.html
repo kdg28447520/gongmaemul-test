@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>동곤의 M5 포켓몬 워치페이스 (Watch Face Mode)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pretendard:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Pretendard', sans-serif;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* 워치 원형 디스플레이 프레임 (450x450 원형) */
+    .watch-dial {
+      width: 100vmin;
+      height: 100vmin;
+      max-width: 450px;
+      max-height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #022c22 0%, #064e3b 65%, #021a14 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 38px 24px;
+      border: 4px solid #1e293b;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 0 40px rgba(16, 185, 129, 0.2);
+    }
+
+    /* 레트로 CRT 스캔라인 */
+    .watch-dial::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 2px);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 워치 상단: 시간 & 날짜 */
+    .watch-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 5;
+    }
+    .watch-time {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.55rem;
+      color: #facc15;
+      text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+      letter-spacing: 1px;
+    }
+    .watch-date {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: #34d399;
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* 워치 중앙: 포켓몬 / 트레이너 / 연출 */
+    .watch-center {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    /* 메인 몬스터볼 */
+    .main-ball {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(to bottom, #ef4444 50%, #f8fafc 50%);
+      border: 5px solid #000;
+      position: relative;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .main-ball:active {
+      transform: scale(0.92);
+    }
+    .main-ball::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: #000;
+      transform: translateY(-50%);
+    }
+    .main-ball::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border: 5px solid #000;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px #facc15;
+    }
+    .main-ball.shake {
+      animation: ballShake 0.6s ease-in-out infinite;
+    }
+    @keyframes ballShake {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-25deg); }
+      40% { transform: rotate(25deg); }
+      60% { transform: rotate(-15deg); }
+      80% { transform: rotate(15deg); }
+    }
+
+    /* 포켓몬 스프라이트 */
+    .pokemon-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes zoomIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pokemon-sprite {
+      width: 105px;
+      height: 105px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.6));
+    }
+    .pokemon-name-tag {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #fef08a;
+      background: rgba(0,0,0,0.6);
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-top: 4px;
+      border: 1px solid rgba(250, 204, 21, 0.4);
+    }
+    .encounter-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.48rem;
+      color: #ef4444;
+      background: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.3; } }
+
+    /* 워치 하단: 상태 & 센서 / 걸음수 */
+    .watch-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 5;
+    }
+    .status-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #a7f3d0;
+      background: rgba(0,0,0,0.5);
+      padding: 3px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      text-align: center;
+    }
+    .complication-row {
+      display: flex;
+      gap: 16px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      color: #94a3b8;
+    }
+    .comp-item span { color: #38bdf8; }
+
+    /* 손목 스윙 버튼 (워치 터치 보조) */
+    .tap-swing-trigger {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="watch-dial" id="watchDial">
+
+    <!-- 상단 시간 / 날짜 -->
+    <div class="watch-top">
+      <div class="watch-time" id="watchTime">17:58</div>
+      <div class="watch-date" id="watchDate">11.09 MON · POKÉWATCH</div>
+    </div>
+
+    <!-- 중앙 포켓몬 / 몬스터볼 연출부 -->
+    <div class="watch-center" id="watchCenter">
+      
+      <!-- 1. 기본 대기 모드 (몬스터볼) -->
+      <div class="main-ball" id="mainBall" title="터치하면 야생 포켓몬 탐색!"></div>
+
+      <!-- 2. 야생 출현 모드 -->
+      <div class="pokemon-view" id="pokemonView">
+        <div class="encounter-badge" id="encounterBadge">WILD DETECTED!</div>
+        <img src="" class="pokemon-sprite" id="pokeSprite" alt="pokemon">
+        <div class="pokemon-name-tag" id="pokeName">피카츄 Lv.15</div>
+      </div>
+
+    </div>
+
+    <!-- 하단 상태 / 만보기 / 배터리 -->
+    <div class="watch-bottom">
+      <div class="status-pill" id="statusPill">볼을 터치하거나 손목을 흔드세요!</div>
+      <div class="complication-row">
+        <div class="comp-item">🚶 <span id="stepCount">4,280</span></div>
+        <div class="comp-item">⚡ <span>88%</span></div>
+        <div class="comp-item">📖 <span id="dexCount">0</span>마리</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // 오디오 신시사이저 (8비트 칩튠)
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AC();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      },
+      beep(freq, duration, type = 'square', gainVal = 0.1) {
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      },
+      encounter() {
+        this.beep(523, 0.08);
+        setTimeout(() => this.beep(659, 0.08), 90);
+        setTimeout(() => this.beep(783, 0.12), 180);
+        setTimeout(() => this.beep(1046, 0.25), 300);
+      },
+      shake() {
+        this.beep(330, 0.06, 'triangle', 0.2);
+        if (navigator.vibrate) navigator.vibrate(80);
+      },
+      success() {
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 250]);
+        [523, 523, 523, 659, 783, 1046].forEach((f, i) => {
+          setTimeout(() => this.beep(f, 0.15, 'square', 0.15), i * 110);
+        });
+      },
+      click() {
+        this.beep(880, 0.04, 'square', 0.05);
+      }
+    };
+
+    // 포켓몬 풀
+    const POKEDEX = [
+      { id: 25, name: '피카츄', swings: 1 },
+      { id: 4, name: '파이리', swings: 2 },
+      { id: 7, name: '꼬부기', swings: 2 },
+      { id: 1, name: '이상해씨', swings: 2 },
+      { id: 133, name: '이브이', swings: 1 },
+      { id: 143, name: '잠만보', swings: 3 },
+      { id: 94, name: '팬텀', swings: 3 },
+      { id: 6, name: '리자몽', swings: 3 },
+      { id: 150, name: '뮤츠', swings: 4 },
+      { id: 151, name: '뮤', swings: 4 }
+    ];
+
+    let myDex = JSON.parse(localStorage.getItem('donggon_watch_dex') || '[]');
+    let currentMode = 'idle'; // idle | wild | catching | caught
+    let currentPokemon = null;
+    let requiredSwings = 2;
+    let swingCount = 0;
+
+    // 시계 갱신 루프
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('watchTime').textContent = `${h}:${m}`;
+
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const mo = String(now.getMonth() + 1).padStart(2, '0');
+      const da = String(now.getDate()).padStart(2, '0');
+      document.getElementById('watchDate').textContent = `${mo}.${da} ${days[now.getDay()]} · POKÉWATCH`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function updateDexCounter() {
+      document.getElementById('dexCount').textContent = myDex.length;
+    }
+    updateDexCounter();
+
+    // DOM 참조
+    const mainBall = document.getElementById('mainBall');
+    const pokemonView = document.getElementById('pokemonView');
+    const pokeSprite = document.getElementById('pokeSprite');
+    const pokeName = document.getElementById('pokeName');
+    const statusPill = document.getElementById('statusPill');
+    const encounterBadge = document.getElementById('encounterBadge');
+
+    // 야생 출현
+    function spawnWild() {
+      AudioEngine.encounter();
+      currentMode = 'wild';
+      swingCount = 0;
+
+      const p = POKEDEX[Math.floor(Math.random() * POKEDEX.length)];
+      currentPokemon = p;
+      requiredSwings = p.swings;
+
+      const lv = Math.floor(Math.random() * 25) + 5;
+      currentPokemon.lv = lv;
+
+      pokeSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`;
+      pokeName.textContent = `${p.name} Lv.${lv}`;
+      encounterBadge.textContent = 'WILD ENCOUNTER!';
+      encounterBadge.style.color = '#ef4444';
+
+      mainBall.style.display = 'none';
+      pokemonView.style.display = 'flex';
+      statusPill.textContent = `손목을 쉭! 휘두르세요! (0/${requiredSwings})`;
+      statusPill.style.color = '#facc15';
+    }
+
+    // 스윙 감지
+    function handleSwingAction() {
+      if (currentMode !== 'wild') return;
+
+      swingCount++;
+      AudioEngine.shake();
+      statusPill.textContent = `손목 스윙 감지! (${swingCount}/${requiredSwings})`;
+
+      if (swingCount >= requiredSwings) {
+        startCatching();
+      }
+    }
+
+    // 포획 연출
+    function startCatching() {
+      currentMode = 'catching';
+      pokemonView.style.display = 'none';
+      mainBall.style.display = 'block';
+      mainBall.classList.add('shake');
+      statusPill.textContent = '포획 중... 흔들... 흔들...';
+
+      let shakes = 0;
+      const timer = setInterval(() => {
+        shakes++;
+        AudioEngine.shake();
+        if (shakes === 1) statusPill.textContent = '찰칵...! (1/3)';
+        if (shakes === 2) statusPill.textContent = '거의 다 잡았다...! (2/3)';
+
+        if (shakes >= 3) {
+          clearInterval(timer);
+          mainBall.classList.remove('shake');
+          finishCatch();
+        }
+      }, 700);
+    }
+
+    // 포획 완료
+    function finishCatch() {
+      currentMode = 'caught';
+      AudioEngine.success();
+
+      mainBall.style.display = 'none';
+      pokemonView.style.display = 'flex';
+      encounterBadge.textContent = '🎉 CAUGHT SUCCESS!';
+      encounterBadge.style.color = '#38bdf8';
+      statusPill.textContent = `잡았다! ${currentPokemon.name} 도감 등록!`;
+      statusPill.style.color = '#34d399';
+
+      // 도감 추가
+      if (!myDex.includes(currentPokemon.id)) {
+        myDex.push(currentPokemon.id);
+        localStorage.setItem('donggon_watch_dex', JSON.stringify(myDex));
+        updateDexCounter();
+      }
+
+      // 4초 후 대기 상태 복귀
+      setTimeout(() => {
+        resetToIdle();
+      }, 4000);
+    }
+
+    function resetToIdle() {
+      currentMode = 'idle';
+      pokemonView.style.display = 'none';
+      mainBall.style.display = 'block';
+      statusPill.textContent = '볼을 터치하거나 손목을 흔드세요!';
+      statusPill.style.color = '#a7f3d0';
+    }
+
+    // 중앙 터치 이벤트 (볼 탭 시 스폰 또는 스윙)
+    document.getElementById('watchCenter').addEventListener('click', () => {
+      AudioEngine.click();
+      if (currentMode === 'idle') {
+        spawnWild();
+      } else if (currentMode === 'wild') {
+        handleSwingAction();
+      }
+    });
+
+    // 손목 6축 가속도계 센서 연동 (DeviceMotionEvent)
+    let lastX = 0, lastY = 0, lastZ = 0;
+    let lastTime = 0;
+    const SWING_THRESHOLD = 16.0;
+
+    function onMotion(e) {
+      const acc = e.accelerationIncludingGravity || e.acceleration;
+      if (!acc) return;
+
+      const now = Date.now();
+      if (now - lastTime < 130) return;
+
+      const p = Math.abs(acc.x - lastX) + Math.abs(acc.y - lastY) + Math.abs(acc.z - lastZ);
+      if (p > SWING_THRESHOLD) {
+        if (currentMode === 'idle') {
+          spawnWild();
+        } else if (currentMode === 'wild') {
+          handleSwingAction();
+        }
+      }
+
+      lastX = acc.x;
+      lastY = acc.y;
+      lastZ = acc.z;
+      lastTime = now;
+    }
+
+    if ('DeviceMotionEvent' in window) {
+      window.addEventListener('devicemotion', onMotion);
+    }
+  </script>
+</body>
+</html>
