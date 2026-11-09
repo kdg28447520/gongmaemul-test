@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>동곤의 포켓몬 워치 PRO (M5 PokéWatch)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pretendard:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #0f1117;
+      color: #fff;
+      font-family: 'Pretendard', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+    .header-bar {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .header-bar h1 {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #facc15;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .header-bar p {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* M5Stack 하드웨어 프레임 */
+    .device-chassis {
+      position: relative;
+      width: 320px;
+      height: 380px;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border-radius: 42px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 4px rgba(255,255,255,0.1), inset 0 -4px 8px rgba(0,0,0,0.6);
+      border: 4px solid #334155;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    /* 상단 / 하단 리벳 볼트 */
+    .bolt {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #475569;
+      border-radius: 50%;
+      border: 1px solid #1e293b;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+    }
+    .bolt.tl { top: 12px; left: 12px; }
+    .bolt.tr { top: 12px; right: 12px; }
+    .bolt.bl { bottom: 12px; left: 12px; }
+    .bolt.br { bottom: 12px; right: 12px; }
+
+    /* 원형 원본 스크린 베젤 */
+    .screen-bezel {
+      width: 250px;
+      height: 250px;
+      background: #000;
+      border-radius: 50%;
+      border: 6px solid #1e293b;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 4px 10px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 원형 LCD 내부 화면 */
+    .lcd-screen {
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #022c22 0%, #064e3b 60%, #022c22 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .lcd-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 화면 모드별 컨테이너 */
+    .screen-view {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .screen-view.active {
+      display: flex;
+    }
+
+    /* 1. 홈 화면 (트레이너) */
+    .trainer-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: #0f766e;
+      border: 3px solid #facc15;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin-bottom: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .trainer-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: #34d399;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .trainer-name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+    .trainer-stat {
+      font-size: 0.65rem;
+      color: #a7f3d0;
+      background: rgba(0,0,0,0.4);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* 2. 야생 출현 화면 */
+    .wild-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      background: #dc2626;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.3; } }
+    .pokemon-sprite-box {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 4px;
+    }
+    .pokemon-sprite {
+      max-width: 80px;
+      max-height: 80px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    }
+    .pokemon-name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #fef08a;
+      margin-bottom: 2px;
+    }
+    .pokemon-sub {
+      font-size: 0.62rem;
+      color: #cbd5e1;
+    }
+    .swing-guide {
+      margin-top: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #facc15;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px dashed #facc15;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse { 50% { transform: scale(1.05); } }
+
+    /* 3. 포획 연출 화면 (볼 흔들림) */
+    .pokeball-catch {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(to bottom, #ef4444 50%, #f8fafc 50%);
+      border: 3px solid #000;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .pokeball-catch::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #000;
+      transform: translateY(-50%);
+    }
+    .pokeball-catch::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border: 3px solid #000;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px #facc15;
+    }
+    .pokeball-catch.shake {
+      animation: ballShake 0.6s ease-in-out infinite;
+    }
+    @keyframes ballShake {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-25deg); }
+      40% { transform: rotate(25deg); }
+      60% { transform: rotate(-15deg); }
+      80% { transform: rotate(15deg); }
+    }
+    .catch-status-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: #facc15;
+      margin-top: 12px;
+    }
+
+    /* 4. 포획 완료 스탯 화면 */
+    .success-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 2px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      width: 100%;
+      max-width: 170px;
+      background: rgba(0,0,0,0.5);
+      padding: 6px;
+      border-radius: 8px;
+      margin-top: 4px;
+      font-size: 0.62rem;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+    }
+    .stat-row b {
+      color: #f1f5f9;
+    }
+
+    /* 5. 도감 화면 */
+    .pokedex-list {
+      width: 100%;
+      max-height: 140px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      padding: 2px;
+    }
+    .pokedex-item {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.6rem;
+    }
+    .pokedex-item img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    /* 하드웨어 조작 버튼부 */
+    .button-panel {
+      display: flex;
+      gap: 20px;
+      margin-top: 14px;
+      z-index: 20;
+    }
+    .hw-btn {
+      width: 80px;
+      height: 40px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.6), 0 6px 12px rgba(0,0,0,0.4);
+      transition: all 0.1s;
+    }
+    .hw-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.6);
+    }
+    .hw-btn.yellow {
+      background: linear-gradient(180deg, #facc15, #ca8a04);
+      color: #1e1b4b;
+    }
+    .hw-btn.blue {
+      background: linear-gradient(180deg, #38bdf8, #0284c7);
+      color: #082f49;
+    }
+    .hw-btn span {
+      font-size: 0.58rem;
+      opacity: 0.85;
+      font-weight: 600;
+    }
+
+    /* 센서 및 안내 카드 */
+    .sensor-hud {
+      width: 320px;
+      margin-top: 14px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sensor-hud b {
+      color: #facc15;
+    }
+    .sensor-action-btn {
+      background: #475569;
+      color: #f1f5f9;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* 화면 터치로도 스윙 가능하게 보조 */
+    .virtual-swing-btn {
+      width: 320px;
+      margin-top: 8px;
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(220,38,38,0.4);
+    }
+    .virtual-swing-btn:active {
+      transform: scale(0.98);
+      background: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <h1><span>⚡</span> 동곤의 M5 포켓몬 워치 PRO</h1>
+    <p>실제 폰 센서로 휘둘러서 잡는 아빠표 몬스터볼 토이</p>
+  </div>
+
+  <div class="device-chassis">
+    <div class="bolt tl"></div>
+    <div class="bolt tr"></div>
+    <div class="bolt bl"></div>
+    <div class="bolt br"></div>
+
+    <div class="screen-bezel">
+      <div class="lcd-screen" id="lcdScreen">
+        
+        <!-- 1. 트레이너 홈 화면 -->
+        <div class="screen-view active" id="viewHome">
+          <div class="trainer-avatar" id="trainerAvatar">🐶</div>
+          <div class="trainer-title">POKÉ TRAINER</div>
+          <div class="trainer-name" id="trainerName">써니아빠 (동곤)</div>
+          <div class="trainer-stat" id="trainerStat">도감 등록: 0마리</div>
+          <p style="font-size: 0.6rem; color: #a7f3d0; margin-top: 6px;">[노랑] 야생 탐색 | [파랑] 도감</p>
+        </div>
+
+        <!-- 2. 야생 출현 화면 -->
+        <div class="screen-view" id="viewWild">
+          <div class="wild-badge">WILD ENCOUNTER!</div>
+          <div class="pokemon-sprite-box">
+            <img src="" class="pokemon-sprite" id="wildSprite" alt="pokemon">
+          </div>
+          <div class="pokemon-name" id="wildName">피카츄</div>
+          <div class="pokemon-sub" id="wildInfo">Lv.15 · 전기타입</div>
+          <div class="swing-guide" id="swingGuide">⚡ 노랑 누르고 팔 휘두르기! (0/2)</div>
+        </div>
+
+        <!-- 3. 포획 흔들림 화면 -->
+        <div class="screen-view" id="viewCatching">
+          <div class="pokeball-catch shake" id="catchBall"></div>
+          <div class="catch-status-text" id="catchStatusText">흔들 흔들...</div>
+        </div>
+
+        <!-- 4. 포획 완료 스탯 화면 -->
+        <div class="screen-view" id="viewSuccess">
+          <div class="success-badge">🎉 잡았다!</div>
+          <div class="pokemon-sprite-box" style="width: 50px; height: 50px;">
+            <img src="" class="pokemon-sprite" id="caughtSprite" style="max-height: 50px;" alt="caught">
+          </div>
+          <div class="pokemon-name" id="caughtName" style="font-size: 0.8rem;">피카츄</div>
+          <div class="stats-grid">
+            <div class="stat-row"><span>레벨</span><b id="statLevel">Lv.18</b></div>
+            <div class="stat-row"><span>CP</span><b id="statCP">CP 480</b></div>
+            <div class="stat-row"><span>성격</span><b id="statNature">명랑</b></div>
+            <div class="stat-row"><span>개체값</span><b id="statIV">31 (MAX)</b></div>
+          </div>
+        </div>
+
+        <!-- 5. 도감 화면 -->
+        <div class="screen-view" id="viewPokedex">
+          <div style="font-size: 0.7rem; font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📖 나의 포켓몬 도감</div>
+          <div class="pokedex-list" id="pokedexList">
+            <!-- 등록된 포켓몬 목록 -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 하드웨어 버튼 -->
+    <div class="button-panel">
+      <button class="hw-btn yellow" id="btnYellow">
+        노란 버튼
+        <span id="lblYellow">야생 탐색</span>
+      </button>
+      <button class="hw-btn blue" id="btnBlue">
+        파란 버튼
+        <span id="lblBlue">포켓몬 도감</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 가상 터치 스윙 (PC 또는 실내 가벼운 터치용) -->
+  <button class="virtual-swing-btn" id="btnVirtualSwing">
+    <span>👋</span> 폰 휘두르기 (모션 강제 스윙)
+  </button>
+
+  <div class="sensor-hud">
+    <div>
+      모션 센서: <b id="sensorStatus">대기 중</b> | 스윙 파워: <b id="swingPower">0.0</b>
+    </div>
+    <button class="sensor-action-btn" id="btnSensors">센서 권한</button>
+  </div>
+
+  <script>
+    // 8비트 사운드 신시사이저 (Web Audio API)
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      },
+      beep(freq, duration, type = 'square', gainVal = 0.1) {
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {}
+      },
+      wildEncounter() {
+        this.beep(523, 0.1);
+        setTimeout(() => this.beep(659, 0.1), 100);
+        setTimeout(() => this.beep(783, 0.15), 200);
+        setTimeout(() => this.beep(1046, 0.3), 350);
+      },
+      shakeBall() {
+        this.beep(330, 0.08, 'triangle', 0.2);
+        if (navigator.vibrate) navigator.vibrate(80);
+      },
+      catchSuccess() {
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+        const notes = [523, 523, 523, 659, 783, 659, 783, 1046];
+        const times = [0, 100, 200, 300, 450, 550, 650, 800];
+        notes.forEach((n, i) => {
+          setTimeout(() => this.beep(n, 0.18, 'square', 0.15), times[i]);
+        });
+      },
+      click() {
+        this.beep(880, 0.04, 'square', 0.05);
+      }
+    };
+
+    // 포켓몬 DB (1세대~인기 포켓몬 16종 엄선)
+    const POKEMON_DB = [
+      { id: 25, name: '피카츄', type: '전기', minSwing: 1 },
+      { id: 4, name: '파이리', type: '불꽃', minSwing: 2 },
+      { id: 7, name: '꼬부기', type: '물', minSwing: 2 },
+      { id: 1, name: '이상해씨', type: '풀', minSwing: 2 },
+      { id: 133, name: '이브이', type: '노말', minSwing: 1 },
+      { id: 143, name: '잠만보', type: '노말', minSwing: 3 },
+      { id: 94, name: '팬텀', type: '고스트', minSwing: 3 },
+      { id: 6, name: '리자몽', type: '불꽃/비행', minSwing: 3 },
+      { id: 9, name: '거북왕', type: '물', minSwing: 3 },
+      { id: 3, name: '이상해꽃', type: '풀/독', minSwing: 3 },
+      { id: 149, name: '망나뇽', type: '드래곤', minSwing: 3 },
+      { id: 150, name: '뮤츠', type: '에스퍼', minSwing: 4 },
+      { id: 151, name: '뮤', type: '에스퍼', minSwing: 4 },
+      { id: 39, name: '푸린', type: '노말/페어리', minSwing: 1 },
+      { id: 54, name: '고라파덕', type: '물', minSwing: 1 },
+      { id: 129, name: '잉어킹', type: '물', minSwing: 1 }
+    ];
+
+    const NATURES = ['명랑한', '고집스런', '조심스러운', '용감한', '성급한', '겁쟁이', '대담한', '차분한'];
+
+    // 상태 관리
+    let currentView = 'home';
+    let currentWild = null;
+    let requiredSwings = 2;
+    let currentSwings = 0;
+    let isYellowPressed = false;
+    let myPokedex = JSON.parse(localStorage.getItem('donggon_pokedex') || '[]');
+
+    // 화면 DOM
+    const views = {
+      home: document.getElementById('viewHome'),
+      wild: document.getElementById('viewWild'),
+      catching: document.getElementById('viewCatching'),
+      success: document.getElementById('viewSuccess'),
+      pokedex: document.getElementById('viewPokedex')
+    };
+
+    function showView(viewName) {
+      currentView = viewName;
+      Object.keys(views).forEach(k => views[k].classList.remove('active'));
+      views[viewName].classList.add('active');
+
+      const lblYellow = document.getElementById('lblYellow');
+      const lblBlue = document.getElementById('lblBlue');
+
+      if (viewName === 'home') {
+        lblYellow.textContent = '야생 탐색';
+        lblBlue.textContent = '포켓몬 도감';
+      } else if (viewName === 'wild') {
+        lblYellow.textContent = '누른채 스윙!';
+        lblBlue.textContent = '도망치기';
+      } else if (viewName === 'catching') {
+        lblYellow.textContent = '포획 중...';
+        lblBlue.textContent = '대기';
+      } else if (viewName === 'success') {
+        lblYellow.textContent = '계속 탐색';
+        lblBlue.textContent = '홈으로';
+      } else if (viewName === 'pokedex') {
+        lblYellow.textContent = '야생 탐색';
+        lblBlue.textContent = '홈으로';
+      }
+      updateTrainerStats();
+    }
+
+    function updateTrainerStats() {
+      document.getElementById('trainerStat').textContent = `도감 등록: ${myPokedex.length}마리 / ${POKEMON_DB.length}종`;
+    }
+
+    // 야생 포켓몬 스폰
+    function spawnWild() {
+      AudioEngine.wildEncounter();
+      const p = POKEMON_DB[Math.floor(Math.random() * POKEMON_DB.length)];
+      currentWild = p;
+      requiredSwings = p.minSwing;
+      currentSwings = 0;
+
+      const level = Math.floor(Math.random() * 25) + 5;
+      currentWild.currentLevel = level;
+
+      document.getElementById('wildName').textContent = p.name;
+      document.getElementById('wildInfo').textContent = `Lv.${level} · ${p.type}타입`;
+      document.getElementById('wildSprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`;
+      document.getElementById('swingGuide').textContent = `⚡ 노랑 누르고 팔 휘두르기! (0/${requiredSwings})`;
+
+      showView('wild');
+    }
+
+    // 스윙 감지 처리
+    function handleSwing() {
+      if (currentView !== 'wild') return;
+
+      currentSwings++;
+      AudioEngine.shakeBall();
+      document.getElementById('swingGuide').textContent = `⚡ 파워 스윙 감지! (${currentSwings}/${requiredSwings})`;
+
+      if (currentSwings >= requiredSwings) {
+        startCatchingAnimation();
+      }
+    }
+
+    // 포획 연출
+    function startCatchingAnimation() {
+      showView('catching');
+      const statusText = document.getElementById('catchStatusText');
+      statusText.textContent = '흔들... 흔들...';
+
+      let shakes = 0;
+      const interval = setInterval(() => {
+        shakes++;
+        AudioEngine.shakeBall();
+        if (shakes === 1) statusText.textContent = '찰칵...!';
+        if (shakes === 2) statusText.textContent = '거의 다 됐다...!';
+
+        if (shakes >= 3) {
+          clearInterval(interval);
+          finishCatch();
+        }
+      }, 700);
+    }
+
+    // 포획 완료
+    function finishCatch() {
+      AudioEngine.catchSuccess();
+
+      const iv = Math.floor(Math.random() * 12) + 20; // 개체값 20~31
+      const nature = NATURES[Math.floor(Math.random() * NATURES.length)];
+      const cp = currentWild.currentLevel * 45 + Math.floor(Math.random() * 100);
+
+      document.getElementById('caughtSprite').src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${currentWild.id}.png`;
+      document.getElementById('caughtName').textContent = currentWild.name;
+      document.getElementById('statLevel').textContent = `Lv.${currentWild.currentLevel}`;
+      document.getElementById('statCP').textContent = `CP ${cp}`;
+      document.getElementById('statNature').textContent = nature;
+      document.getElementById('statIV').textContent = `${iv} (${iv === 31 ? 'MAX' : '우수'})`;
+
+      // 도감 저장
+      if (!myPokedex.some(m => m.id === currentWild.id)) {
+        myPokedex.push({
+          id: currentWild.id,
+          name: currentWild.name,
+          level: currentWild.currentLevel,
+          cp: cp,
+          nature: nature,
+          date: new Date().toLocaleDateString('ko-KR')
+        });
+        localStorage.setItem('donggon_pokedex', JSON.stringify(myPokedex));
+      }
+
+      showView('success');
+    }
+
+    // 도감 뷰 렌더링
+    function renderPokedex() {
+      const container = document.getElementById('pokedexList');
+      container.innerHTML = '';
+
+      if (myPokedex.length === 0) {
+        container.innerHTML = '<div style="grid-column: span 2; font-size: 0.65rem; color: #94a3b8; padding: 20px;">아직 잡은 포켓몬이 없어요.<br>노란 버튼으로 탐색해 보세요!</div>';
+      } else {
+        myPokedex.forEach(p => {
+          const item = document.createElement('div');
+          item.className = 'pokedex-item';
+          item.innerHTML = `
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png" alt="${p.name}">
+            <b style="color: #fef08a;">${p.name}</b>
+            <span style="color: #38bdf8;">Lv.${p.level} (CP ${p.cp})</span>
+          `;
+          container.appendChild(item);
+        });
+      }
+      showView('pokedex');
+    }
+
+    // 하드웨어 버튼 이벤트
+    const btnYellow = document.getElementById('btnYellow');
+    const btnBlue = document.getElementById('btnBlue');
+
+    btnYellow.addEventListener('mousedown', () => { isYellowPressed = true; AudioEngine.click(); });
+    btnYellow.addEventListener('mouseup', () => { isYellowPressed = false; });
+    btnYellow.addEventListener('touchstart', (e) => { e.preventDefault(); isYellowPressed = true; AudioEngine.click(); });
+    btnYellow.addEventListener('touchend', (e) => { e.preventDefault(); isYellowPressed = false; });
+
+    btnYellow.addEventListener('click', () => {
+      AudioEngine.click();
+      if (currentView === 'home' || currentView === 'success' || currentView === 'pokedex') {
+        spawnWild();
+      } else if (currentView === 'wild') {
+        // 노란 버튼 누른 채 터치 스윙 트리거
+        handleSwing();
+      }
+    });
+
+    btnBlue.addEventListener('click', () => {
+      AudioEngine.click();
+      if (currentView === 'home') {
+        renderPokedex();
+      } else if (currentView === 'wild') {
+        showView('home');
+      } else if (currentView === 'success') {
+        showView('home');
+      } else if (currentView === 'pokedex') {
+        showView('home');
+      }
+    });
+
+    // 가상 스윙 버튼
+    document.getElementById('btnVirtualSwing').addEventListener('click', () => {
+      AudioEngine.click();
+      if (currentView === 'wild') {
+        handleSwing();
+      } else {
+        spawnWild();
+      }
+    });
+
+    // 실제 폰 6축 가속도 모션 센서 연동 (DeviceMotionEvent)
+    let lastX = 0, lastY = 0, lastZ = 0;
+    let lastTime = 0;
+    const SWING_THRESHOLD = 15.0; // 모션 감도 임계값
+
+    function onMotion(event) {
+      const acc = event.accelerationIncludingGravity || event.acceleration;
+      if (!acc) return;
+
+      const now = Date.now();
+      if (now - lastTime < 120) return; // 120ms 디바운스
+
+      const deltaX = Math.abs(acc.x - lastX);
+      const deltaY = Math.abs(acc.y - lastY);
+      const deltaZ = Math.abs(acc.z - lastZ);
+      const power = deltaX + deltaY + deltaZ;
+
+      document.getElementById('swingPower').textContent = power.toFixed(1);
+
+      if (power > SWING_THRESHOLD) {
+        document.getElementById('sensorStatus').textContent = '스윙 감지!';
+        document.getElementById('sensorStatus').style.color = '#22c55e';
+
+        // 노란 버튼을 누른 상태이거나, 화면 모드가 wild일 때 스윙 판정
+        if (currentView === 'wild') {
+          handleSwing();
+        }
+
+        setTimeout(() => {
+          document.getElementById('sensorStatus').textContent = '정상 가동';
+          document.getElementById('sensorStatus').style.color = '#facc15';
+        }, 400);
+      }
+
+      lastX = acc.x;
+      lastY = acc.y;
+      lastZ = acc.z;
+      lastTime = now;
+    }
+
+    // 센서 활성화 버튼 (iOS 13+ 권한 대응)
+    document.getElementById('btnSensors').addEventListener('click', () => {
+      AudioEngine.click();
+      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission().then(state => {
+          if (state === 'granted') {
+            window.addEventListener('devicemotion', onMotion);
+            document.getElementById('sensorStatus').textContent = '정상 가동';
+            document.getElementById('sensorStatus').style.color = '#22c55e';
+          }
+        }).catch(err => {
+          alert('센서 권한 오류: ' + err);
+        });
+      } else if ('DeviceMotionEvent' in window) {
+        window.addEventListener('devicemotion', onMotion);
+        document.getElementById('sensorStatus').textContent = '정상 가동';
+        document.getElementById('sensorStatus').style.color = '#22c55e';
+      } else {
+        alert('이 기기는 모션 센서를 지원하지 않습니다. 화면 버튼으로 스윙 가능합니다!');
+      }
+    });
+
+    // 자동 센서 리스너 등록 시도
+    if ('DeviceMotionEvent' in window && typeof DeviceMotionEvent.requestPermission !== 'function') {
+      window.addEventListener('devicemotion', onMotion);
+      document.getElementById('sensorStatus').textContent = '정상 가동';
+      document.getElementById('sensorStatus').style.color = '#22c55e';
+    }
+
+    // 초기화
+    updateTrainerStats();
+  </script>
+</body>
+</html>
