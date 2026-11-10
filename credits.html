@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>빅테크 7대 스타트업 무상 크레딧 패스포트 PRO | 동곤 관제탑</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              900: '#4c1d95',
+            },
+            dark: {
+              bg: '#090d16',
+              card: 'rgba(15, 23, 42, 0.75)',
+              border: 'rgba(255, 255, 255, 0.08)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    * { font-family: 'Pretendard', sans-serif; }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(139, 92, 246, 0.35);
+      box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.2);
+    }
+    .neon-glow {
+      text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-[#090d16] text-slate-100 min-h-screen antialiased selection:bg-purple-500 selection:text-white pb-20">
+
+  <!-- Background Gradients -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-8 border-b border-slate-800">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20 mb-3">
+          <i class="fa-solid fa-bolt text-amber-400"></i> 초기 스타트업 무상 서버 & AI API 0원화 파이프라인
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+          <span>빅테크 7대 스타트업 무상 크레딧 패스포트</span>
+          <span class="text-xs px-2.5 py-0.5 rounded bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold tracking-wider">PRO</span>
+        </h1>
+        <p class="mt-2 text-sm text-slate-400 max-w-2xl">
+          MS 파운더스·구글·AWS·네이버·엔비디아 등 글로벌 7대 빅테크의 무상 크레딧(최대 1.3억 원)을 전수 공략하고 원클릭 지원서를 생성하는 무인 관제탑입니다.
+        </p>
+      </div>
+
+      <!-- Quick Stats Card -->
+      <div class="glass-card rounded-2xl p-4 flex items-center gap-6 border border-purple-500/20 bg-gradient-to-br from-purple-900/20 to-slate-900/60">
+        <div>
+          <div class="text-xs text-slate-400 font-medium">누적 확보 가능 혜택</div>
+          <div class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300" id="totalCreditAmount">
+            ₩ 135,000,000+
+          </div>
+          <div class="text-[11px] text-emerald-400 flex items-center gap-1 mt-0.5">
+            <i class="fa-solid fa-circle-check"></i> 서버비·OpenAI·GPU 100% 0원화
+          </div>
+        </div>
+        <div class="h-12 w-[1px] bg-slate-800"></div>
+        <div class="text-center">
+          <div class="text-xs text-slate-400 font-medium">진행 현황</div>
+          <div class="text-xl font-bold text-white mt-0.5" id="progressStatus">
+            <span class="text-purple-400" id="activeCount">0</span> / 7 건
+          </div>
+          <div class="text-[11px] text-slate-500">신청 완료율</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: AI Auto Application Generator -->
+    <div class="mt-8 glass-card rounded-2xl p-6 border border-purple-500/30 relative overflow-hidden">
+      <div class="absolute top-0 right-0 px-4 py-1 bg-purple-500/20 text-purple-300 text-xs font-bold rounded-bl-xl border-l border-b border-purple-500/30">
+        <i class="fa-solid fa-wand-magic-sparkles mr-1 text-amber-400"></i> AI 맞춤 신청서 생성기
+      </div>
+
+      <div class="max-w-3xl">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>1. 공략할 동곤 님의 서비스를 선택하세요</span>
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">
+          선택한 서비스의 실제 운영 지표와 기술 아키텍처를 바탕으로 7대 빅테크 심사관이 통과시키는 최적화 서식을 즉시 생성합니다.
+        </p>
+
+        <!-- Service Tabs -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+          <button onclick="selectService('gong')" id="tab-gong" class="service-tab text-left p-3.5 rounded-xl border border-purple-500 bg-purple-500/10 text-white transition-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-purple-400">추천 1위 (핀테크)</span>
+              <i class="fa-solid fa-building-columns text-purple-400"></i>
+            </div>
+            <div class="font-bold text-sm">《공경매 PRO》</div>
+            <div class="text-xs text-slate-400 mt-0.5">실시간 5,398건 빅데이터 · AI 3초 권리분석</div>
+          </button>
+
+          <button onclick="selectService('jalitji')" id="tab-jalitji" class="service-tab text-left p-3.5 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-400 hover:border-slate-700 transition-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-emerald-400">앱스토어 1위</span>
+              <i class="fa-solid fa-heart-pulse text-emerald-400"></i>
+            </div>
+            <div class="font-bold text-sm text-slate-200">《잘 있지?》</div>
+            <div class="text-xs text-slate-400 mt-0.5">1인 가구 안부확인 · 평점 5.0 만점</div>
+          </button>
+
+          <button onclick="selectService('senior')" id="tab-senior" class="service-tab text-left p-3.5 rounded-xl border border-slate-800 bg-slate-900/40 text-slate-400 hover:border-slate-700 transition-all">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-pink-400">글로벌 미디어</span>
+              <i class="fa-solid fa-clapperboard text-pink-400"></i>
+            </div>
+            <div class="font-bold text-sm text-slate-200">《시니어 인생극장》</div>
+            <div class="text-xs text-slate-400 mt-0.5">5,150회 돌파 · AI 숏폼/롱폼 엔진</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: 7 BigTech Program Grid -->
+    <div class="mt-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>2. 빅테크 7대 무상 크레딧 지원 프로그램</span>
+          <span class="text-xs font-normal text-slate-400">(신청 즉시 지급 + 심사 승인형)</span>
+        </h2>
+        <div class="text-xs text-slate-400 flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span> 즉시 지급형
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-purple-500 ml-2"></span> 심사형 (최대 1억)
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="programGrid">
+        <!-- Cards generated by JS -->
+      </div>
+    </div>
+
+    <!-- Section 3: Modal for Full Application Copy -->
+    <div id="appModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+      <div class="glass-card bg-[#0d1424] border border-purple-500/40 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2" id="modalTitle">
+              <span>플랫폼 맞춤형 신청서</span>
+            </h3>
+            <p class="text-xs text-purple-400 mt-0.5" id="modalSubtitle">심사관 통과용 1:1 최적화 텍스트</p>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white p-2 text-xl leading-none">&times;</button>
+        </div>
+
+        <div class="p-6 overflow-y-auto space-y-4 text-sm flex-1" id="modalContent">
+          <!-- Injected by JS -->
+        </div>
+
+        <div class="p-4 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between gap-3">
+          <button onclick="copyModalContent()" class="flex-1 py-2.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all">
+            <i class="fa-regular fa-copy"></i>
+            <span id="copyBtnText">전체 답변 복사하기</span>
+          </button>
+          <a id="modalApplyLink" href="#" target="_blank" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-bold text-xs flex items-center justify-center gap-2 text-center transition-all">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            공식 접수처 바로가기
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Current state
+    let currentService = 'gong';
+    let appStatus = JSON.parse(localStorage.getItem('credit_passport_status') || '{}');
+
+    // 7 BigTech Programs Data
+    const programs = [
+      {
+        id: 'ms_founders',
+        name: 'Microsoft for Startups Founders Hub',
+        short: 'MS 파운더스 허브',
+        icon: 'fa-brands fa-microsoft',
+        color: 'from-blue-500 to-indigo-600',
+        badge: '즉시 $200 + 최대 $150,000',
+        badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        instant: true,
+        benefits: [
+          'OpenAI API 크레딧 $2,500 지원',
+          'Azure 클라우드 크레딧 $5,000 ~ $150,000',
+          'GitHub Enterprise 1년 무료 (팀원 포함)',
+          'Microsoft 365 비즈니스 라이선스 무료'
+        ],
+        applyUrl: 'https://foundershub.startups.microsoft.com/',
+        qualification: 'SW/서비스 개발 중인 스타트업, LinkedIn 프로필 보유',
+        krwValue: 10500000
+      },
+      {
+        id: 'google_cloud',
+        name: 'Google for Startups Cloud Program',
+        short: '구글 스타트업 지원',
+        icon: 'fa-brands fa-google',
+        color: 'from-red-500 to-amber-500',
+        badge: '가입시 $300 + 심사시 $2,000',
+        badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        instant: true,
+        benefits: [
+          '첫 가입시 즉시 $300 크레딧 제공',
+          '스타트업 심사 통과시 $2,000 추가 크레딧',
+          'Google Cloud, Firebase, BigQuery 전액 차감',
+          'Gemini 1.5 Pro / Flash API 비용 지원'
+        ],
+        applyUrl: 'https://cloud.google.com/startup',
+        qualification: '법인 또는 개인사업자, 자체 도메인 웹/앱 운영 중',
+        krwValue: 3200000
+      },
+      {
+        id: 'aws_activate',
+        name: 'AWS Activate Founders',
+        short: '아마존 AWS 액티베이트',
+        icon: 'fa-brands fa-aws',
+        color: 'from-amber-500 to-orange-600',
+        badge: '1년 서버 무료 ($1,000~$5,000)',
+        badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+        instant: false,
+        benefits: [
+          'AWS 크레딧 $1,000 ~ $5,000 무상 지급',
+          'EC2, S3, RDS 1년 이상 무료 운영 가능',
+          'Amazon Bedrock (Claude 3.5 Sonnet 연동)',
+          '1년 비즈니스 서포트 플랜 무료 ($1,500 상당)'
+        ],
+        applyUrl: 'https://aws.amazon.com/activate/',
+        qualification: '자체 자금(Bootstrapped) 스타트업, 유효한 웹사이트 보유',
+        krwValue: 6900000
+      },
+      {
+        id: 'naver_greenhouse',
+        name: 'NAVER Cloud GreenHouse',
+        short: '네이버 그린하우스',
+        icon: 'fa-solid fa-n',
+        color: 'from-emerald-500 to-green-600',
+        badge: '최대 1억 원 크레딧 (국내 최강)',
+        badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        instant: false,
+        benefits: [
+          '연간 최대 2,000만 원 ~ 1억 원 클라우드 크레딧',
+          'CLOVA Studio (HyperCLOVA X) 모델 무료 지원',
+          '네이버 지도 API 대량 무료 쿼리 제공',
+          '국내 IDC 기반 초저지연 서버 호스팅'
+        ],
+        applyUrl: 'https://www.ncloud.com/solution/greenhouse',
+        qualification: '사업자등록 5년 이내 초기 스타트업, 자체 서비스 보유',
+        krwValue: 20000000
+      },
+      {
+        id: 'nvidia_inception',
+        name: 'NVIDIA Inception Program',
+        short: '엔비디아 인셉션',
+        icon: 'fa-solid fa-microchip',
+        color: 'from-green-500 to-teal-600',
+        badge: 'GPU 크레딧 $6,000 지원',
+        badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+        instant: false,
+        benefits: [
+          'NVIDIA 클라우드 GPU 크레딧 최대 $6,000',
+          '딥러닝 인스티튜트(DLI) 교육 무제한 바우처',
+          '최신 AI 하드웨어 할인 및 테크니컬 서포트',
+          '엔비디아 글로벌 VC 쇼케이스 참가 기회'
+        ],
+        applyUrl: 'https://www.nvidia.com/ko-kr/startups/',
+        qualification: 'AI / 빅데이터 / LLM 기반 서비스를 개발/운영 중인 팀',
+        krwValue: 8400000
+      },
+      {
+        id: 'oracle_startup',
+        name: 'Oracle for Startups',
+        short: '오라클 스타트업',
+        icon: 'fa-solid fa-database',
+        color: 'from-red-600 to-rose-700',
+        badge: '$500 + 70% 파격 할인',
+        badgeColor: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+        instant: true,
+        benefits: [
+          '무료 크레딧 $500 기본 제공',
+          '2년간 전 클라우드 인프라 70% 정률 할인',
+          '고성능 A100 GPU 클라우드 인스턴스 접근',
+          '오라클 엔터프라이즈 B2B 고객사 매칭'
+        ],
+        applyUrl: 'https://www.oracle.com/kr/cloud/free/',
+        qualification: '개인/법인 개발자 및 초기 창업팀',
+        krwValue: 2500000
+      },
+      {
+        id: 'gov_contest',
+        name: '정부 지원사업 & 핀테크 챌린지',
+        short: '정부 1,017건 무상지원',
+        icon: 'fa-solid fa-trophy',
+        color: 'from-amber-500 to-yellow-600',
+        badge: '상환의무 0원 (최대 6,000만~1억)',
+        badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+        instant: false,
+        benefits: [
+          '2026 핀테크 라이징 스타 챌린지 (6,000만 원, D-1)',
+          '중기부 모두의 창업 무상 바우처 (최대 5,000만 원)',
+          '국세청 숏폼 공모전 (총상금 800만 원)',
+          '지자체 AI 미디어 & 공공데이터 창업 경진대회'
+        ],
+        applyUrl: 'https://event.jbci.or.kr',
+        qualification: '아이디어 및 사업계획서 보유 (공경매 PRO 완비)',
+        krwValue: 60000000
+      }
+    ];
+
+    // Service Context Data for AI Generation
+    const serviceData = {
+      gong: {
+        title: '공경매 PRO (GongKyungMae AI)',
+        url: 'https://gongmaemul.co.kr',
+        oneLine: '실시간 5,398건 공경매 빅데이터와 AI 3초 권리분석을 결합한 프롭테크 핀테크 플랫폼',
+        desc: '온비드 공매 및 대한민국 법원경매의 5,398건 비정형 매각물건명세서, 감정평가서, 현황조사서를 실시간 파싱하여 AI 자연어 처리(NLP)를 통해 말소기준권리, 임차인 대항력, 인수 권리를 3초 만에 판정하는 AI 프롭테크 서비스입니다.',
+        tech: 'Python FastAPI 파이프라인, Playwright/BeautifulSoup 크롤링 엔진, OpenAI GPT-4o / Claude 3.5 Sonnet 연동 권리분석, PostgreSQL DB, Tailwind CSS 프론트엔드',
+        cloudUse: '5,398건 매각명세서 PDF 및 고화질 현장 사진 저장을 위한 대용량 오브젝트 스토리지(S3), 실시간 LLM 추론을 위한 OpenAI/Azure API 엔드포인트 연동, 매일 갱신되는 온비드 수집 배치를 위한 서버 인스턴스 운용에 활용할 계획입니다.',
+        milestone: '1차: 5,398건 AI 권리분석 고도화 완료 (현재 라이브 운영 중) -> 2차: 1금융권 경락잔금대출 핀테크 비교 중개 연계 -> 3차: 전국 공경매 투자자 10만 MAU 달성'
+      },
+      jalitji: {
+        title: '잘 있지? (늘봄상회)',
+        url: 'https://apps.apple.com/kr/app/%EC%9E%98-%EC%9E%88%EC%A7%80/id6738012345',
+        oneLine: '1인 가구 고독사 예방 및 가족 안부 확인을 위한 비침해형 스마트 라이프케어 앱',
+        desc: '애플 앱스토어 평점 5.0 만점, 키워드 검색 1위를 기록 중인 앱으로, 1인 가구 및 고령 부모님의 스마트폰 사용 패턴을 감지하여 이상 징후 발생 시 보호자에게 자동으로 안부 알림을 발송하는 라이프케어 서비스입니다.',
+        tech: 'Flutter/Swift 네이티브 앱, Firebase Authentication / Cloud Messaging, AWS Lambda 서버리스 아키텍처, 실시간 이상 감지 휴리스틱 알고리즘',
+        cloudUse: '글로벌 유저(한국, 일본, 미국, 대만) 확장에 따른 푸시 알림 서버 트래픽 처리, 비정형 사용자 활동 로그 분석을 위한 클라우드 DB 호스팅, 가족 간 안부 메시지 암호화 저장소에 활용합니다.',
+        milestone: '1차: iOS 정식 출시 및 평점 5.0 달성 -> 2차: 안드로이드 구글 플레이 프로덕션 출시 (심사 중) -> 3차: 지자체 독거노인 돌봄 복지관 B2G 공급 연계'
+      },
+      senior: {
+        title: '시니어 인생극장 AI 스튜디오',
+        url: 'https://www.youtube.com/@seniortheater_jp',
+        oneLine: 'AI 기반 고품질 롱폼·숏폼 감동 드라마 자동 생성 및 글로벌 미디어 파이프라인',
+        desc: '시니어 세대의 애환과 감동 실화를 바탕으로 80컷 이상의 고화질 시각 연출과 27분 풀더빙 오디오, 싱크 자막을 자동 결합하여 누적 5,150회 이상의 시청자를 확보한 차세대 AI 미디어 채널입니다.',
+        tech: 'Node.js HyperFrames / Remotion 비디오 렌더러, FFmpeg 멀티스레드 인코딩, 이미지 생성 AI(SDXL/Midjourney), 음성 합성(TTS) 파이프라인, YouTube Data API v3',
+        cloudUse: '20분 이상 초고화질(1080p/4K) 롱폼 비디오 렌더링을 위한 GPU 가속 인스턴스(NVIDIA A10G/T4) 활용, 대용량 오디오/비디오 에셋 보관용 클라우드 스토리지 운용.',
+        milestone: '1차: 7화 롱폼 및 쇼츠 3부작 체제 안착 (누적 5,150회 돌파) -> 2차: 수면용 옴니버스 60분 시리즈 정규화 -> 3차: 일본 시니어 MCN 및 유튜브 파트너 프로그램(YPP) 수익화 완결'
+      }
+    };
+
+    // Initialize UI
+    function init() {
+      renderPrograms();
+      updateStats();
+    }
+
+    // Select Service Tab
+    function selectService(srv) {
+      currentService = srv;
+      document.querySelectorAll('.service-tab').forEach(el => {
+        el.classList.remove('border-purple-500', 'bg-purple-500/10');
+        el.classList.add('border-slate-800', 'bg-slate-900/40');
+      });
+      const activeTab = document.getElementById(`tab-${srv}`);
+      activeTab.classList.remove('border-slate-800', 'bg-slate-900/40');
+      activeTab.classList.add('border-purple-500', 'bg-purple-500/10');
+    }
+
+    // Render Cards
+    function renderPrograms() {
+      const grid = document.getElementById('programGrid');
+      grid.innerHTML = '';
+
+      programs.forEach(p => {
+        const isDone = appStatus[p.id] === 'done';
+        const isPending = appStatus[p.id] === 'pending';
+
+        const card = document.createElement('div');
+        card.className = `glass-card rounded-2xl p-5 border flex flex-col justify-between transition-all ${isDone ? 'border-emerald-500/50 bg-emerald-950/10' : 'border-slate-800'}`;
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center text-white text-lg shadow-lg">
+                <i class="${p.icon}"></i>
+              </div>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border ${p.badgeColor}">
+                ${p.badge}
+              </span>
+            </div>
+
+            <h3 class="font-bold text-white text-base leading-snug">${p.short}</h3>
+            <div class="text-[11px] text-slate-400 mb-3">${p.name}</div>
+
+            <div class="space-y-1.5 py-2.5 border-y border-slate-800/80 text-xs text-slate-300">
+              ${p.benefits.map(b => `
+                <div class="flex items-start gap-1.5">
+                  <i class="fa-solid fa-check text-purple-400 text-[10px] mt-1"></i>
+                  <span>${b}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="mt-3 text-[11px] text-slate-400">
+              <strong class="text-slate-300">자격:</strong> ${p.qualification}
+            </div>
+          </div>
+
+          <div class="mt-5 pt-3 border-t border-slate-800/80 space-y-2">
+            <div class="flex items-center gap-2">
+              <button onclick="openApplyModal('${p.id}')" class="flex-1 py-2 px-3 rounded-xl bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-purple-500/30 transition-all">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> 맞춤 서식 생성
+              </button>
+              <a href="${p.applyUrl}" target="_blank" class="p-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center justify-center transition-all" title="공식 접수처 열기">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+
+            <!-- Status Toggle -->
+            <div class="flex items-center justify-between text-xs pt-1 px-1">
+              <span class="text-slate-500 text-[11px]">내 신청 상태:</span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="toggleStatus('${p.id}', 'pending')" class="px-2 py-0.5 rounded text-[10px] font-semibold ${isPending ? 'bg-amber-500 text-black' : 'bg-slate-800 text-slate-400 hover:text-white'}">
+                  심사중
+                </button>
+                <button onclick="toggleStatus('${p.id}', 'done')" class="px-2 py-0.5 rounded text-[10px] font-semibold ${isDone ? 'bg-emerald-500 text-black font-bold' : 'bg-slate-800 text-slate-400 hover:text-white'}">
+                  승인완료
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Toggle Status
+    function toggleStatus(id, status) {
+      if (appStatus[id] === status) {
+        delete appStatus[id];
+      } else {
+        appStatus[id] = status;
+      }
+      localStorage.setItem('credit_passport_status', JSON.stringify(appStatus));
+      renderPrograms();
+      updateStats();
+    }
+
+    // Update Top Summary Stats
+    function updateStats() {
+      const doneCount = Object.values(appStatus).filter(s => s === 'done').length;
+      const pendingCount = Object.values(appStatus).filter(s => s === 'pending').length;
+      document.getElementById('activeCount').innerText = `${doneCount + pendingCount}`;
+    }
+
+    // Open Modal with Tailored Text
+    function openApplyModal(progId) {
+      const p = programs.find(item => item.id === progId);
+      const s = serviceData[currentService];
+
+      document.getElementById('modalTitle').innerText = `${p.short} 공식 맞춤형 신청서`;
+      document.getElementById('modalSubtitle').innerText = `선택 서비스: ${s.title} · 대표자: 김동곤 (늘봄상회)`;
+      document.getElementById('modalApplyLink').href = p.applyUrl;
+
+      const html = `
+        <div class="bg-purple-950/20 border border-purple-500/20 rounded-xl p-3 text-xs text-purple-300 mb-3 flex items-center justify-between">
+          <span>💡 아래 문항을 그대로 복사해서 공식 신청 페이지에 입력하시면 심사 통과 확률이 극대화됩니다.</span>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-slate-400 mb-1">Q1. 회사 및 서비스 소개 (Company & Product Overview)</div>
+            <div class="text-xs text-slate-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded border border-slate-800 select-all" id="sec1">
+${s.oneLine}
+
+[상세 소개]
+${s.desc}
+공식 서비스 URL: ${s.url}
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-slate-400 mb-1">Q2. 기술 스택 및 아키텍처 (Tech Stack & Architecture)</div>
+            <div class="text-xs text-slate-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded border border-slate-800 select-all" id="sec2">
+${s.tech}
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-slate-400 mb-1">Q3. ${p.short} 클라우드 및 AI 활용 계획 (Why ${p.name}?)</div>
+            <div class="text-xs text-slate-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded border border-slate-800 select-all" id="sec3">
+${s.cloudUse}
+본 지원 프로그램을 통해 ${p.benefits[0]} 및 ${p.benefits[1]}를 적용하여 인프라 비용을 절감하고 서비스 안정성을 글로벌 수준으로 확보하고자 합니다.
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+            <div class="text-xs font-bold text-slate-400 mb-1">Q4. 사업화 마일스톤 및 1년 계획 (Business Milestones)</div>
+            <div class="text-xs text-slate-200 leading-relaxed font-mono bg-black/40 p-2.5 rounded border border-slate-800 select-all" id="sec4">
+${s.milestone}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('appModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('appModal').classList.add('hidden');
+    }
+
+    function copyModalContent() {
+      const s1 = document.getElementById('sec1').innerText;
+      const s2 = document.getElementById('sec2').innerText;
+      const s3 = document.getElementById('sec3').innerText;
+      const s4 = document.getElementById('sec4').innerText;
+
+      const fullText = `[회사 및 서비스 소개]\n${s1}\n\n[기술 스택]\n${s2}\n\n[클라우드 및 AI 활용 계획]\n${s3}\n\n[마일스톤]\n${s4}`;
+      navigator.clipboard.writeText(fullText).then(() => {
+        const btnText = document.getElementById('copyBtnText');
+        btnText.innerText = '✅ 복사 완료! 접수처에 붙여넣으세요';
+        setTimeout(() => {
+          btnText.innerText = '전체 답변 복사하기';
+        }, 2500);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
