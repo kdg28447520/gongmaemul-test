@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>안산 조달 [88% 실시간 마진 & 도매 매칭 계산기 PRO]</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
   --bg: #090d16;
@@ -29,8 +30,8 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
 
 /* PRESET CARDS */
 .section-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
-.preset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; margin-bottom: 26px; }
-.preset-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; }
+.preset-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 14px; margin-bottom: 26px; }
+.preset-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; transition: all 0.2s; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
 .preset-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 .preset-card.active { border-color: var(--accent); background: rgba(56, 189, 248, 0.08); box-shadow: 0 0 15px rgba(56, 189, 248, 0.25); }
 
@@ -38,24 +39,39 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
 .tag-badge { background: rgba(251, 191, 36, 0.15); color: var(--gold); border: 1px solid rgba(251, 191, 36, 0.3); padding: 2px 8px; border-radius: 4px; }
 .tag-dept { color: var(--muted); }
 
-.card-h { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.card-h { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 6px; cursor: pointer; }
 .card-spec { font-size: 12px; color: var(--accent); background: rgba(56,189,248,0.1); padding: 4px 8px; border-radius: 4px; margin-bottom: 10px; display: inline-block; }
 
 .price-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
 .price-table td { padding: 4px 0; }
 .price-table td:last-child { text-align: right; font-weight: 700; }
-.profit-highlight { font-size: 15px; font-weight: 900; color: var(--green); border-top: 1px solid #1e293b; padding-top: 8px; display: flex; justify-content: space-between; }
+.profit-highlight { font-size: 15px; font-weight: 900; color: var(--green); border-top: 1px solid #1e293b; padding-top: 8px; display: flex; justify-content: space-between; margin-bottom: 10px; }
+
+.card-actions { display: flex; gap: 8px; margin-top: 6px; }
+.card-btn-select { flex: 1; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: var(--accent); padding: 7px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center; transition: all 0.2s; }
+.card-btn-select:hover { background: var(--accent); color: #000; }
+.card-btn-wholesale { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); color: var(--gold); padding: 7px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: all 0.2s; }
+.card-btn-wholesale:hover { background: var(--gold); color: #000; }
 
 /* INTERACTIVE SIMULATOR */
-.sim-container { background: linear-gradient(135deg, #0f172a, #1a2234); border: 2px solid #334155; border-radius: 14px; padding: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); margin-bottom: 30px; }
-.sim-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px; margin-bottom: 16px; }
-.sim-title { font-size: 17px; font-weight: 900; color: var(--gold); }
-.sim-target-name { font-size: 14px; color: var(--accent); font-weight: 700; }
+.sim-container { background: linear-gradient(135deg, #0f172a, #1a2234); border: 2px solid #334155; border-radius: 14px; padding: 22px; box-shadow: 0 15px 30px rgba(0,0,0,0.6); margin-bottom: 30px; }
+.sim-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 12px; margin-bottom: 18px; flex-wrap: wrap; gap: 8px; }
+.sim-title { font-size: 18px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+.sim-target-name { font-size: 14px; color: var(--accent); font-weight: 700; background: rgba(56,189,248,0.1); padding: 4px 10px; border-radius: 6px; }
 
 .sim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
 .input-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 700; }
-.input-group input { width: 100%; background: #0b1120; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 15px; font-weight: 800; outline: none; }
-.input-group input:focus { border-color: var(--accent); }
+.input-group input, .input-group select { width: 100%; background: #0b1120; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 14px; font-weight: 800; outline: none; transition: border-color 0.2s; }
+.input-group input:focus, .input-group select:focus { border-color: var(--accent); }
+
+/* SHIPPING CALCULATOR MODULE */
+.shipping-module { background: rgba(0,0,0,0.3); border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-bottom: 18px; }
+.shipping-header { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+.shipping-options { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.ship-pill { background: #1e293b; border: 1px solid #334155; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; color: #cbd5e1; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+.ship-pill.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 900; }
+.shipping-calc-row { display: flex; gap: 12px; align-items: center; font-size: 13px; color: #94a3b8; flex-wrap: wrap; }
+.ship-val-highlight { color: #fff; font-weight: 800; }
 
 /* RESULT DASHBOARD */
 .res-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: rgba(0,0,0,0.4); padding: 16px; border-radius: 10px; border: 1px solid #1e293b; }
@@ -68,36 +84,42 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
 .res-val.red { color: var(--red); }
 
 /* SOURCING GUIDE BOX */
-.sourcing-box { margin-top: 18px; background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 10px; padding: 14px; }
-.sourcing-title { font-size: 14px; font-weight: 800; color: var(--accent); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-.sourcing-desc { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
-.sourcing-links { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.s-link { background: #1e293b; border: 1px solid #334155; color: #fff; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 6px; text-decoration: none; transition: all 0.2s; }
-.s-link:hover { background: var(--accent); color: #000; }
+.sourcing-box { margin-top: 20px; background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 10px; padding: 16px; }
+.sourcing-title { font-size: 14px; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.sourcing-desc { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+.sourcing-links { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.s-link { background: #1e293b; border: 1px solid #334155; color: #fff; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 8px; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.s-link:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+.s-link.gold { border-color: rgba(251,191,36,0.4); color: var(--gold); }
+.s-link.gold:hover { background: var(--gold); color: #000; }
 
-.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px 0; border-top: 1px solid var(--card-border); margin-top: 20px; }
+.footer { text-align: center; color: var(--muted); font-size: 12px; padding: 22px 0; border-top: 1px solid var(--card-border); margin-top: 24px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
     <h1>안산 B2G 88% 조달 마진 & 도매 매칭 관제탑</h1>
-    <p>공고 기초금액 vs 88% 투찰가 vs B2B 실측 도매원가 자동 시뮬레이터</p>
-    <div class="badge">소액수의 88% 무재고 B2G 직납 엔진 가동 중</div>
+    <p>공고 기초금액 vs 88% 투찰가 vs B2B 실측 도매원가 & 배송비(용달/택배) 정밀 계산기</p>
+    <div class="badge"><i class="fa-solid fa-truck-fast"></i> 무재고 B2G 직납 · 배송비 & 도매원가 실시간 연동</div>
   </div>
 
   <div class="section-title">
-    <span>🎯 안산 관내 초간단 5대 공고 프리셋 (클릭 시 계산기 자동 반영)</span>
+    <span>🎯 안산 관내 초간단 5대 공고 프리셋 (도매원가 링크 & 마진 즉시 확인)</span>
   </div>
 
   <div class="preset-grid" id="presetGrid"></div>
 
   <div class="sim-container">
     <div class="sim-header">
-      <div class="sim-title">📊 실시간 마진 & 수익률 시뮬레이터</div>
+      <div class="sim-title">
+        <i class="fa-solid fa-calculator text-amber-400"></i>
+        <span>실시간 마진 & 배송비 정밀 시뮬레이터</span>
+      </div>
       <div class="sim-target-name" id="targetName">시청사 화장실 핸드타올 구입 (300박스)</div>
     </div>
 
+    <!-- 기초 및 도매원가 입력 -->
     <div class="sim-grid">
       <div class="input-group">
         <label>관공서 기초금액 (정가 100%)</label>
@@ -108,19 +130,48 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
         <input type="number" id="inpRate" value="88" step="0.1" oninput="calc()">
       </div>
       <div class="input-group">
-        <label>B2B 도매 소싱 원가 (총액)</label>
+        <label>납품 수량 (박스/개)</label>
+        <input type="number" id="inpQty" value="300" oninput="onQtyChange()">
+      </div>
+      <div class="input-group">
+        <label>개당 도매 단가 (원)</label>
+        <input type="number" id="inpUnitWholesale" value="18000" oninput="onUnitWholesaleChange()">
+      </div>
+      <div class="input-group">
+        <label>B2B 도매 소싱 총액 (원)</label>
         <input type="number" id="inpWholesale" value="5400000" oninput="calc()">
       </div>
       <div class="input-group">
-        <label>배송비 / 용달비 (원)</label>
-        <input type="number" id="inpShipping" value="150000" oninput="calc()">
-      </div>
-      <div class="input-group">
-        <label>지역개발채권·인지세 공제 (1.5%)</label>
+        <label>지역개발채권·공제세율 (%)</label>
         <input type="number" id="inpTaxRate" value="1.5" step="0.1" oninput="calc()">
       </div>
     </div>
 
+    <!-- 배송비 계산 모듈 -->
+    <div class="shipping-module">
+      <div class="shipping-header">
+        <span><i class="fa-solid fa-boxes-packing"></i> 배송 방식 선택 & 배송비 계산</span>
+        <span id="shipCalcSummary" style="color: #cbd5e1; font-weight: normal;">1톤 용달 관내 직송 (150,000원)</span>
+      </div>
+      <div class="shipping-options">
+        <div class="ship-pill active" id="pill-truck" onclick="setShippingMode('truck')">
+          <i class="fa-solid fa-truck"></i> 1톤 용달/화물 직송 (대량 납품)
+        </div>
+        <div class="ship-pill" id="pill-parcel" onclick="setShippingMode('parcel')">
+          <i class="fa-solid fa-box"></i> 개별 택배 발송 (박스당 계산)
+        </div>
+        <div class="ship-pill" id="pill-free" onclick="setShippingMode('free')">
+          <i class="fa-solid fa-building"></i> 직접 납품 / 도매처 무료배송
+        </div>
+      </div>
+      <div class="shipping-calc-row">
+        <span>배송비 총액 직접 수정:</span>
+        <input type="number" id="inpShipping" value="150000" style="width: 130px; background:#0b1120; border:1px solid #334155; border-radius:6px; padding:6px 10px; color:#fff; font-weight:800;" oninput="calc()">
+        <span id="shipDetailText" style="font-size:12px; color:var(--muted);">안산시청 청사 창고 앞 1톤 트럭 하차 기준 (평균 12만~15만 원)</span>
+      </div>
+    </div>
+
+    <!-- 결과 대시보드 -->
     <div class="res-dashboard">
       <div class="res-card">
         <div class="res-title">나의 황금 투찰가 (낙찰가)</div>
@@ -140,16 +191,19 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
       </div>
     </div>
 
+    <!-- 도매 소싱 및 직결 링크 박스 -->
     <div class="sourcing-box">
-      <div class="sourcing-title">🔍 실측 스펙 & B2B 도매 소싱 루트</div>
+      <div class="sourcing-title">
+        <i class="fa-solid fa-link text-sky-400"></i>
+        <span>실시간 도매 소싱 루트 & 직결 링크</span>
+      </div>
       <div class="sourcing-desc" id="sourcingDesc">
         <strong>스펙:</strong> 2겹 천연펄프 무형광 핸드타올 5,000매 규격 300박스.<br>
         <strong>도매가:</strong> B2B 도매몰(도매꾹, 온채널, 제지공장 직납) 박스당 17,500원 ~ 18,000원 선.<br>
-        <strong>납품:</strong> 결제 후 배송지를 [안산시청 회계과 박정범 주무관 (031-481-3086)] 앞으로 1톤 용달 직송.
+        <strong>배송지:</strong> 결제 시 배송지를 [안산시청 회계과 박정범 주무관 앞]으로 1톤 트럭 직송.
       </div>
       <div class="sourcing-links" id="sourcingLinks">
-        <a href="https://domeggook.com/main/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4" target="_blank" class="s-link">도매꾹 핸드타올 도매가 확인</a>
-        <a href="https://search.shopping.naver.com/search/all?query=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4+%EC%97%85%EC%86%8c%EC%9A%A9" target="_blank" class="s-link">네이버 업소용 도매가 대조</a>
+        <!-- 동적 렌더링 -->
       </div>
     </div>
   </div>
@@ -160,120 +214,161 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
 </div>
 
 <script>
+let currentShipMode = 'truck';
+
 const presets = [
   {
     id: 1,
     title: "시청사 화장실 핸드타올 구입",
     dept: "안산시 회계과 (박정범)",
     spec: "핸드타올 2겹 무형광 5,000매 (300박스)",
+    qty: 300,
+    unitWholesale: 18000,
     basePrice: 12000000,
     rate: 88,
-    wholesale: 5400000, // 박스당 18,000원
-    shipping: 150000, // 1톤 용달 관내
+    wholesale: 5400000,
+    shippingTruck: 150000,
+    shippingParcelPerUnit: 3000,
     taxRate: 1.5,
-    specDetail: "2겹 천연펄프 무형광 핸드타올 5,000매 300박스. 기초단가 박스당 40,000원 책정.",
+    specDetail: "2겹 천연펄프 무형광 핸드타올 5,000매 300박스. 관공서 기초단가 박스당 40,000원 책정.",
     wholesaleDetail: "B2B 제지 도매몰 박스당 17,500~18,000원선 (300박스 540만 원).",
     deliveryDetail: "도매몰 주문 시 안산시청 회계과(031-481-3086)로 1톤 트럭 직송.",
+    primaryWholesaleUrl: "https://domeggook.com/main/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4",
     links: [
-      { text: "도매꾹 5000매 도매가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4" },
-      { text: "네이버 최저가 대조", url: "https://search.shopping.naver.com/search/all?query=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4+%EC%97%85%EC%86%8c%EC%9A%A9" }
+      { text: "🛒 도매꾹 5,000매 실시간 도매원가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4", isGold: true },
+      { text: "📦 도매매 위탁 직송 단가 대조", url: "https://domeme.domeggook.com/index/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC", isGold: false },
+      { text: "🔍 네이버 업소용 5000매 최저가 비교", url: "https://search.shopping.naver.com/search/all?query=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4+%EC%97%85%EC%86%8c%EC%9A%A9", isGold: false }
     ]
   },
   {
     id: 2,
-    title: "시청사 화장실 비치용 구강청결제 구입",
+    title: "시청사 화장실 구강청결제 구입",
     dept: "안산시 회계과 (박정범)",
-    spec: "디스펜서용 가글액 리필 4L/대용량 (200박스)",
+    spec: "디스펜서용 가글액 리필 4L (200박스)",
+    qty: 200,
+    unitWholesale: 24000,
     basePrice: 10000000,
     rate: 88,
-    wholesale: 4800000, // 박스당 24,000원
-    shipping: 100000,
+    wholesale: 4800000,
+    shippingTruck: 120000,
+    shippingParcelPerUnit: 3500,
     taxRate: 1.5,
-    specDetail: "청사 화장실 디스펜서 리필용 구강청결제 200박스. 기초단가 박스당 50,000원 책정.",
+    specDetail: "청사 화장실 디스펜서 리필용 구강청결제 200박스. 관공서 기초단가 박스당 50,000원 책정.",
     wholesaleDetail: "위생용품 도매몰 박스당 23,000~25,000원 (200박스 480만 원).",
     deliveryDetail: "시청 회계과 청사관리 창고로 용달/화물 직배송.",
+    primaryWholesaleUrl: "https://domeggook.com/main/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+%EB%8C%80%EC%9A%A9%EB%9F%89",
     links: [
-      { text: "도매꾹 구강청결제 대용량", url: "https://domeggook.com/main/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+%EB%8C%80%EC%9A%A9%EB%9F%89" }
+      { text: "🛒 도매꾹 대용량 가글 도매원가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+%EB%8C%80%EC%9A%A9%EB%9F%89", isGold: true },
+      { text: "📦 도매매 디스펜서 리필 도매가", url: "https://domeme.domeggook.com/index/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C", isGold: false },
+      { text: "🔍 네이버 가글액 4L 최저가 대조", url: "https://search.shopping.naver.com/search/all?query=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+4L+%EB%A6%AC%ED%95%84", isGold: false }
     ]
   },
   {
     id: 3,
     title: "최용신기념관 사무용 소모품 구입",
     dept: "안산시 관광과 (서정원)",
-    spec: "A4 복사용지, 파일철, 필기구, 전산용품 1식",
+    spec: "A4 복사용지, 파일철, 필기구 1식",
+    qty: 1,
+    unitWholesale: 3600000,
     basePrice: 6000000,
     rate: 88,
-    wholesale: 3600000, // 정가의 60%
-    shipping: 50000,
+    wholesale: 3600000,
+    shippingTruck: 50000,
+    shippingParcelPerUnit: 30000,
     taxRate: 1.5,
-    specDetail: "기념관 운영에 필요한 연간 사무·전산 소모품 20여 종 1식.",
-    wholesaleDetail: "알파몰/오피스넥스 B2B 도매몰 장바구니 일괄 결제 (소비자가 대비 60%).",
-    deliveryDetail: "상록구 본오동 최용신기념관 사무실로 택배 배송.",
+    specDetail: "기념관 연간 운영용 복사용지 및 사무·전산 소모품 20여 종 1식.",
+    wholesaleDetail: "오피스넥스/알파몰 B2B 도매몰 일괄 소싱 (소비자가 대비 약 60%).",
+    deliveryDetail: "상록구 본오동 최용신기념관 사무실로 택배/용달 배송.",
+    primaryWholesaleUrl: "https://www.officenex.com",
     links: [
-      { text: "오피스넥스 B2B", url: "https://www.officenex.com" }
+      { text: "🛒 오피스넥스 B2B 소싱몰", url: "https://www.officenex.com", isGold: true },
+      { text: "📦 도매꾹 A4 복사용지 대량 도매가", url: "https://domeggook.com/main/item/itemSearch.php?skey=A4+%EB%B3%B5%EC%82%AC%EC%9A%A9%EC%A7%80", isGold: false }
     ]
   },
   {
     id: 4,
     title: "겨울철 대설 대비 제설도구 구입",
     dept: "시민안전과 (신태호)",
-    spec: "플라스틱 눈삽, 넉가래, 빗자루, 제설장갑 1식",
+    spec: "눈삽, 넉가래, 빗자루 1식",
+    qty: 1,
+    unitWholesale: 11500000,
     basePrice: 20000000,
     rate: 88,
     wholesale: 11500000,
-    shipping: 250000,
+    shippingTruck: 250000,
+    shippingParcelPerUnit: 150000,
     taxRate: 1.5,
-    specDetail: "동절기 제설작업용 눈삽, 넉가래 등 제설장비 1식.",
-    wholesaleDetail: "철물/안전용품 종합 도매상사 세트 발주 (기초금액의 57%).",
-    deliveryDetail: "안산시 시민안전과 지정 제설창고 하차.",
+    specDetail: "동절기 도로 및 보도 제설작업용 눈삽, 넉가래, 방한장갑 세트 1식.",
+    wholesaleDetail: "안전용품 종합 도매상사 세트 발주 (기초금액의 57%).",
+    deliveryDetail: "안산시 시민안전과 지정 제설창고 1톤/2.5톤 화물 하차.",
+    primaryWholesaleUrl: "https://domeggook.com/main/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD",
     links: [
-      { text: "도매꾹 제설 눈삽 대량", url: "https://domeggook.com/main/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD" }
+      { text: "🛒 도매꾹 제설 눈삽·넉가래 도매원가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD", isGold: true },
+      { text: "📦 도매매 제설용품 대량 소싱", url: "https://domeme.domeggook.com/index/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4%EB%88%88%EC%82%BD", isGold: false }
     ]
   },
   {
     id: 5,
     title: "주민등록증판독기, 전자서명기 구매",
     dept: "단원구 대부동 (김현호)",
-    spec: "행안부 주민전산망 호환 기성 판독기/패드 2대",
+    spec: "행안부 인증 판독기/서명기 2대",
+    qty: 2,
+    unitWholesale: 900000,
     basePrice: 2860000,
     rate: 88,
     wholesale: 1800000,
-    shipping: 10000,
+    shippingTruck: 50000,
+    shippingParcelPerUnit: 5000,
     taxRate: 1.5,
     specDetail: "대부동 행정복지센터 민원실 주민등록증 스캐너 및 서명패드 2세트.",
-    wholesaleDetail: "조달 공인 제조사 대리점 총판 공급가 (대당 약 90만 원).",
+    wholesaleDetail: "조달 공인 총판 공급가 (대당 약 90만 원).",
     deliveryDetail: "대부동 주민센터 민원실 택배 발송.",
+    primaryWholesaleUrl: "https://search.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88",
     links: [
-      { text: "신분증스캐너 조달 호환 규격", url: "https://search.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88" }
+      { text: "🛒 신분증스캐너 도매원가 확인", url: "https://search.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88", isGold: true }
     ]
   }
 ];
+
+let currentPresetIdx = 0;
 
 function renderPresets() {
   const grid = document.getElementById('presetGrid');
   grid.innerHTML = presets.map((p, idx) => {
     const bid = Math.round(p.basePrice * (p.rate / 100));
     const tax = Math.round(bid * (p.taxRate / 100));
-    const totalCost = p.wholesale + p.shipping + tax;
+    const totalCost = p.wholesale + p.shippingTruck + tax;
     const profit = bid - totalCost;
     const margin = ((profit / bid) * 100).toFixed(1);
 
     return `
-      <div class="preset-card ${idx === 0 ? 'active' : ''}" onclick="selectPreset(${idx})">
-        <div class="tag-row">
-          <span class="tag-badge">추천 ${idx+1}위</span>
-          <span class="tag-dept">${p.dept}</span>
+      <div class="preset-card ${idx === currentPresetIdx ? 'active' : ''}">
+        <div>
+          <div class="tag-row">
+            <span class="tag-badge">추천 ${idx+1}위</span>
+            <span class="tag-dept">${p.dept}</span>
+          </div>
+          <div class="card-h" onclick="selectPreset(${idx})">${p.title}</div>
+          <div class="card-spec">${p.spec}</div>
+          <table class="price-table">
+            <tr><td style="color:var(--muted)">기초예산</td><td>${p.basePrice.toLocaleString()}원</td></tr>
+            <tr><td style="color:var(--gold)">88% 투찰가</td><td>${bid.toLocaleString()}원</td></tr>
+            <tr><td style="color:var(--red)">도매원가</td><td>${p.wholesale.toLocaleString()}원</td></tr>
+            <tr><td style="color:var(--accent)">용달배송비</td><td>${p.shippingTruck.toLocaleString()}원</td></tr>
+          </table>
+          <div class="profit-highlight">
+            <span>예상 순이익</span>
+            <span>${profit.toLocaleString()}원 (${margin}%)</span>
+          </div>
         </div>
-        <div class="card-h">${p.title}</div>
-        <div class="card-spec">${p.spec}</div>
-        <table class="price-table">
-          <tr><td style="color:var(--muted)">기초예산</td><td>${p.basePrice.toLocaleString()}원</td></tr>
-          <tr><td style="color:var(--gold)">88% 투찰가</td><td>${bid.toLocaleString()}원</td></tr>
-          <tr><td style="color:var(--red)">도매원가</td><td>${p.wholesale.toLocaleString()}원</td></tr>
-        </table>
-        <div class="profit-highlight">
-          <span>예상 순이익</span>
-          <span>${profit.toLocaleString()}원 (${margin}%)</span>
+
+        <div class="card-actions">
+          <button class="card-btn-select" onclick="selectPreset(${idx})">
+            <i class="fa-solid fa-sliders"></i> 계산기에 반영
+          </button>
+          <a href="${p.primaryWholesaleUrl}" target="_blank" class="card-btn-wholesale">
+            <i class="fa-solid fa-cart-shopping"></i> 도매원가 직결
+          </a>
         </div>
       </div>
     `;
@@ -281,6 +376,7 @@ function renderPresets() {
 }
 
 function selectPreset(idx) {
+  currentPresetIdx = idx;
   document.querySelectorAll('.preset-card').forEach((c, i) => {
     if (i === idx) c.classList.add('active');
     else c.classList.remove('active');
@@ -290,21 +386,77 @@ function selectPreset(idx) {
   document.getElementById('targetName').innerText = `${p.title} (${p.spec})`;
   document.getElementById('inpBasePrice').value = p.basePrice;
   document.getElementById('inpRate').value = p.rate;
+  document.getElementById('inpQty').value = p.qty;
+  document.getElementById('inpUnitWholesale').value = p.unitWholesale;
   document.getElementById('inpWholesale').value = p.wholesale;
-  document.getElementById('inpShipping').value = p.shipping;
   document.getElementById('inpTaxRate').value = p.taxRate;
+
+  // 배송비 모드 재계산
+  applyShippingMode(currentShipMode, p);
 
   document.getElementById('sourcingDesc').innerHTML = `
     <strong>스펙:</strong> ${p.specDetail}<br>
     <strong>도매 소싱:</strong> ${p.wholesaleDetail}<br>
-    <strong>납품 방법:</strong> ${p.deliveryDetail}
+    <strong>배송지:</strong> ${p.deliveryDetail}
   `;
 
   document.getElementById('sourcingLinks').innerHTML = p.links.map(l => `
-    <a href="${l.url}" target="_blank" class="s-link">${l.text}</a>
+    <a href="${l.url}" target="_blank" class="s-link ${l.isGold ? 'gold' : ''}">
+      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> ${l.text}
+    </a>
   `).join('');
 
   calc();
+}
+
+function onQtyChange() {
+  const qty = parseFloat(document.getElementById('inpQty').value) || 0;
+  const unit = parseFloat(document.getElementById('inpUnitWholesale').value) || 0;
+  document.getElementById('inpWholesale').value = Math.round(qty * unit);
+  
+  if (currentShipMode === 'parcel') {
+    const p = presets[currentPresetIdx];
+    const totalParcelShip = qty * p.shippingParcelPerUnit;
+    document.getElementById('inpShipping').value = totalParcelShip;
+    document.getElementById('shipCalcSummary').innerText = `개별 택배 (${qty}박스 x ${p.shippingParcelPerUnit.toLocaleString()}원 = ${totalParcelShip.toLocaleString()}원)`;
+  }
+  calc();
+}
+
+function onUnitWholesaleChange() {
+  const qty = parseFloat(document.getElementById('inpQty').value) || 0;
+  const unit = parseFloat(document.getElementById('inpUnitWholesale').value) || 0;
+  document.getElementById('inpWholesale').value = Math.round(qty * unit);
+  calc();
+}
+
+function setShippingMode(mode) {
+  currentShipMode = mode;
+  document.querySelectorAll('.ship-pill').forEach(el => el.classList.remove('active'));
+  document.getElementById(`pill-${mode}`).classList.add('active');
+
+  const p = presets[currentPresetIdx];
+  applyShippingMode(mode, p);
+  calc();
+}
+
+function applyShippingMode(mode, p) {
+  const qty = parseFloat(document.getElementById('inpQty').value) || p.qty;
+
+  if (mode === 'truck') {
+    document.getElementById('inpShipping').value = p.shippingTruck;
+    document.getElementById('shipCalcSummary').innerText = `1톤 용달 관내 직송 (${p.shippingTruck.toLocaleString()}원)`;
+    document.getElementById('shipDetailText').innerText = `안산시 관내 1톤 트럭 하차 기준 (평균 12만~15만 원 고정)`;
+  } else if (mode === 'parcel') {
+    const totalParcel = qty * p.shippingParcelPerUnit;
+    document.getElementById('inpShipping').value = totalParcel;
+    document.getElementById('shipCalcSummary').innerText = `개별 택배 (${qty}박스 x ${p.shippingParcelPerUnit.toLocaleString()}원 = ${totalParcel.toLocaleString()}원)`;
+    document.getElementById('shipDetailText').innerText = `수량 비례 택배비 (박스당 ${p.shippingParcelPerUnit.toLocaleString()}원 x ${qty}박스)`;
+  } else if (mode === 'free') {
+    document.getElementById('inpShipping').value = 0;
+    document.getElementById('shipCalcSummary').innerText = `직접 납품 / 도매처 무료배송 (0원)`;
+    document.getElementById('shipDetailText').innerText = `도매몰 무료배송 프로모션 또는 차량으로 직접 납품 시`;
+  }
 }
 
 function calc() {
@@ -334,7 +486,7 @@ function calc() {
 }
 
 renderPresets();
-calc();
+selectPreset(0);
 </script>
 </body>
 </html>
