@@ -108,7 +108,27 @@ body { background: var(--bg); color: var(--text); padding: 16px; min-height: 100
     <span>🎯 안산 관내 초간단 5대 공고 프리셋 (도매원가 링크 & 마진 즉시 확인)</span>
   </div>
 
-  <div class="preset-grid" id="presetGrid"></div>
+      <!-- 도매 소싱 플랫폼 5대 대안 배너 -->
+    <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95)); border: 1px solid #3b82f6; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px; font-weight:800; font-size:14px; color:#38bdf8;">
+          <i class="fa-solid fa-truck-ramp-box"></i>
+          <span>도매꾹 말고 어디서 사나요? (B2G 실전 5대 도매처 연동)</span>
+        </div>
+        <div style="font-size:12px; color:#94a3b8;">
+          로그인 불필요 · 무재고 위탁배송 직발송 지원
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        <span style="background:#0f172a; border:1px solid #059669; color:#34d399; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;">1위 네이버 B2B 업소용 (1초 확인)</span>
+        <span style="background:#0f172a; border:1px solid #3b82f6; color:#60a5fa; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;">2위 오너클랜 (국내 1위 B2B)</span>
+        <span style="background:#0f172a; border:1px solid #8b5cf6; color:#c084fc; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;">3위 도매매 (위탁직송 전문)</span>
+        <span style="background:#0f172a; border:1px solid #f59e0b; color:#fbbf24; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;">4위 쿠팡 비즈니스 (로켓배송)</span>
+        <span style="background:#0f172a; border:1px solid #64748b; color:#cbd5e1; padding:4px 10px; border-radius:6px; font-size:11px;">5위 도매꾹 (모바일전용)</span>
+      </div>
+    </div>
+
+    <div class="preset-grid" id="presetGrid"></div>
 
   <div class="sim-container">
     <div class="sim-header">
@@ -231,13 +251,15 @@ const presets = [
     shippingParcelPerUnit: 3000,
     taxRate: 1.5,
     specDetail: "2겹 천연펄프 무형광 핸드타올 5,000매 300박스. 관공서 기초단가 박스당 40,000원 책정.",
-    wholesaleDetail: "B2B 제지 도매몰 박스당 17,500~18,000원선 (300박스 540만 원).",
-    deliveryDetail: "도매몰 주문 시 안산시청 회계과(031-481-3086)로 1톤 트럭 직송.",
-    primaryWholesaleUrl: "https://domeggook.com/main/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4",
+    wholesaleDetail: "B2B 도매처(네이버 B2B, 오너클랜, 도매매) 박스당 17,500~18,000원선 (300박스 540만 원).",
+    deliveryDetail: "도매처 주문 시 배송지를 안산시청 회계과(031-481-3086)로 1톤 트럭 직송.",
+    primaryWholesaleUrl: "https://msearch.shopping.naver.com/search/all?query=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4+%EC%97%85%EC%86%8C%EC%9A%A9",
     links: [
-      { text: "🛒 도매꾹 5,000매 실시간 도매원가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4", isGold: true },
-      { text: "📦 도매매 위탁 직송 단가 대조", url: "https://domeme.domeggook.com/index/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC", isGold: false },
-      { text: "🔍 네이버 업소용 5000매 최저가 비교", url: "https://search.shopping.naver.com/search/all?query=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4+%EC%97%85%EC%86%8c%EC%9A%A9", isGold: false }
+      { text: "🔍 네이버 B2B 업소용 최저가 (로그인 불필요 · 1초 확인)", url: "https://msearch.shopping.naver.com/search/all?query=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4+%EC%97%85%EC%86%8C%EC%9A%A9", isGold: true },
+      { text: "🏢 오너클랜 B2B 위탁배송 도매가", url: "https://m.ownerclan.com/V2/product/search.php?keyword=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4", isGold: false },
+      { text: "📦 도매매 B2B 관공서 직송 단가", url: "https://m.domeme.domeggook.com/index/item/itemSearch.php?skey=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC", isGold: false },
+      { text: "🚀 쿠팡 비즈니스 대용량 로켓배송", url: "https://m.coupang.com/nm/search?q=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4", isGold: false },
+      { text: "🛒 도매꾹 (모바일 전용 바로가기)", url: "https://mobile.domeggook.com/itemlist?so=rd&pg=1&kw=%ED%95%B8%EB%93%9C%ED%83%80%EC%98%AC+5000%EB%A7%A4&kwType=title", isGold: false }
     ]
   },
   {
@@ -256,11 +278,13 @@ const presets = [
     specDetail: "청사 화장실 디스펜서 리필용 구강청결제 200박스. 관공서 기초단가 박스당 50,000원 책정.",
     wholesaleDetail: "위생용품 도매몰 박스당 23,000~25,000원 (200박스 480만 원).",
     deliveryDetail: "시청 회계과 청사관리 창고로 용달/화물 직배송.",
-    primaryWholesaleUrl: "https://domeggook.com/main/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+%EB%8C%80%EC%9A%A9%EB%9F%89",
+    primaryWholesaleUrl: "https://msearch.shopping.naver.com/search/all?query=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+4L+%EB%8C%80%EC%9A%A9%EB%9F%89+%EC%97%85%EC%86%8C%EC%9A%A9",
     links: [
-      { text: "🛒 도매꾹 대용량 가글 도매원가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+%EB%8C%80%EC%9A%A9%EB%9F%89", isGold: true },
-      { text: "📦 도매매 디스펜서 리필 도매가", url: "https://domeme.domeggook.com/index/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C", isGold: false },
-      { text: "🔍 네이버 가글액 4L 최저가 대조", url: "https://search.shopping.naver.com/search/all?query=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+4L+%EB%A6%AC%ED%95%84", isGold: false }
+      { text: "🔍 네이버 B2B 가글액 4L 최저가 (로그인 불필요)", url: "https://msearch.shopping.naver.com/search/all?query=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+4L+%EB%8C%80%EC%9A%A9%EB%9F%89+%EC%97%85%EC%86%8C%EC%9A%A9", isGold: true },
+      { text: "🏢 오너클랜 대용량 위생가글 도매가", url: "https://m.ownerclan.com/V2/product/search.php?keyword=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+4L", isGold: false },
+      { text: "📦 도매매 디스펜서 리필 도매원가", url: "https://m.domeme.domeggook.com/index/item/itemSearch.php?skey=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C", isGold: false },
+      { text: "🚀 쿠팡 대용량 가글 로켓배송", url: "https://m.coupang.com/nm/search?q=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+4L", isGold: false },
+      { text: "🛒 도매꾹 (모바일 전용 바로가기)", url: "https://mobile.domeggook.com/itemlist?so=rd&pg=1&kw=%EA%B5%AC%EA%B0%95%EC%B2%AD%EA%B2%B0%EC%A0%9C+%EB%8C%80%EC%9A%A9%EB%9F%89&kwType=title", isGold: false }
     ]
   },
   {
@@ -277,12 +301,13 @@ const presets = [
     shippingParcelPerUnit: 30000,
     taxRate: 1.5,
     specDetail: "기념관 연간 운영용 복사용지 및 사무·전산 소모품 20여 종 1식.",
-    wholesaleDetail: "오피스넥스/알파몰 B2B 도매몰 일괄 소싱 (소비자가 대비 약 60%).",
+    wholesaleDetail: "오피스넥스/알파몰/네이버 B2B 도매몰 일괄 소싱 (소비자가 대비 약 60%).",
     deliveryDetail: "상록구 본오동 최용신기념관 사무실로 택배/용달 배송.",
-    primaryWholesaleUrl: "https://www.officenex.com",
+    primaryWholesaleUrl: "https://msearch.shopping.naver.com/search/all?query=A4+%EB%B3%B5%EC%82%AC%EC%9A%A9%EC%A7%80+%EB%B0%95%EC%8A%A4+%EB%8F%84%EB%A7%A4",
     links: [
-      { text: "🛒 오피스넥스 B2B 소싱몰", url: "https://www.officenex.com", isGold: true },
-      { text: "📦 도매꾹 A4 복사용지 대량 도매가", url: "https://domeggook.com/main/item/itemSearch.php?skey=A4+%EB%B3%B5%EC%82%AC%EC%9A%A9%EC%A7%80", isGold: false }
+      { text: "🔍 네이버 B2B A4 복사용지 최저가 대조", url: "https://msearch.shopping.naver.com/search/all?query=A4+%EB%B3%B5%EC%82%AC%EC%9A%A9%EC%A7%80+%EB%B0%95%EC%8A%A4+%EB%8F%84%EB%A7%A4", isGold: true },
+      { text: "🏢 오너클랜 사무용품·문구 B2B", url: "https://m.ownerclan.com/V2/product/search.php?keyword=A4+%EB%B3%B5%EC%82%AC%EC%9A%A9%EC%A7%80", isGold: false },
+      { text: "🛒 오피스넥스 관공서 B2B 전문몰", url: "https://www.officenex.com", isGold: false }
     ]
   },
   {
@@ -301,10 +326,11 @@ const presets = [
     specDetail: "동절기 도로 및 보도 제설작업용 눈삽, 넉가래, 방한장갑 세트 1식.",
     wholesaleDetail: "안전용품 종합 도매상사 세트 발주 (기초금액의 57%).",
     deliveryDetail: "안산시 시민안전과 지정 제설창고 1톤/2.5톤 화물 하차.",
-    primaryWholesaleUrl: "https://domeggook.com/main/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD",
+    primaryWholesaleUrl: "https://msearch.shopping.naver.com/search/all?query=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD+%EB%84%89%EA%B0%80%EB%9E%98+%EB%8F%84%EB%A7%A4",
     links: [
-      { text: "🛒 도매꾹 제설 눈삽·넉가래 도매원가", url: "https://domeggook.com/main/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD", isGold: true },
-      { text: "📦 도매매 제설용품 대량 소싱", url: "https://domeme.domeggook.com/index/item/itemSearch.php?skey=%EC%A0%9C%EC%84%A4%EB%88%88%EC%82%BD", isGold: false }
+      { text: "🔍 네이버 B2B 제설 눈삽·넉가래 도매원가", url: "https://msearch.shopping.naver.com/search/all?query=%EC%A0%9C%EC%84%A4+%EB%88%88%EC%82%BD+%EB%84%89%EA%B0%80%EB%9E%98+%EB%8F%84%EB%A7%A4", isGold: true },
+      { text: "🏢 오너클랜 동절기 제설도구 B2B", url: "https://m.ownerclan.com/V2/product/search.php?keyword=%EB%88%88%EC%82%BD", isGold: false },
+      { text: "📦 도매매 제설용품 대량 소싱", url: "https://m.domeme.domeggook.com/index/item/itemSearch.php?skey=%EB%88%88%EC%82%BD", isGold: false }
     ]
   },
   {
@@ -323,9 +349,10 @@ const presets = [
     specDetail: "대부동 행정복지센터 민원실 주민등록증 스캐너 및 서명패드 2세트.",
     wholesaleDetail: "조달 공인 총판 공급가 (대당 약 90만 원).",
     deliveryDetail: "대부동 주민센터 민원실 택배 발송.",
-    primaryWholesaleUrl: "https://search.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88",
+    primaryWholesaleUrl: "https://msearch.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88",
     links: [
-      { text: "🛒 신분증스캐너 도매원가 확인", url: "https://search.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88", isGold: true }
+      { text: "🔍 네이버 신분증스캐너 도매원가 확인", url: "https://msearch.shopping.naver.com/search/all?query=%EC%A3%BC%EB%AF%BC%EB%93%B1%EB%A1%9D%EC%A6%9D%EC%8A%A4%EC%BA%90%EB%84%88", isGold: true },
+      { text: "🏢 오너클랜 전자서명패드 B2B", url: "https://m.ownerclan.com/V2/product/search.php?keyword=%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85%ED%8C%A8%EB%93%9C", isGold: false }
     ]
   }
 ];
@@ -367,7 +394,7 @@ function renderPresets() {
             <i class="fa-solid fa-sliders"></i> 계산기에 반영
           </button>
           <a href="${p.primaryWholesaleUrl}" target="_blank" class="card-btn-wholesale">
-            <i class="fa-solid fa-cart-shopping"></i> 도매원가 직결
+            <i class="fa-solid fa-cart-shopping"></i> 최저가 도매직결 (네이버B2B)
           </a>
         </div>
       </div>
