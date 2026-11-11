@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>동곤 로켓그로스 관제탑 PRO — 마진·손익분기 ROAS·슬로무버 계산기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090b10;
+      --card-bg: rgba(18, 22, 34, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #3b82f6;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #3b82f6;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --purple: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px 80px;
+      line-height: 1.5;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    
+    /* Header */
+    header { text-align: center; margin-bottom: 28px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    p.sub { color: var(--text-muted); font-size: 14px; }
+
+    /* Preset Tabs */
+    .presets-wrap {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+    }
+    .presets-wrap::-webkit-scrollbar { display: none; }
+    .preset-btn {
+      flex-shrink: 0;
+      padding: 9px 15px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+    .preset-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--primary);
+      color: #93c5fd;
+    }
+
+    /* Grid Layout */
+    .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 768px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title span.tag {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+    }
+
+    /* Form Elements */
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    input, select {
+      width: 100%;
+      padding: 11px 14px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--border-focus); }
+    .size-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .size-grid input { text-align: center; }
+
+    /* Results */
+    .res-box {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    .res-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 14px;
+    }
+    .res-row:last-child { border-bottom: none; }
+    .res-row.highlight {
+      font-size: 16px;
+      font-weight: 700;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .res-val { font-weight: 700; }
+    .text-green { color: var(--accent); }
+    .text-red { color: var(--danger); }
+    .text-yellow { color: var(--warning); }
+    .text-blue { color: #60a5fa; }
+    .text-purple { color: #c084fc; }
+
+    /* Callout Card */
+    .callout {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .callout-title { font-size: 13px; font-weight: 700; color: #93c5fd; margin-bottom: 4px; }
+    .callout-body { font-size: 13px; color: #e2e8f0; }
+
+    /* Slow Mover Simulator */
+    .slider-wrap { margin-top: 8px; }
+    input[type=range] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">🐼 대시판다 핵심 로직 100% 자체 이식판</div>
+    <h1>동곤 로켓그로스 관제탑 PRO</h1>
+    <p class="sub">수수료·CFS 입출고 배송비·마진율·손익분기 ROAS & 악성재고 보관료 정밀 계산</p>
+  </header>
+
+  <!-- Presets -->
+  <div class="presets-wrap">
+    <button class="preset-btn active" onclick="loadPreset('stanley')">🏆 스탠리 2in1 컵홀더 (잡화 1호)</button>
+    <button class="preset-btn" onclick="loadPreset('tray')">🚗 차량용 회전 트레이 (잡화 2호)</button>
+    <button class="preset-btn" onclick="loadPreset('apple')">🍎 엔비/감홍 사과 2kg (과일)</button>
+    <button class="preset-btn" onclick="loadPreset('persimmon')">🍊 청도 반시 10kg 벌크</button>
+  </div>
+
+  <div class="grid">
+    <!-- 1. Margin & BEP ROAS Calculator -->
+    <div class="card">
+      <div class="card-title">
+        <span>💰 로켓그로스 마진 & 손익분기</span>
+        <span class="tag" id="sizeTag">중형 (2,850원)</span>
+      </div>
+
+      <div class="form-group">
+        <label>카테고리 (수수료 자동 매칭)</label>
+        <select id="category" onchange="calcMargin()">
+          <option value="11.88">자동차용품 / 잡화 (11.88%)</option>
+          <option value="10.89">생활 / 주방용품 (10.89%)</option>
+          <option value="10.56">신선식품 / 과일 (10.56%)</option>
+          <option value="11.22">가전 / 디지털 (11.22%)</option>
+          <option value="12.10">패션 / 의류 (12.10%)</option>
+          <option value="11.00">기타 일반 공산품 (11.00%)</option>
+        </select>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label>소비자 판매가 (원)</label>
+          <input type="number" id="salePrice" value="23900" step="100" oninput="calcMargin()">
+        </div>
+        <div class="form-group">
+          <label>매입 원가 (원 · 랜딩포함)</label>
+          <input type="number" id="costPrice" value="7800" step="100" oninput="calcMargin()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>단품 규격 (가로 × 세로 × 높이 mm · 무게 g)</label>
+        <div class="size-grid">
+          <input type="number" id="dimW" value="150" placeholder="가로" oninput="calcMargin()">
+          <input type="number" id="dimL" value="150" placeholder="세로" oninput="calcMargin()">
+          <input type="number" id="dimH" value="200" placeholder="높이" oninput="calcMargin()">
+          <input type="number" id="weight" value="450" placeholder="무게" oninput="calcMargin()">
+        </div>
+      </div>
+
+      <!-- Calculation Result -->
+      <div class="res-box">
+        <div class="res-row">
+          <span>쿠팡 판매 수수료</span>
+          <span class="res-val" id="resFee">2,839원</span>
+        </div>
+        <div class="res-row">
+          <span>CFS 입출고·배송 요금</span>
+          <span class="res-val" id="resShip">2,850원</span>
+        </div>
+        <div class="res-row">
+          <span>쿠팡 실수령 정산액</span>
+          <span class="res-val text-blue" id="resSettlement">18,211원</span>
+        </div>
+        <div class="res-row highlight">
+          <span>순이익 (마진율)</span>
+          <span class="res-val text-green" id="resNetProfit">10,411원 (43.6%)</span>
+        </div>
+      </div>
+
+      <!-- BEP ROAS Callout -->
+      <div class="callout">
+        <div class="callout-title">🎯 손익분기 광고 수익률 (BEP ROAS)</div>
+        <div class="callout-body">
+          광고 ROAS가 <b class="text-yellow" id="resBepRoas">230%</b> 이상이어야 이익이 남습니다!<br>
+          <span style="font-size: 12px; color: var(--text-muted);" id="resCpcGuide">
+            * 전환율 3% 기준, 클릭당 단가(CPC) <b>312원</b> 이하로 집행해야 안전마진 확보.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Slow Mover & Warehouse Storage Risk -->
+    <div class="card">
+      <div class="card-title">
+        <span>⚠️ 슬로무버 (창고 보관료 위험)</span>
+        <span class="tag text-red" id="riskBadge">위험도: 안전</span>
+      </div>
+
+      <div class="form-group">
+        <label>창고 입고 수량 (개)</label>
+        <input type="number" id="stockQty" value="50" min="1" oninput="calcSlowMover()">
+      </div>
+
+      <div class="form-group">
+        <label>미판매 경과 일수: <span id="daysVal" class="text-yellow">45일</span></label>
+        <div class="slider-wrap">
+          <input type="range" id="daysRange" min="10" max="180" value="45" oninput="updateDays(this.value)">
+        </div>
+      </div>
+
+      <div class="res-box">
+        <div class="res-row">
+          <span>단품 체적 (CBM)</span>
+          <span class="res-val" id="resCbm">0.0045 CBM</span>
+        </div>
+        <div class="res-row">
+          <span>기본 보관료 (30일 초과분)</span>
+          <span class="res-val" id="resBaseStorage">12,500원</span>
+        </div>
+        <div class="res-row">
+          <span>장기 보관 수수료 (LTSF)</span>
+          <span class="res-val text-red" id="resLtsf">0원</span>
+        </div>
+        <div class="res-row highlight">
+          <span>월 예상 소모 보관료</span>
+          <span class="res-val text-red" id="resTotalStorage">12,500원 / 월</span>
+        </div>
+      </div>
+
+      <div class="callout" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.25);">
+        <div class="callout-title" style="color: #fca5a5;">💡 창고 보관료 방어 액션 제안</div>
+        <div class="callout-body" id="storageAction">
+          현재 45일 경과로 기본 보관료가 발생 중입니다. 60일 도달 전 <b>10% 타임세일</b>을 걸어 재고 회전율을 높이는 것을 권장합니다.
+        </div>
+      </div>
+
+      <!-- Review Mining Checklist -->
+      <div style="margin-top: 20px;">
+        <label style="color: #cbd5e1; font-weight: 700;">🔍 1등 상품 리뷰 불만점(차별화) 분석 체크리스트</label>
+        <div style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+          <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer;">
+            <input type="checkbox" checked style="width: auto;"> <b>마감/사출 불량</b>: 플라스틱 거친 테두리 샌딩 처리
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer;">
+            <input type="checkbox" checked style="width: auto;"> <b>흔들림/소음</b>: 실리콘 완충 패드 4개 동봉
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; cursor: pointer;">
+            <input type="checkbox" checked style="width: auto;"> <b>배송 파손</b>: 에어캡 3중 포장 및 박스 완충재 강화
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>동곤 로켓그로스 관제탑 PRO · 자체 소유 자동화 시스템 · 토큰 0원 영구 가동</p>
+  </footer>
+</div>
+
+<script>
+  const presets = {
+    stanley: {
+      cat: "11.88",
+      sale: 23900,
+      cost: 7800,
+      w: 150, l: 150, h: 200, wt: 450,
+      qty: 50, days: 25
+    },
+    tray: {
+      cat: "11.88",
+      sale: 21900,
+      cost: 6500,
+      w: 220, l: 180, h: 120, wt: 380,
+      qty: 50, days: 45
+    },
+    apple: {
+      cat: "10.56",
+      sale: 18900,
+      cost: 10800,
+      w: 250, l: 200, h: 150, wt: 2200,
+      qty: 30, days: 12
+    },
+    persimmon: {
+      cat: "10.56",
+      sale: 24900,
+      cost: 11700,
+      w: 380, l: 280, h: 200, wt: 10500,
+      qty: 20, days: 8
+    }
+  };
+
+  function loadPreset(key) {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const p = presets[key];
+    document.getElementById('category').value = p.cat;
+    document.getElementById('salePrice').value = p.sale;
+    document.getElementById('costPrice').value = p.cost;
+    document.getElementById('dimW').value = p.w;
+    document.getElementById('dimL').value = p.l;
+    document.getElementById('dimH').value = p.h;
+    document.getElementById('weight').value = p.wt;
+    document.getElementById('stockQty').value = p.qty;
+    document.getElementById('daysRange').value = p.days;
+    updateDays(p.days);
+    calcMargin();
+  }
+
+  function getCfsFee(w, l, h, wt) {
+    const sumDim = (w + l + h) / 10; // cm
+    const weightKg = wt / 1000;
+
+    if (sumDim <= 35 && weightKg <= 0.25) return { fee: 1950, name: "극소형" };
+    if (sumDim <= 60 && weightKg <= 1.0) return { fee: 2350, name: "소형" };
+    if (sumDim <= 80 && weightKg <= 2.0) return { fee: 2850, name: "중형" };
+    if (sumDim <= 120 && weightKg <= 5.0) return { fee: 3650, name: "대형" };
+    return { fee: 5900, name: "특대형" };
+  }
+
+  function calcMargin() {
+    const sale = parseFloat(document.getElementById('salePrice').value) || 0;
+    const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+    const catRate = parseFloat(document.getElementById('category').value) || 0;
+    const w = parseFloat(document.getElementById('dimW').value) || 0;
+    const l = parseFloat(document.getElementById('dimL').value) || 0;
+    const h = parseFloat(document.getElementById('dimH').value) || 0;
+    const wt = parseFloat(document.getElementById('weight').value) || 0;
+
+    const cfs = getCfsFee(w, l, h, wt);
+    document.getElementById('sizeTag').innerText = `${cfs.name} (${cfs.fee.toLocaleString()}원)`;
+
+    const fee = Math.round(sale * (catRate / 100));
+    const settlement = sale - fee - cfs.fee;
+    const netProfit = settlement - cost;
+    const marginRate = sale > 0 ? ((netProfit / sale) * 100).toFixed(1) : 0;
+
+    document.getElementById('resFee').innerText = fee.toLocaleString() + "원";
+    document.getElementById('resShip').innerText = cfs.fee.toLocaleString() + "원";
+    document.getElementById('resSettlement').innerText = settlement.toLocaleString() + "원";
+    
+    const profitEl = document.getElementById('resNetProfit');
+    profitEl.innerText = `${netProfit.toLocaleString()}원 (${marginRate}%)`;
+    if (netProfit < 0) {
+      profitEl.className = "res-val text-red";
+    } else if (marginRate < 15) {
+      profitEl.className = "res-val text-yellow";
+    } else {
+      profitEl.className = "res-val text-green";
+    }
+
+    // BEP ROAS
+    const bepRoas = netProfit > 0 ? Math.round((sale / netProfit) * 100) : 9999;
+    document.getElementById('resBepRoas').innerText = bepRoas > 2000 ? "측정불가(적자위험)" : bepRoas + "%";
+
+    // Max CPC at 3% CVR
+    const maxCpc = netProfit > 0 ? Math.round(netProfit * 0.03) : 0;
+    document.getElementById('resCpcGuide').innerHTML = 
+      `* 전환율 3% 기준, 클릭당 광고비(CPC) <b>${maxCpc.toLocaleString()}원</b> 이하로 집행해야 안전마진 확보.`;
+
+    calcSlowMover();
+  }
+
+  function updateDays(val) {
+    document.getElementById('daysVal').innerText = val + "일";
+    calcSlowMover();
+  }
+
+  function calcSlowMover() {
+    const qty = parseInt(document.getElementById('stockQty').value) || 0;
+    const days = parseInt(document.getElementById('daysRange').value) || 0;
+    const w = parseFloat(document.getElementById('dimW').value) || 0;
+    const l = parseFloat(document.getElementById('dimL').value) || 0;
+    const h = parseFloat(document.getElementById('dimH').value) || 0;
+
+    // CBM = m3
+    const cbmPerItem = (w / 1000) * (l / 1000) * (h / 1000);
+    const totalCbm = cbmPerItem * qty;
+    document.getElementById('resCbm').innerText = cbmPerItem.toFixed(4) + " CBM";
+
+    // Storage cost estimation (approx 35,000 KRW per CBM per month after 30 days)
+    let baseStorage = 0;
+    if (days > 30) {
+      const billableDays = days - 30;
+      baseStorage = Math.round(totalCbm * 35000 * (billableDays / 30));
+    }
+    document.getElementById('resBaseStorage').innerText = baseStorage.toLocaleString() + "원";
+
+    // LTSF (>90 days penalty)
+    let ltsf = 0;
+    if (days > 90) {
+      ltsf = Math.round(totalCbm * 70000);
+    }
+    document.getElementById('resLtsf').innerText = ltsf.toLocaleString() + "원";
+
+    const totalStorage = baseStorage + ltsf;
+    document.getElementById('resTotalStorage').innerText = totalStorage.toLocaleString() + "원 / 월";
+
+    // Action and Badge
+    const badge = document.getElementById('riskBadge');
+    const act = document.getElementById('storageAction');
+    if (days <= 30) {
+      badge.className = "tag text-green";
+      badge.innerText = "위험도: 안전 (보관료 0원)";
+      act.innerHTML = "30일 이내 정상 회전 구간입니다. 추가 보관료 없이 정상 마진이 유지됩니다.";
+    } else if (days <= 60) {
+      badge.className = "tag text-yellow";
+      badge.innerText = "위험도: 주의 (기본 보관료)";
+      act.innerHTML = `현재 ${days}일 경과로 기본 보관료가 발생 중입니다. 60일 도달 전 <b>10% 할인 쿠폰</b>으로 소진을 권장합니다.`;
+    } else if (days <= 90) {
+      badge.className = "tag text-red";
+      badge.innerText = "위험도: 경고 (마진 잠식)";
+      act.innerHTML = `60일 초과 악성 재고입니다! 보관료가 순이익을 갉아먹고 있으니 <b>원가 수준 플래시 세일</b>을 추천합니다.`;
+    } else {
+      badge.className = "tag text-red";
+      badge.innerText = "위험도: 심각 (LTSF 폭탄)";
+      act.innerHTML = `90일 초과 장기보관 수수료(LTSF) 부과 대상입니다! <b>즉시 반출 요청 또는 폐기</b>하는 것이 금전적으로 유리합니다.`;
+    }
+  }
+
+  // Initial Run
+  calcMargin();
+</script>
+</body>
+</html>
