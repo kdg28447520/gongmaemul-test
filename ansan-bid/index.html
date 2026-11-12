@@ -448,7 +448,7 @@ body {
           동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO
           <span class="airbnb-badge">PRO VER.</span>
         </h1>
-        <p>안산시 상록구 관내 제한 및 경기도 2인 이상 소액수의(순수 무면허 물품) 88% 황금투찰 관제탑</p>
+        <p>1순위 안산 관내 제한(2,000만 원 이하) & 2순위 경기·전국 소액수의 88% 황금투찰 관제탑</p>
       </div>
       <div>
         <div class="status-pill">
@@ -459,15 +459,15 @@ body {
     </div>
   </header>
 
-  <!-- STATS BAR -->
+    <!-- STATS BAR -->
   <div class="stats-bar">
     <div class="stat-card">
       <div class="stat-info">
-        <h4>투찰 타깃 물품 공고</h4>
-        <div class="val">5건 실시간 추적</div>
+        <h4>1순위 타깃 기준</h4>
+        <div class="val">안산 관내 · 2천만 이하</div>
       </div>
       <div class="stat-icon" style="background:#FFF0F2; color:#FF385C;">
-        <i class="fa-solid fa-bullseye"></i>
+        <i class="fa-solid fa-crown" style="color:#FFB800;"></i>
       </div>
     </div>
     <div class="stat-card">
@@ -481,8 +481,8 @@ body {
     </div>
     <div class="stat-card">
       <div class="stat-info">
-        <h4>검증 완료 B2B 도매처</h4>
-        <div class="val">6개 핵심 카테고리</div>
+        <h4>안산 관내 실질 경쟁률</h4>
+        <div class="val">10~30개사 (승률 3~5%)</div>
       </div>
       <div class="stat-icon" style="background:#EBF7EE; color:#008A05;">
         <i class="fa-solid fa-shield-halved"></i>
@@ -491,7 +491,7 @@ body {
     <div class="stat-card">
       <div class="stat-info">
         <h4>소액수의 평균 마진율</h4>
-        <div class="val">21.8% ~ 32.4%</div>
+        <div class="val">21.5% ~ 34.0%</div>
       </div>
       <div class="stat-icon" style="background:#EBF3FF; color:#0066FF;">
         <i class="fa-solid fa-chart-line"></i>
@@ -499,10 +499,13 @@ body {
     </div>
   </div>
 
-  <!-- NAVIGATION TABS -->
+    <!-- NAVIGATION TABS -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="openTab('bids', this)">
-      <i class="fa-solid fa-list-check"></i> 실시간 소액수의 투찰 공고 (5건)
+    <button class="tab-btn active" onclick="openTab('bids-ansan', this)">
+      <i class="fa-solid fa-crown" style="color:#FFB800;"></i> 1순위: 안산 관내 전용 (2천만 이하)
+    </button>
+    <button class="tab-btn" onclick="openTab('bids-other', this)">
+      <i class="fa-solid fa-globe" style="color:#0066FF;"></i> 2순위: 비안산 경기·전국 (2천만 이하)
     </button>
     <button class="tab-btn" onclick="openTab('suppliers', this)">
       <i class="fa-solid fa-cart-shopping"></i> 6대 무면허 도매처 실거래가 직결
@@ -514,50 +517,6 @@ body {
       <i class="fa-solid fa-shield-halved"></i> 1인 사업자 안전 투찰 수칙
     </button>
   </div>
-
-  <!-- TAB 1: BIDS -->
-  <div id="bids" class="tab-pane active">
-    <div class="sec-title">
-      <h2><i class="fa-solid fa-bolt" style="color:var(--accent);"></i> 진행 중인 순수 물품 소액수의 (견적서 제출 가능)</h2>
-      <span class="count-badge">관내 15~35개사 경쟁 · 당첨률 3~5%</span>
-    </div>
-
-    <div class="bid-grid">
-
-      <!-- CARD 1: 염화칼슘 -->
-      <div class="bid-card">
-        <div>
-          <div class="card-header-row">
-            <span class="location-tag"><i class="fa-solid fa-location-dot"></i> 경기도 용인시 기흥구</span>
-            <span class="d-day-tag urgent">11/12 오늘신규 마감임박</span>
-          </div>
-
-          <div class="bid-no-row">
-            <span class="bid-no-text"><i class="fa-solid fa-hashtag"></i> 공고번호: <strong>R26BK01825445-000</strong></span>
-            <button class="btn-copy-no" onclick="copyAndNotice('R26BK01825445')"><i class="fa-regular fa-copy"></i> 복사</button>
-          </div>
-
-          <h3 class="bid-title">2026년 하반기 기흥구 제설제(염화칼슘) 구입(2차)</h3>
-          <div class="bid-org"><i class="fa-solid fa-building-columns"></i> 경기도 용인시 기흥구청 도로과</div>
-
-          <div class="price-box">
-            <div class="price-row">
-              <span class="label">기초금액 (배정예산)</span>
-              <span class="val">48,181,818원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">88% 황금투찰가</span>
-              <span class="val highlight">42,400,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">도매 사입원가 (파레트배송)</span>
-              <span class="val">34,000,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">예상 순마진 (세전)</span>
-              <span class="val profit">+8,400,000원 (19.8%)</span>
-            </div>
-          </div>
 
           <!-- DIRECT SUPPLIER LINKS -->
           <div class="supplier-direct-box">
