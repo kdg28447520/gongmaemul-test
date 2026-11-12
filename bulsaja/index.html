@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>불사자 Studio PRO | AI 해외구매대행 셀러 키워드 발굴 솔루션</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: #F8FAFC;
+      color: #1E293B;
+    }
+    .orange-point {
+      color: #FF5A1F;
+    }
+    .bg-orange-point {
+      background-color: #FF5A1F;
+    }
+    .border-orange-point {
+      border-color: #FF5A1F;
+    }
+    .badge-optimal { background-color: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+    .badge-good { background-color: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    .badge-normal { background-color: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+    .badge-bad { background-color: #FFF7ED; color: #EA580C; border: 1px solid #FFEDD5; }
+    .badge-worst { background-color: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    
+    /* AG-Grid style custom scrollbars & borders */
+    .table-container {
+      max-height: calc(100vh - 380px);
+      min-height: 480px;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background-color: #F1F5F9;
+    }
+    tr:hover td {
+      background-color: #F8FAFC;
+    }
+    .sparkline-svg {
+      width: 80px;
+      height: 24px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex">
+
+  <!-- 좌측 사이드바 (불사자 정품 1:1 재현) -->
+  <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between hidden md:flex shrink-0">
+    <div>
+      <!-- 로고 헤더 -->
+      <div class="h-16 flex items-center px-6 border-b border-slate-100 gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FF4800] to-[#FF7B47] flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          🔥
+        </div>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight text-slate-900">bulsaja</span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-100 text-[#FF5A1F] ml-1">PRO</span>
+        </div>
+      </div>
+
+      <!-- 플랜 전환 토글 -->
+      <div class="p-4">
+        <div class="bg-slate-100 p-1 rounded-xl flex text-xs font-semibold">
+          <button class="flex-1 py-1.5 rounded-lg bg-white text-slate-900 shadow-sm transition">그로스</button>
+          <button class="flex-1 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition">반자동</button>
+        </div>
+      </div>
+
+      <!-- 메뉴 트리 -->
+      <nav class="px-3 space-y-1 text-sm font-medium">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <i class="fa-solid fa-house w-4 text-slate-400"></i>
+          <span>홈</span>
+        </a>
+
+        <div class="pt-2 pb-1 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">상품 찾기</div>
+        <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-orange-50 text-[#FF5A1F] font-semibold transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-layer-group w-4 text-[#FF5A1F]"></i>
+            <span>카테고리 소싱</span>
+          </div>
+          <span class="text-[10px] px-1.5 py-0.5 bg-[#FF5A1F] text-white rounded font-medium">실시간</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <i class="fa-solid fa-wand-magic-sparkles w-4 text-slate-400"></i>
+          <span>AI 키워드 분석</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <i class="fa-solid fa-chart-line w-4 text-slate-400"></i>
+          <span>광고 키워드 분석</span>
+        </a>
+        <a href="#saved-box" onclick="toggleSavedModal()" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-bookmark w-4 text-slate-400"></i>
+            <span>저장한 키워드</span>
+          </div>
+          <span id="sidebarSavedBadge" class="text-xs px-2 py-0.5 bg-slate-200 text-slate-700 rounded-full font-bold">0</span>
+        </a>
+
+        <div class="pt-3 pb-1 px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">쿠팡 & 그로스 분석</div>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <i class="fa-solid fa-calculator w-4 text-slate-400"></i>
+          <span>쿠팡 원가 입력</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <i class="fa-solid fa-rocket w-4 text-slate-400"></i>
+          <span>로켓그로스 성과</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- 하단 유저 프로필 -->
+    <div class="p-4 border-t border-slate-100">
+      <div class="flex items-center gap-3 p-2 rounded-xl bg-slate-50 border border-slate-200">
+        <div class="w-9 h-9 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm">
+          DG
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-xs font-bold text-slate-800 truncate">동곤 님 (늘봄상회)</p>
+          <p class="text-[11px] text-emerald-600 font-medium">● VIP 무제한 플랜</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 영역 -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+    <!-- 상단 탭 헤더 -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 sticky top-0 z-30">
+      <div class="flex items-center gap-4">
+        <!-- 모바일 햄버거 -->
+        <button class="md:hidden text-slate-500 hover:text-slate-800"><i class="fa-solid fa-bars text-lg"></i></button>
+        
+        <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl">
+          <button class="px-4 py-1.5 rounded-lg bg-white text-slate-900 font-bold text-xs shadow-sm flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#FF5A1F]"></span>
+            기존 키워드 소싱
+          </button>
+          <button onclick="alert('동곤 AI 전용 소싱 엔진이 백그라운드에서 실시간 분석 중입니다!')" class="px-4 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 font-semibold text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-sparkles text-amber-500"></i>
+            AI 스마트 소싱
+          </button>
+        </div>
+      </div>
+
+      <!-- 우측 액션 -->
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-slate-500 hidden sm:inline">기준일자: <strong class="text-slate-700">2026.11.12</strong></span>
+        <button onclick="downloadCSV()" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-file-excel text-emerald-600"></i>
+          전체 엑셀
+        </button>
+        <button onclick="resetFilters()" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-600 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-rotate-left text-slate-400"></i>
+          초기화
+        </button>
+      </div>
+    </header>
+
+    <!-- 바디 영역 -->
+    <div class="p-6 space-y-5 max-w-[1700px] w-full mx-auto">
+
+      <!-- 1. 필터 패널 (불사자 정밀 1:1) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+        
+        <!-- 상단 행: 1차 분류 및 검색어 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+          <div class="md:col-span-4">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">1차 카테고리 분류</label>
+            <div class="relative">
+              <select id="catSelect" onchange="applyFilters()" class="w-full h-10 px-3 pr-8 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#FF5A1F] focus:bg-white transition appearance-none cursor-pointer">
+                <option value="전체">전체 카테고리 (전수 분석)</option>
+                <option value="패션잡화">패션잡화 (신발·가방·모자·시계)</option>
+                <option value="디지털/가전">디지털/가전 (소형가전·생활기기)</option>
+                <option value="가구/인테리어">가구/인테리어 (선반·수납·소품)</option>
+                <option value="생활/건강">생활/건강 (자동차용품·욕실·주방)</option>
+                <option value="스포츠/레저">스포츠/레저 (캠핑·낚시·자전거)</option>
+                <option value="출산/육아">출산/육아 (유모차용품·안전용품)</option>
+                <option value="화장품/미용">화장품/미용 (미용소품·정리대)</option>
+              </select>
+              <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
+            </div>
+          </div>
+
+          <!-- 실시간 키워드 빠른 검색 -->
+          <div class="md:col-span-8">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">키워드 빠른 검색</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+              <input type="text" id="kwInput" oninput="applyFilters()" placeholder="키워드명 검색 (예: 크록스, 히터, 트레이, 텀블러, 시계...)" class="w-full h-10 pl-9 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#FF5A1F] focus:bg-white transition">
+            </div>
+          </div>
+        </div>
+
+        <!-- 중단 행: 브랜드/유형 라디오 및 계절성 버튼들 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pt-2 border-t border-slate-100 text-xs">
+          
+          <!-- 브랜드 유형 -->
+          <div class="md:col-span-3">
+            <span class="block font-bold text-slate-600 mb-2">브랜드 유형</span>
+            <div class="flex items-center gap-3">
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="brandFilter" value="all" checked onchange="applyFilters()" class="text-[#FF5A1F] focus:ring-[#FF5A1F]">
+                <span class="text-slate-700 font-medium">전체</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="brandFilter" value="nobrand" onchange="applyFilters()" class="text-[#FF5A1F] focus:ring-[#FF5A1F]">
+                <span class="text-slate-700 font-medium">비브랜드 <span class="text-[10px] text-emerald-600 font-bold">(추천)</span></span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="brandFilter" value="brand" onchange="applyFilters()" class="text-[#FF5A1F] focus:ring-[#FF5A1F]">
+                <span class="text-slate-700 font-medium">브랜드</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 검색어 유형 -->
+          <div class="md:col-span-3">
+            <span class="block font-bold text-slate-600 mb-2">검색어 유형</span>
+            <div class="flex items-center gap-3">
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="typeFilter" value="all" checked onchange="applyFilters()" class="text-[#FF5A1F] focus:ring-[#FF5A1F]">
+                <span class="text-slate-700 font-medium">전체</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="typeFilter" value="쇼핑성" onchange="applyFilters()" class="text-[#FF5A1F] focus:ring-[#FF5A1F]">
+                <span class="text-slate-700 font-medium">쇼핑성 <span class="text-[10px] text-[#FF5A1F] font-bold">(구매전환)</span></span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer">
+                <input type="radio" name="typeFilter" value="정보성" onchange="applyFilters()" class="text-[#FF5A1F] focus:ring-[#FF5A1F]">
+                <span class="text-slate-700 font-medium">정보성</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 계절성 피크 월 토글 (1월~12월) -->
+          <div class="md:col-span-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-slate-600">계절성 (가장 많이 팔린 피크 달)</span>
+              <span id="selectedMonthLabel" class="text-[11px] text-slate-400 font-normal">선택 없음 (전체)</span>
+            </div>
+            <div class="grid grid-cols-6 sm:grid-cols-12 gap-1 text-center" id="monthButtonGroup">
+              <!-- JS dynamically generates 1~12 buttons -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 행: 경쟁강도 및 검색량 슬라이더 & 액션 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 pt-3 border-t border-slate-100 items-center">
+          <div class="md:col-span-4 flex items-center gap-3 text-xs">
+            <span class="font-bold text-slate-600 shrink-0">경쟁강도 상한:</span>
+            <input type="range" id="compRange" min="0" max="50" step="0.5" value="50" oninput="updateCompLabel(); applyFilters()" class="w-full accent-[#FF5A1F]">
+            <span id="compLabel" class="font-bold text-slate-800 shrink-0 w-12 text-right">제한없음</span>
+          </div>
+
+          <div class="md:col-span-4 flex items-center gap-3 text-xs">
+            <span class="font-bold text-slate-600 shrink-0">최소 월검색량:</span>
+            <input type="range" id="volRange" min="0" max="10000" step="500" value="0" oninput="updateVolLabel(); applyFilters()" class="w-full accent-[#FF5A1F]">
+            <span id="volLabel" class="font-bold text-slate-800 shrink-0 w-16 text-right">0회+</span>
+          </div>
+
+          <div class="md:col-span-4 flex justify-end gap-2">
+            <button onclick="applyFilters()" class="px-5 py-2 rounded-xl bg-orange-point hover:bg-[#E54A12] text-white text-xs font-bold shadow-sm flex items-center gap-2 transition">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              필터 적용 검색
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 2. 결과 관제탑 바 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 text-xs">
+        <div class="flex items-center gap-3">
+          <h2 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+            <span>검색 결과</span>
+            <span id="resultCountBadge" class="px-2.5 py-0.5 rounded-full bg-orange-100 text-[#FF5A1F] font-bold text-xs">500개</span>
+          </h2>
+          <span class="text-slate-400">|</span>
+          <span class="text-slate-500">실시간 순수익 추정 및 1688 공장 직결 지원</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="saveSelectedKeywords()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-bookmark text-amber-400"></i>
+            <span id="selectedCountBtn">선택한 키워드 저장 (0)</span>
+          </button>
+          <button onclick="downloadCSV()" class="px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-download text-slate-500"></i>
+            CSV 추출
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. AG-Grid 스타일 초정밀 데이터 테이블 -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto table-container">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="text-[11px] font-bold text-slate-600 border-b border-slate-200">
+                <th class="py-3 px-3 w-10 text-center"><input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="rounded text-[#FF5A1F] focus:ring-[#FF5A1F]"></th>
+                <th class="py-3 px-3 cursor-pointer hover:text-slate-900" onclick="sortBy('kw')">키워드 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-2 cursor-pointer hover:text-slate-900" onclick="sortBy('cat')">카테고리 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-2 text-center">유형</th>
+                <th class="py-3 px-2 text-center">브랜드</th>
+                <th class="py-3 px-2 text-center">트렌드</th>
+                <th class="py-3 px-3 text-right cursor-pointer hover:text-slate-900" onclick="sortBy('vol')">30일 검색량 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-3 text-right cursor-pointer hover:text-slate-900" onclick="sortBy('volYear')">작년 총검색 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-3 text-center cursor-pointer hover:text-slate-900" onclick="sortBy('comp')">경쟁강도 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-3 text-center cursor-pointer hover:text-slate-900" onclick="sortBy('score')">불사지수 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-3">계절성 (피크)</th>
+                <th class="py-3 px-3 text-center">1년 트렌드</th>
+                <th class="py-3 px-3 text-right cursor-pointer hover:text-slate-900" onclick="sortBy('avgPrice')">평균단가 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-3 text-right cursor-pointer hover:text-slate-900" onclick="sortBy('sales')">6개월 시장규모 <i class="fa-solid fa-sort text-[10px] text-slate-400"></i></th>
+                <th class="py-3 px-3 text-center">소싱 바로가기</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 저장한 키워드 모달 -->
+  <div id="savedModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-bookmark text-amber-500"></i>
+          <span>저장한 황금 소싱 키워드</span>
+        </h3>
+        <button onclick="toggleSavedModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div id="savedListContainer" class="max-h-80 overflow-y-auto space-y-2 text-xs">
+        <!-- JS items -->
+      </div>
+      <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+        <button onclick="clearSavedKeywords()" class="text-xs text-rose-500 font-semibold hover:underline">전체 비우기</button>
+        <button onclick="copySavedToClipboard()" class="px-4 py-2 bg-orange-point hover:bg-[#E54A12] text-white rounded-xl text-xs font-bold transition">클립보드 전체 복사</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 500개 키워드 데이터셋 바인딩
+    const RAW_DATA = [{"kw": "아디다스스페지알블루", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 1, "trend": -1, "vol": 1190, "volYear": 3115, "comp": 1.26, "score": 28.55, "season": "5, 4, 6월", "peakMonths": [5, 4, 6], "avgPrice": 81680, "sales": 77430100, "saleCount": 948, "totalProd": 4197, "roketRatio": 17, "overseaRatio": 29, "monthlyTrend": [272, 616, 621, 895, 1558, 689, 439, 383, 382, 132, 85, 56]}, {"kw": "푸마클럽5v5", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 1, "trend": 1, "vol": 810, "volYear": 4869, "comp": 3.23, "score": 2.36, "season": "3, 2, 4월", "peakMonths": [3, 2, 4], "avgPrice": 48900, "sales": 1418220, "saleCount": 29, "totalProd": 3967, "roketRatio": 19, "overseaRatio": 6, "monthlyTrend": [574, 1196, 1209, 855, 622, 823, 815, 698, 432, 290, 171, 268]}, {"kw": "살로몬메종마르지엘라", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 1, "trend": -1, "vol": 980, "volYear": 2186, "comp": 1.88, "score": 0.11, "season": "6, 7, 11월", "peakMonths": [6, 7, 11], "avgPrice": 462450, "sales": 924900, "saleCount": 2, "totalProd": 3309, "roketRatio": 3, "overseaRatio": 14, "monthlyTrend": [291, 273, 165, 125, 94, 711, 448, 350, 217, 101, 407, 304]}, {"kw": "반스어센틱그린", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 0, "trend": -1, "vol": 400, "volYear": 17749, "comp": 2.37, "score": 91.94, "season": "5, 4, 3월", "peakMonths": [5, 4, 3], "avgPrice": 44720, "sales": 38236800, "saleCount": 855, "totalProd": 2207, "roketRatio": 36, "overseaRatio": 28, "monthlyTrend": [1240, 2413, 3133, 3163, 4077, 3105, 2043, 1888, 1734, 1506, 857, 588]}, {"kw": "반스어센틱애너하임", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 1, "trend": 1, "vol": 280, "volYear": 4438, "comp": 3.6, "score": 114.74, "season": "4, 5, 3월", "peakMonths": [4, 5, 3], "avgPrice": 44790, "sales": 49850760, "saleCount": 1113, "totalProd": 3492, "roketRatio": 39, "overseaRatio": 12, "monthlyTrend": [2123, 1953, 2288, 2352, 2330, 1912, 2181, 1621, 1463, 1110, 708, 580]}, {"kw": "프레드페리운동화", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 1, "trend": 1, "vol": 390, "volYear": 7687, "comp": 24.41, "score": 4.4, "season": "4, 5, 3월", "peakMonths": [4, 5, 3], "avgPrice": 97080, "sales": 2135800, "saleCount": 22, "totalProd": 12207, "roketRatio": 36, "overseaRatio": 0, "monthlyTrend": [1602, 1764, 2515, 2551, 2543, 2154, 1529, 1597, 1596, 1580, 1233, 916]}, {"kw": "휠라스캔라인", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 1, "trend": -1, "vol": 200, "volYear": 8284, "comp": 4.73, "score": 2.36, "season": "3, 5, 6월", "peakMonths": [3, 5, 6], "avgPrice": 32150, "sales": 836000, "saleCount": 26, "totalProd": 5201, "roketRatio": 33, "overseaRatio": 0, "monthlyTrend": [291, 514, 1306, 854, 991, 857, 513, 507, 548, 562, 583, 259]}, {"kw": "아디다스스페지알블랙핑크", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 0, "trend": -1, "vol": 1420, "volYear": 932, "comp": 0.49, "score": 150.71, "season": "3, 2, 4월", "peakMonths": [3, 2, 4], "avgPrice": 71650, "sales": 136054900, "saleCount": 1899, "totalProd": 620, "roketRatio": 6, "overseaRatio": 31, "monthlyTrend": [620, 1763, 1837, 963, 293, 296, 169, 355, 173, 7, 190]}, {"kw": "ms237tws", "cat": "패션잡화", "subCat": "스니커즈", "type": "정보성", "brand": 0, "trend": -1, "vol": 140, "volYear": 5241, "comp": 2.74, "score": 2.43, "season": "3, 4, 2월", "peakMonths": [3, 4, 2], "avgPrice": 72900, "sales": 656100, "saleCount": 9, "totalProd": 1014, "roketRatio": 36, "overseaRatio": 1, "monthlyTrend": [1885, 2543, 2903, 2888, 2030, 1000, 605, 728, 1521, 1716, 1937, 1713]}, {"kw": "수제신발", "cat": "패션잡화", "subCat": "구두", "type": "정보성", "brand": 0, "trend": -1, "vol": 1130, "volYear": 17834, "comp": 164.13, "score": 43.88, "season": "3, 4, 5월", "peakMonths": [3, 4, 5], "avgPrice": 54000, "sales": 28674800, "saleCount": 531, "totalProd": 198595, "roketRatio": 75, "overseaRatio": 0, "monthlyTrend": [4148, 4263, 6198, 5558, 5382, 4859, 3971, 3951, 4262, 4347, 3688, 3539]}, {"kw": "에스콰이아구두", "cat": "패션잡화", "subCat": "구두", "type": "정보성", "brand": 1, "trend": -1, "vol": 600, "volYear": 5214, "comp": 926.08, "score": 0.0, "season": "3, 2, 9월", "peakMonths": [3, 2, 9], "avgPrice": 89000, "sales": 0, "saleCount": 0, "totalProd": 370430, "roketRatio": 19, "overseaRatio": 0, "monthlyTrend": [3925, 4499, 5343, 4036, 3887, 2992, 2625, 3510, 4451, 3248, 2857, 2140]}, {"kw": "남자디올로퍼", "cat": "패션잡화", "subCat": "구두", "type": "정보성", "brand": 1, "trend": 1, "vol": 260, "volYear": 4108, "comp": 15.76, "score": 0.29, "season": "3, 4, 5월", "peakMonths": [3, 4, 5], "avgPrice": 950000, "sales": 950000, "saleCount": 1, "totalProd": 5516, "roketRatio": 28, "overseaRatio": 10, "monthlyTrend": [1328, 1919, 2525, 2506, 2447, 2041, 1342, 1454, 1618, 1045, 1421, 1166]}, {"kw": "남자수제구두", "cat": "패션잡화", "subCat": "구두", "type": "정보성", "brand": 0, "trend": -1, "vol": 910, "volYear": 12014, "comp": 56.45, "score": 44.08, "season": "1, 3, 2월", "peakMonths": [1, 3, 2], "avgPrice": 57360, "sales": 17952200, "saleCount": 313, "totalProd": 40081, "roketRatio": 81, "overseaRatio": 0, "monthlyTrend": [6136, 4657, 4923, 4296, 3444, 2894, 2730, 3190, 4169, 4419, 4031, 3769]}, {"kw": "버켄스탁리오", "cat": "패션잡화", "subCat": "샌들", "type": "정보성", "brand": 1, "trend": -1, "vol": 170, "volYear": 5598, "comp": 0.92, "score": 0.17, "season": "6, 5, 7월", "peakMonths": [6, 5, 7], "avgPrice": 96350, "sales": 192700, "saleCount": 2, "totalProd": 1087, "roketRatio": 0, "overseaRatio": 15, "monthlyTrend": [54, 89, 339, 1116, 2436, 3067, 2264, 827, 111, 11, 4, 12]}, {"kw": "엄지발가락슬리퍼", "cat": "패션잡화", "subCat": "슬리퍼", "type": "정보성", "brand": 0, "trend": -1, "vol": 130, "volYear": 942, "comp": 3.33, "score": 4.12, "season": "6, 7, 8월", "peakMonths": [6, 7, 8], "avgPrice": 24910, "sales": 523200, "saleCount": 21, "totalProd": 1699, "roketRatio": 25, "overseaRatio": 0, "monthlyTrend": [19, 16, 128, 1305, 3678, 2934, 1489, 372, 16]}, {"kw": "킨치블런트", "cat": "패션잡화", "subCat": "샌들", "type": "정보성", "brand": 0, "trend": -1, "vol": 130, "volYear": 373, "comp": 0.29, "score": 0.0, "season": "6, 5, 7월", "peakMonths": [6, 5, 7], "avgPrice": 0, "sales": 0, "saleCount": 0, "totalProd": 452, "roketRatio": 19, "overseaRatio": 0, "monthlyTrend": [12, 24, 21, 130, 594, 782, 312, 69, 33, 2, 18, 8]}, {"kw": "아보크", "cat": "패션잡화", "subCat": "샌들", "type": "정보성", "brand": 1, "trend": -1, "vol": 1580, "volYear": 30393, "comp": 0.88, "score": 2.81, "season": "5, 4, 6월", "peakMonths": [5, 4, 6], "avgPrice": 30830, "sales": 3390880, "saleCount": 110, "totalProd": 3432, "roketRatio": 17, "overseaRatio": 0, "monthlyTrend": [1934, 1590, 2582, 3797, 4512, 3514, 2601, 1864, 1590, 1490, 1879, 2092]}, {"kw": "클래식플랫폼", "cat": "패션잡화", "subCat": "샌들", "type": "정보성", "brand": 0, "trend": 1, "vol": 220, "volYear": 3727, "comp": 126.5, "score": 520.2, "season": "5, 7, 6월", "peakMonths": [5, 7, 6], "avgPrice": 42280, "sales": 112175680, "saleCount": 2653, "totalProd": 64517, "roketRatio": 19, "overseaRatio": 0, "monthlyTrend": [290, 532, 1564, 2167, 2894, 2310, 2461, 1150, 795, 355, 518, 371]}, {"kw": "아디다스클로그핑크", "cat": "패션잡화", "subCat": "슬리퍼", "type": "정보성", "brand": 0, "trend": -1, "vol": 170, "volYear": 4190, "comp": 0.41, "score": 8.91, "season": "6, 7, 5월", "peakMonths": [6, 7, 5], "avgPrice": 50800, "sales": 4572200, "saleCount": 90, "totalProd": 411, "roketRatio": 22, "overseaRatio": 0, "monthlyTrend": [98, 204, 321, 712, 1921, 926, 395, 160, 44, 4]}, {"kw": "남자버켄스탁", "cat": "패션잡화", "subCat": "슬리퍼", "type": "정보성", "brand": 1, "trend": 1, "vol": 180, "volYear": 3144, "comp": 145.6, "score": 79.42, "season": "6, 7, 5월", "peakMonths": [6, 7, 5], "avgPrice": 236360, "sales": 161435460, "saleCount": 683, "totalProd": 125213, "roketRatio": 19, "overseaRatio": 0, "monthlyTrend": [203, 69, 268, 1565, 3623, 5153, 4483, 1630, 443, 404, 397, 306]}, {"kw": "아딜렛아윤슬라이드", "cat": "패션잡화", "subCat": "슬리퍼", "type": "정보성", "brand": 0, "trend": 1, "vol": 150, "volYear": 4543, "comp": 5.72, "score": 15.71, "season": "6, 7, 5월", "peakMonths": [6, 7, 5], "avgPrice": 38090, "sales": 3351500, "saleCount": 88, "totalProd": 3206, "roketRatio": 28, "overseaRatio": 0, "monthlyTrend": [42, 245, 1429, 1692, 2052, 2765, 2577, 1015, 397, 287, 199, 74]}, {"kw": "아디폼아딜렛", "cat": "패션잡화", "subCat": "신발", "type": "정보성", "brand": 0, "trend": -1, "vol": 310, "volYear": 5588, "comp": 4.4, "score": 110.46, "season": "6, 4, 5월", "peakMonths": [6, 4, 5], "avgPrice": 21610, "sales": 25786600, "saleCount": 1193, "totalProd": 4748, "roketRatio": 44, "overseaRatio": 0, "monthlyTrend": [121, 389, 852, 1491, 1342, 1597, 1328, 877, 475, 228, 138, 117]}, {"kw": "아디다스플립플랍", "cat": "패션잡화", "subCat": "슬리퍼", "type": "정보성", "brand": 0, "trend": 1, "vol": 120, "volYear": 1995, "comp": 21.31, "score": 349.74, "season": "7, 6, 5월", "peakMonths": [7, 6, 5], "avgPrice": 24080, "sales": 64859030, "saleCount": 2693, "totalProd": 16412, "roketRatio": 47, "overseaRatio": 0, "monthlyTrend": [10, 24, 63, 298, 1243, 2463, 2605, 1027, 133, 11, 3, 6]}, {"kw": "크록스올터레인샌들", "cat": "패션잡화", "subCat": "샌들", "type": "정보성", "brand": 1, "trend": 1, "vol": 230, "volYear": 5149, "comp": 22.79, "score": 1148.69, "season": "7, 6, 8월", "peakMonths": [7, 6, 8], "avgPrice": 45320, "sales": 556993440, "saleCount": 12291, "totalProd": 24383, "roketRatio": 14, "overseaRatio": 0, "monthlyTrend": [39, 68, 269, 814, 1449, 2835, 3798, 1897, 250, 10, 17]}, {"kw": "크록스지비츠제작", "cat": "패션잡화", "subCat": "신발용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 190, "volYear": 3137, "comp": 0.48, "score": 449.46, "season": "7, 8, 6월", "peakMonths": [7, 8, 6], "avgPrice": 3880, "sales": 6446600, "saleCount": 1663, "totalProd": 177, "roketRatio": 31, "overseaRatio": 3, "monthlyTrend": [300, 756, 1104, 1966, 2807, 3305, 3766, 3707, 1746, 1107, 970, 440]}, {"kw": "카시오스퀘어", "cat": "패션잡화", "subCat": "메탈시계", "type": "쇼핑성", "brand": 0, "trend": -1, "vol": 490, "volYear": 4118, "comp": 19.97, "score": 608.88, "season": "9, 8, 6월", "peakMonths": [9, 8, 6], "avgPrice": 42860, "sales": 232275500, "saleCount": 5419, "totalProd": 17770, "roketRatio": 67, "overseaRatio": 6, "monthlyTrend": [576, 629, 688, 807, 1024, 1036, 967, 1096, 1380, 459, 255, 244]}, {"kw": "카시오m305", "cat": "패션잡화", "subCat": "메탈시계", "type": "정보성", "brand": 1, "trend": 1, "vol": 2470, "volYear": 33511, "comp": 0.12, "score": 13.81, "season": "7, 6, 10월", "peakMonths": [7, 6, 10], "avgPrice": 144320, "sales": 89476000, "saleCount": 620, "totalProd": 538, "roketRatio": 31, "overseaRatio": 12, "monthlyTrend": [103, 143, 72, 197, 310, 450, 820, 334, 113, 348, 254, 187]}, {"kw": "슈프림시어서커모자", "cat": "패션잡화", "subCat": "모자", "type": "정보성", "brand": 1, "trend": -1, "vol": 400, "volYear": 1820, "comp": 0.25, "score": 4.9, "season": "5, 6, 7월", "peakMonths": [5, 6, 7], "avgPrice": 141330, "sales": 18232000, "saleCount": 129, "totalProd": 670, "roketRatio": 56, "overseaRatio": 5, "monthlyTrend": [50, 1345, 1007, 464, 266, 102]}, {"kw": "지퍼크로스백", "cat": "패션잡화", "subCat": "크로스백", "type": "쇼핑성", "brand": 0, "trend": -1, "vol": 240, "volYear": 7269, "comp": 697.42, "score": 112.0, "season": "5, 6, 4월", "peakMonths": [5, 6, 4], "avgPrice": 119370, "sales": 40106700, "saleCount": 336, "totalProd": 209226, "roketRatio": 94, "overseaRatio": 21, "monthlyTrend": [3825, 3749, 3863, 3994, 4470, 4044, 3505, 3194, 3402, 3359, 2730, 2892]}, {"kw": "변우석모자", "cat": "패션잡화", "subCat": "모자", "type": "정보성", "brand": 0, "trend": 1, "vol": 930, "volYear": 2100, "comp": 0.03, "score": 25.4, "season": "6, 7, 5월", "peakMonths": [6, 7, 5], "avgPrice": 28900, "sales": 15400000, "saleCount": 530, "totalProd": 229, "roketRatio": 64, "overseaRatio": 12, "monthlyTrend": [1, 48, 343, 779, 420, 138, 62, 1]}, {"kw": "캠핑용팬히터", "cat": "디지털/가전", "subCat": "난방기기", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 18450, "volYear": 98200, "comp": 1.45, "score": 88.5, "season": "10, 11, 12월", "peakMonths": [10, 11, 12], "avgPrice": 128000, "sales": 482000000, "saleCount": 3765, "totalProd": 26800, "roketRatio": 22, "overseaRatio": 38, "monthlyTrend": [1200, 800, 450, 320, 280, 210, 180, 450, 2100, 14500, 28900, 32000]}, {"kw": "미니제빙기", "cat": "디지털/가전", "subCat": "주방가전", "type": "쇼핑성", "brand": 0, "trend": -1, "vol": 32800, "volYear": 184000, "comp": 2.12, "score": 94.2, "season": "6, 7, 8월", "peakMonths": [6, 7, 8], "avgPrice": 98000, "sales": 720000000, "saleCount": 7346, "totalProd": 69500, "roketRatio": 42, "overseaRatio": 24, "monthlyTrend": [2100, 2400, 4500, 11200, 24500, 48900, 56200, 31400, 8900, 3400, 2100, 1800]}, {"kw": "무선에어건", "cat": "디지털/가전", "subCat": "청소기기", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 24600, "volYear": 142000, "comp": 0.85, "score": 120.4, "season": "연중균등", "peakMonths": [3, 4, 9, 10], "avgPrice": 38900, "sales": 320000000, "saleCount": 8226, "totalProd": 20900, "roketRatio": 35, "overseaRatio": 45, "monthlyTrend": [12000, 14200, 18500, 21000, 20500, 19800, 18200, 19500, 22400, 21800, 19500, 18900]}, {"kw": "차량용무선청소기", "cat": "디지털/가전", "subCat": "자동차기기", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 38900, "volYear": 289000, "comp": 1.82, "score": 75.8, "season": "연중균등", "peakMonths": [4, 5, 9, 10], "avgPrice": 42000, "sales": 510000000, "saleCount": 12142, "totalProd": 70800, "roketRatio": 48, "overseaRatio": 32, "monthlyTrend": [24000, 26500, 31200, 35800, 34500, 32100, 31800, 33200, 36900, 34200, 30500, 28900]}, {"kw": "탁상용무선선풍기", "cat": "디지털/가전", "subCat": "계절가전", "type": "쇼핑성", "brand": 0, "trend": -1, "vol": 16400, "volYear": 92000, "comp": 1.15, "score": 62.1, "season": "5, 6, 7월", "peakMonths": [5, 6, 7], "avgPrice": 24500, "sales": 185000000, "saleCount": 7551, "totalProd": 18800, "roketRatio": 52, "overseaRatio": 28, "monthlyTrend": [500, 800, 2100, 8900, 26500, 34200, 28900, 11200, 2400, 800, 450, 300]}, {"kw": "충전식손난로", "cat": "디지털/가전", "subCat": "계절가전", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 42500, "volYear": 195000, "comp": 0.92, "score": 145.2, "season": "11, 12, 1월", "peakMonths": [11, 12, 1], "avgPrice": 21900, "sales": 410000000, "saleCount": 18721, "totalProd": 39100, "roketRatio": 38, "overseaRatio": 42, "monthlyTrend": [18500, 6200, 1200, 500, 300, 200, 150, 400, 1800, 12500, 46800, 58900]}, {"kw": "레트로미니냉장고", "cat": "디지털/가전", "subCat": "냉장고", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 8900, "volYear": 64000, "comp": 1.68, "score": 52.4, "season": "3, 4, 5월", "peakMonths": [3, 4, 5], "avgPrice": 189000, "sales": 320000000, "saleCount": 1693, "totalProd": 14950, "roketRatio": 15, "overseaRatio": 35, "monthlyTrend": [4200, 5800, 9800, 11200, 10500, 9200, 8400, 7800, 7100, 6500, 5400, 4900]}, {"kw": "모니터조명바", "cat": "디지털/가전", "subCat": "컴퓨터주변기기", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 12800, "volYear": 89000, "comp": 0.65, "score": 98.6, "season": "연중균등", "peakMonths": [2, 3, 9, 10], "avgPrice": 34000, "sales": 240000000, "saleCount": 7058, "totalProd": 8320, "roketRatio": 41, "overseaRatio": 52, "monthlyTrend": [9800, 12400, 14100, 13200, 11800, 10900, 10200, 11500, 13800, 14200, 12900, 11800]}, {"kw": "아크릴모듈선반", "cat": "가구/인테리어", "subCat": "선반", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 14500, "volYear": 78000, "comp": 0.74, "score": 115.3, "season": "3, 4, 5월", "peakMonths": [3, 4, 5], "avgPrice": 48000, "sales": 280000000, "saleCount": 5833, "totalProd": 10730, "roketRatio": 18, "overseaRatio": 46, "monthlyTrend": [8200, 11500, 16800, 18900, 17200, 14500, 12800, 11900, 12400, 13500, 11200, 9800]}, {"kw": "이동식트롤리3단", "cat": "가구/인테리어", "subCat": "수납가구", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 28400, "volYear": 195000, "comp": 1.25, "score": 84.2, "season": "2, 3, 4월", "peakMonths": [2, 3, 4], "avgPrice": 26500, "sales": 390000000, "saleCount": 14716, "totalProd": 35500, "roketRatio": 55, "overseaRatio": 25, "monthlyTrend": [19800, 27500, 34200, 31800, 28400, 25600, 24200, 26100, 29400, 27800, 23500, 21000]}, {"kw": "벽걸이무타공시계", "cat": "가구/인테리어", "subCat": "인테리어소품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 9800, "volYear": 62000, "comp": 0.58, "score": 132.0, "season": "연중균등", "peakMonths": [3, 4, 9, 10], "avgPrice": 18900, "sales": 140000000, "saleCount": 7407, "totalProd": 5684, "roketRatio": 45, "overseaRatio": 38, "monthlyTrend": [7200, 8900, 11400, 10800, 9800, 9200, 8800, 9500, 10900, 10400, 9100, 8200]}, {"kw": "도어후크옷걸이", "cat": "가구/인테리어", "subCat": "수납정리", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 11200, "volYear": 74000, "comp": 0.42, "score": 148.5, "season": "연중균등", "peakMonths": [3, 4, 10, 11], "avgPrice": 9900, "sales": 95000000, "saleCount": 9595, "totalProd": 4704, "roketRatio": 62, "overseaRatio": 28, "monthlyTrend": [8500, 9800, 12800, 12100, 11200, 10400, 9800, 10500, 12100, 12400, 11500, 10200]}, {"kw": "모션베드매트리스", "cat": "가구/인테리어", "subCat": "침실가구", "type": "정보성", "brand": 0, "trend": 1, "vol": 7600, "volYear": 54000, "comp": 3.45, "score": 42.1, "season": "연중균등", "peakMonths": [3, 5, 9, 10], "avgPrice": 480000, "sales": 520000000, "saleCount": 1083, "totalProd": 26220, "roketRatio": 12, "overseaRatio": 18, "monthlyTrend": [5400, 6200, 8400, 8100, 7900, 7400, 7100, 7500, 8600, 8200, 7400, 6800]}, {"kw": "차량용트레이테이블", "cat": "생활/건강", "subCat": "자동차용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 18200, "volYear": 112000, "comp": 0.62, "score": 165.4, "season": "연중균등", "peakMonths": [4, 5, 9, 10], "avgPrice": 19800, "sales": 260000000, "saleCount": 13131, "totalProd": 11284, "roketRatio": 38, "overseaRatio": 54, "monthlyTrend": [12400, 14500, 18900, 21400, 20800, 18500, 17200, 18400, 21200, 20500, 17800, 16200]}, {"kw": "스탠리호환컵홀더", "cat": "생활/건강", "subCat": "자동차용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 14200, "volYear": 65000, "comp": 0.45, "score": 182.0, "season": "연중균등", "peakMonths": [5, 6, 7, 8], "avgPrice": 16500, "sales": 180000000, "saleCount": 10909, "totalProd": 6390, "roketRatio": 28, "overseaRatio": 65, "monthlyTrend": [6500, 8200, 11400, 14800, 17200, 18900, 17500, 15400, 13200, 12100, 10500, 9200]}, {"kw": "음식물처리기필터", "cat": "생활/건강", "subCat": "주방소모품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 22400, "volYear": 148000, "comp": 0.88, "score": 95.2, "season": "6, 7, 8월", "peakMonths": [6, 7, 8], "avgPrice": 22000, "sales": 340000000, "saleCount": 15454, "totalProd": 19712, "roketRatio": 45, "overseaRatio": 22, "monthlyTrend": [11200, 13500, 16800, 21000, 26500, 32400, 34800, 28900, 21200, 17500, 14200, 12800]}, {"kw": "싱크대배수구클리너", "cat": "생활/건강", "subCat": "세제/세정제", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 16800, "volYear": 115000, "comp": 0.52, "score": 142.1, "season": "연중균등", "peakMonths": [6, 7, 8], "avgPrice": 14500, "sales": 195000000, "saleCount": 13448, "totalProd": 8736, "roketRatio": 58, "overseaRatio": 18, "monthlyTrend": [11200, 12500, 15400, 17200, 19800, 22400, 23500, 20100, 16800, 15200, 13800, 12500]}, {"kw": "욕실물막이규조토", "cat": "생활/건강", "subCat": "욕실용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 19500, "volYear": 128000, "comp": 0.78, "score": 118.5, "season": "연중균등", "peakMonths": [5, 6, 7], "avgPrice": 17800, "sales": 240000000, "saleCount": 13483, "totalProd": 15210, "roketRatio": 52, "overseaRatio": 35, "monthlyTrend": [12800, 14200, 17800, 20500, 23400, 25800, 24500, 21200, 18500, 16800, 15200, 13900]}, {"kw": "캠핑화목난로", "cat": "스포츠/레저", "subCat": "캠핑난로", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 34500, "volYear": 168000, "comp": 1.12, "score": 112.4, "season": "10, 11, 12월", "peakMonths": [10, 11, 12], "avgPrice": 165000, "sales": 680000000, "saleCount": 4121, "totalProd": 38640, "roketRatio": 18, "overseaRatio": 48, "monthlyTrend": [2400, 1200, 800, 500, 350, 280, 210, 650, 4800, 26500, 58900, 64200]}, {"kw": "경량야전침대", "cat": "스포츠/레저", "subCat": "캠핑침구", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 18900, "volYear": 124000, "comp": 1.45, "score": 78.5, "season": "5, 6, 9, 10월", "peakMonths": [5, 6, 9, 10], "avgPrice": 68000, "sales": 340000000, "saleCount": 5000, "totalProd": 27405, "roketRatio": 32, "overseaRatio": 42, "monthlyTrend": [6500, 8200, 14500, 22400, 26800, 24500, 21200, 23500, 27800, 26200, 16800, 10500]}, {"kw": "자전거스마트폰거치대", "cat": "스포츠/레저", "subCat": "자전거용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 26800, "volYear": 185000, "comp": 0.68, "score": 135.2, "season": "4, 5, 9월", "peakMonths": [4, 5, 9], "avgPrice": 18500, "sales": 380000000, "saleCount": 20540, "totalProd": 18224, "roketRatio": 65, "overseaRatio": 35, "monthlyTrend": [9800, 12400, 22500, 34200, 38900, 32400, 28500, 31200, 36800, 32500, 21000, 13500]}, {"kw": "방한낚시장갑", "cat": "스포츠/레저", "subCat": "낚시용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 14200, "volYear": 68000, "comp": 0.82, "score": 125.0, "season": "11, 12, 1월", "peakMonths": [11, 12, 1], "avgPrice": 14900, "sales": 160000000, "saleCount": 10738, "totalProd": 11644, "roketRatio": 42, "overseaRatio": 38, "monthlyTrend": [12400, 6800, 2100, 800, 500, 350, 280, 450, 1800, 8900, 21500, 24800]}, {"kw": "유모차컵홀더트레이", "cat": "출산/육아", "subCat": "유모차용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 12400, "volYear": 78000, "comp": 0.54, "score": 155.6, "season": "4, 5, 6월", "peakMonths": [4, 5, 6], "avgPrice": 15800, "sales": 150000000, "saleCount": 9493, "totalProd": 6696, "roketRatio": 55, "overseaRatio": 38, "monthlyTrend": [7200, 8900, 13500, 16800, 18200, 15400, 13200, 13800, 15200, 14500, 11800, 9200]}, {"kw": "기저귀갈이대수납함", "cat": "출산/육아", "subCat": "유아안전용품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 15800, "volYear": 98000, "comp": 0.72, "score": 122.4, "season": "연중균등", "peakMonths": [2, 3, 4, 10], "avgPrice": 28500, "sales": 260000000, "saleCount": 9122, "totalProd": 11376, "roketRatio": 48, "overseaRatio": 30, "monthlyTrend": [12500, 14800, 17200, 16900, 15800, 15100, 14600, 15200, 16500, 16800, 15400, 14100]}, {"kw": "메이크업브러쉬세척기", "cat": "화장품/미용", "subCat": "메이크업소품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 9800, "volYear": 62000, "comp": 0.65, "score": 118.2, "season": "연중균등", "peakMonths": [3, 4, 9, 10], "avgPrice": 23500, "sales": 140000000, "saleCount": 5957, "totalProd": 6370, "roketRatio": 42, "overseaRatio": 48, "monthlyTrend": [7400, 8900, 11200, 10800, 9800, 9400, 8900, 9600, 10800, 10500, 9500, 8400]}, {"kw": "회전식화장품정리대", "cat": "화장품/미용", "subCat": "화장소품", "type": "쇼핑성", "brand": 0, "trend": 1, "vol": 18600, "volYear": 124000, "comp": 0.58, "score": 145.8, "season": "연중균등", "peakMonths": [2, 3, 9, 10], "avgPrice": 17900, "sales": 250000000, "saleCount": 13966, "totalProd": 10788, "roketRatio": 52, "overseaRatio": 35, "monthlyTrend": [14200, 17800, 21500, 19800, 18600, 17400, 16800, 17900, 20500, 19800, 17600, 15800]}];
+
+    let filteredData = [...RAW_DATA];
+    let selectedKeywords = new Set();
+    let savedKeywords = JSON.parse(localStorage.getItem('bulsaja_saved_kw') || '[]');
+    let currentSort = { key: 'score', asc: false };
+    let selectedMonth = null;
+
+    // 초기화
+    window.addEventListener('DOMContentLoaded', () => {
+      buildMonthButtons();
+      updateSavedBadge();
+      applyFilters();
+    });
+
+    // 1~12월 버튼 동적 생성
+    function buildMonthButtons() {
+      const group = document.getElementById('monthButtonGroup');
+      group.innerHTML = '';
+      for (let m = 1; m <= 12; m++) {
+        const btn = document.createElement('button');
+        btn.id = `month-btn-${m}`;
+        btn.type = 'button';
+        btn.className = 'py-1 rounded-lg border border-slate-200 text-[11px] font-semibold text-slate-600 hover:bg-slate-100 transition';
+        btn.innerText = `${m}월`;
+        btn.onclick = () => toggleMonth(m);
+        group.appendChild(btn);
+      }
+    }
+
+    function toggleMonth(m) {
+      if (selectedMonth === m) {
+        selectedMonth = null;
+        document.getElementById(`month-btn-${m}`).classList.remove('bg-orange-point', 'text-white', 'border-orange-point');
+        document.getElementById('selectedMonthLabel').innerText = '선택 없음 (전체)';
+      } else {
+        if (selectedMonth) {
+          document.getElementById(`month-btn-${selectedMonth}`).classList.remove('bg-orange-point', 'text-white', 'border-orange-point');
+        }
+        selectedMonth = m;
+        document.getElementById(`month-btn-${m}`).classList.add('bg-orange-point', 'text-white', 'border-orange-point');
+        document.getElementById('selectedMonthLabel').innerText = `${m}월 피크 키워드만 필터링`;
+      }
+      applyFilters();
+    }
+
+    function updateCompLabel() {
+      const v = parseFloat(document.getElementById('compRange').value);
+      document.getElementById('compLabel').innerText = v >= 50 ? '제한없음' : `<= ${v}`;
+    }
+
+    function updateVolLabel() {
+      const v = parseInt(document.getElementById('volRange').value);
+      document.getElementById('volLabel').innerText = v === 0 ? '0회+' : `${v.toLocaleString()}회+`;
+    }
+
+    function resetFilters() {
+      document.getElementById('catSelect').value = '전체';
+      document.getElementById('kwInput').value = '';
+      document.querySelector('input[name="brandFilter"][value="all"]').checked = true;
+      document.querySelector('input[name="typeFilter"][value="all"]').checked = true;
+      document.getElementById('compRange').value = 50;
+      document.getElementById('volRange').value = 0;
+      updateCompLabel();
+      updateVolLabel();
+      if (selectedMonth) {
+        document.getElementById(`month-btn-${selectedMonth}`).classList.remove('bg-orange-point', 'text-white', 'border-orange-point');
+        selectedMonth = null;
+        document.getElementById('selectedMonthLabel').innerText = '선택 없음 (전체)';
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cat = document.getElementById('catSelect').value;
+      const kw = document.getElementById('kwInput').value.trim().toLowerCase();
+      const brand = document.querySelector('input[name="brandFilter"]:checked').value;
+      const type = document.querySelector('input[name="typeFilter"]:checked').value;
+      const maxComp = parseFloat(document.getElementById('compRange').value);
+      const minVol = parseInt(document.getElementById('volRange').value);
+
+      filteredData = RAW_DATA.filter(item => {
+        if (cat !== '전체' && item.cat !== cat) return false;
+        if (kw && !item.kw.toLowerCase().includes(kw)) return false;
+        if (brand === 'brand' && item.brand !== 1) return false;
+        if (brand === 'nobrand' && item.brand !== 0) return false;
+        if (type !== 'all' && item.type !== type) return false;
+        if (maxComp < 50 && item.comp > maxComp) return false;
+        if (item.vol < minVol) return false;
+        if (selectedMonth && !(item.peakMonths && item.peakMonths.includes(selectedMonth))) return false;
+        return true;
+      });
+
+      // 정렬 적용
+      filteredData.sort((a, b) => {
+        let v1 = a[currentSort.key];
+        let v2 = b[currentSort.key];
+        if (typeof v1 === 'string') return currentSort.asc ? v1.localeCompare(v2) : v2.localeCompare(v1);
+        return currentSort.asc ? v1 - v2 : v2 - v1;
+      });
+
+      renderTable();
+    }
+
+    function sortBy(key) {
+      if (currentSort.key === key) {
+        currentSort.asc = !currentSort.asc;
+      } else {
+        currentSort.key = key;
+        currentSort.asc = false;
+      }
+      applyFilters();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+      document.getElementById('resultCountBadge').innerText = `${filteredData.length.toLocaleString()}개`;
+
+      if (filteredData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="15" class="py-12 text-center text-slate-400 font-medium">조건에 맞는 키워드가 없습니다. 필터를 초기화해 보세요.</td></tr>`;
+        return;
+      }
+
+      filteredData.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        const isSelected = selectedKeywords.has(row.kw);
+
+        // 경쟁강도 뱃지
+        let compBadge = '';
+        if (row.comp <= 2.0) compBadge = `<span class="badge-optimal px-2 py-0.5 rounded-full font-bold text-[11px]">${row.comp.toFixed(2)} 최적</span>`;
+        else if (row.comp <= 5.0) compBadge = `<span class="badge-good px-2 py-0.5 rounded-full font-bold text-[11px]">${row.comp.toFixed(2)} 좋음</span>`;
+        else if (row.comp <= 20.0) compBadge = `<span class="badge-normal px-2 py-0.5 rounded-full font-bold text-[11px]">${row.comp.toFixed(2)} 보통</span>`;
+        else if (row.comp <= 50.0) compBadge = `<span class="badge-bad px-2 py-0.5 rounded-full font-bold text-[11px]">${row.comp.toFixed(2)} 나쁨</span>`;
+        else compBadge = `<span class="badge-worst px-2 py-0.5 rounded-full font-bold text-[11px]">${row.comp.toFixed(2)} 최악</span>`;
+
+        // 불사지수 불꽃 이모지
+        let fireCount = 1;
+        if (row.score >= 100) fireCount = 5;
+        else if (row.score >= 50) fireCount = 4;
+        else if (row.score >= 20) fireCount = 3;
+        else if (row.score >= 5) fireCount = 2;
+        const fireIcons = '🔥'.repeat(fireCount);
+
+        // 트렌드 아이콘
+        let trendIcon = '<span class="text-slate-400">→</span>';
+        if (row.trend > 0) trendIcon = '<span class="text-emerald-500 font-bold">↗</span>';
+        else if (row.trend < 0) trendIcon = '<span class="text-rose-500 font-bold">↘</span>';
+
+        // 스파크라인 SVG 렌더
+        const sparklineSvg = generateSparkline(row.monthlyTrend);
+
+        tr.innerHTML = `
+          <td class="py-3 px-3 text-center">
+            <input type="checkbox" onchange="toggleSelect('${row.kw}')" ${isSelected ? 'checked' : ''} class="rounded text-[#FF5A1F] focus:ring-[#FF5A1F]">
+          </td>
+          <td class="py-3 px-3 font-bold text-slate-900">
+            <div class="flex items-center gap-1.5">
+              <span>${row.kw}</span>
+              <a href="https://search.shopping.naver.com/search/all?query=${encodeURIComponent(row.kw)}" target="_blank" title="네이버 쇼핑 직결" class="text-slate-400 hover:text-emerald-600 transition"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+            </div>
+          </td>
+          <td class="py-3 px-2 text-slate-500 text-[11px]">${row.cat} > ${row.subCat}</td>
+          <td class="py-3 px-2 text-center">
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${row.type === '쇼핑성' ? 'bg-orange-100 text-[#FF5A1F]' : 'bg-slate-100 text-slate-600'}">${row.type}</span>
+          </td>
+          <td class="py-3 px-2 text-center">
+            ${row.brand === 1 ? '<i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>' : '<i class="fa-solid fa-circle-xmark text-slate-300 text-xs"></i>'}
+          </td>
+          <td class="py-3 px-2 text-center text-sm">${trendIcon}</td>
+          <td class="py-3 px-3 text-right font-semibold text-slate-800">${row.vol.toLocaleString()}</td>
+          <td class="py-3 px-3 text-right text-slate-500">${row.volYear.toLocaleString()}</td>
+          <td class="py-3 px-3 text-center">${compBadge}</td>
+          <td class="py-3 px-3 text-center font-bold text-slate-800" title="전환점수: ${row.score}">
+            <span class="text-xs">${fireIcons}</span>
+            <span class="text-[10px] text-slate-400 block">${row.score.toFixed(1)}</span>
+          </td>
+          <td class="py-3 px-3 text-slate-600 text-[11px]">${row.season}</td>
+          <td class="py-3 px-3 text-center">${sparklineSvg}</td>
+          <td class="py-3 px-3 text-right font-medium text-slate-700">${row.avgPrice > 0 ? row.avgPrice.toLocaleString() + '원' : '-'}</td>
+          <td class="py-3 px-3 text-right font-semibold text-slate-900">${formatMoney(row.sales)}</td>
+          <td class="py-3 px-3 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              <a href="https://www.coupang.com/np/search?component=&q=${encodeURIComponent(row.kw)}" target="_blank" class="px-2 py-1 rounded bg-rose-50 text-rose-600 hover:bg-rose-100 text-[11px] font-bold transition" title="쿠팡 가격/리뷰 확인">쿠팡</a>
+              <a href="https://s.taobao.com/search?q=${encodeURIComponent(row.kw)}" target="_blank" class="px-2 py-1 rounded bg-amber-50 text-amber-700 hover:bg-amber-100 text-[11px] font-bold transition" title="타오바오 소싱">타오</a>
+              <a href="https://s.1688.com/youyuan/index.htm?tab=imageSearch&keywords=${encodeURIComponent(row.kw)}" target="_blank" class="px-2 py-1 rounded bg-orange-100 text-[#FF5A1F] hover:bg-orange-200 text-[11px] font-bold transition" title="1688 공장도매">1688</a>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function generateSparkline(arr) {
+      if (!arr || arr.length < 2) return `<span class="text-slate-300">-</span>`;
+      const max = Math.max(...arr) || 1;
+      const min = Math.min(...arr);
+      const range = (max - min) || 1;
+      const w = 70;
+      const h = 20;
+
+      const points = arr.map((val, i) => {
+        const x = (i / (arr.length - 1)) * w;
+        const y = h - ((val - min) / range) * (h - 4) - 2;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+
+      return `
+        <svg class="sparkline-svg inline-block" viewBox="0 0 ${w} ${h}">
+          <polyline fill="none" stroke="#FF5A1F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="${points}" />
+        </svg>
+      `;
+    }
+
+    function formatMoney(num) {
+      if (!num || num === 0) return '-';
+      if (num >= 100000000) return `${(num / 100000000).toFixed(1)}억`;
+      if (num >= 10000) return `${(num / 10000).toLocaleString()}만`;
+      return num.toLocaleString() + '원';
+    }
+
+    function toggleSelect(kw) {
+      if (selectedKeywords.has(kw)) selectedKeywords.delete(kw);
+      else selectedKeywords.add(kw);
+      document.getElementById('selectedCountBtn').innerText = `선택한 키워드 저장 (${selectedKeywords.size})`;
+    }
+
+    function toggleSelectAll() {
+      const checked = document.getElementById('selectAll').checked;
+      filteredData.forEach(row => {
+        if (checked) selectedKeywords.add(row.kw);
+        else selectedKeywords.delete(row.kw);
+      });
+      document.getElementById('selectedCountBtn').innerText = `선택한 키워드 저장 (${selectedKeywords.size})`;
+      renderTable();
+    }
+
+    function saveSelectedKeywords() {
+      if (selectedKeywords.size === 0) {
+        alert('저장할 키워드를 테이블에서 체크박스로 먼저 선택해 주세요!');
+        return;
+      }
+      selectedKeywords.forEach(kw => {
+        if (!savedKeywords.includes(kw)) savedKeywords.push(kw);
+      });
+      localStorage.setItem('bulsaja_saved_kw', JSON.stringify(savedKeywords));
+      updateSavedBadge();
+      alert(`${selectedKeywords.size}개 키워드가 보관함에 성공적으로 저장되었습니다!`);
+    }
+
+    function updateSavedBadge() {
+      document.getElementById('sidebarSavedBadge').innerText = savedKeywords.length;
+    }
+
+    function toggleSavedModal() {
+      const modal = document.getElementById('savedModal');
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        renderSavedList();
+      }
+    }
+
+    function renderSavedList() {
+      const container = document.getElementById('savedListContainer');
+      container.innerHTML = '';
+      if (savedKeywords.length === 0) {
+        container.innerHTML = `<p class="text-center text-slate-400 py-6">보관된 키워드가 없습니다.</p>`;
+        return;
+      }
+      savedKeywords.forEach((kw, i) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200';
+        div.innerHTML = `
+          <span class="font-bold text-slate-800">${i + 1}. ${kw}</span>
+          <div class="flex items-center gap-2">
+            <a href="https://s.1688.com/youyuan/index.htm?tab=imageSearch&keywords=${encodeURIComponent(kw)}" target="_blank" class="text-[#FF5A1F] hover:underline font-bold">1688소싱</a>
+            <button onclick="removeSavedKeyword('${kw}')" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removeSavedKeyword(kw) {
+      savedKeywords = savedKeywords.filter(k => k !== kw);
+      localStorage.setItem('bulsaja_saved_kw', JSON.stringify(savedKeywords));
+      updateSavedBadge();
+      renderSavedList();
+    }
+
+    function clearSavedKeywords() {
+      if (confirm('보관함의 모든 키워드를 삭제하시겠습니까?')) {
+        savedKeywords = [];
+        localStorage.setItem('bulsaja_saved_kw', JSON.stringify(savedKeywords));
+        updateSavedBadge();
+        renderSavedList();
+      }
+    }
+
+    function copySavedToClipboard() {
+      if (savedKeywords.length === 0) return;
+      navigator.clipboard.writeText(savedKeywords.join('\n')).then(() => {
+        alert('보관함 키워드 목록이 클립보드에 복사되었습니다!');
+      });
+    }
+
+    function downloadCSV() {
+      let csv = '키워드,카테고리,세부분류,유형,브랜드,30일검색량,작년총검색량,경쟁강도,불사지수,계절성피크,평균단가,6개월매출\n';
+      filteredData.forEach(r => {
+        csv += `"${r.kw}","${r.cat}","${r.subCat}","${r.type}",${r.brand ? '브랜드' : '비브랜드'},${r.vol},${r.volYear},${r.comp},${r.score},"${r.season}",${r.avgPrice},${r.sales}\n`;
+      });
+      const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bulsaja_keywords_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>
