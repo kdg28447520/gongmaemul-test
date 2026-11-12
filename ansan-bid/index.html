@@ -1,1294 +1,1326 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #F7F7F8;
-  --card: #FFFFFF;
-  --card-border: #EBEBEB;
-  --card-hover-border: #222222;
-  --text: #222222;
-  --muted: #717171;
-  --muted-light: #B0B0B0;
-  --accent: #FF385C;
-  --accent-hover: #E00B41;
-  --accent-light: #FFF0F2;
-  --green: #008A05;
-  --green-light: #EBF7EE;
-  --tag-bg: #F2F2F2;
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-full: 9999px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-md: 0 6px 16px rgba(0,0,0,0.08);
-  --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F7F8;
+      --card-bg: #FFFFFF;
+      --text-main: #222222;
+      --text-sub: #717171;
+      --text-muted: #B0B0B0;
+      --border: #EBEBEB;
+      --accent: #FF385C;
+      --accent-hover: #E00B41;
+      --accent-light: #FFF0F2;
+      --green: #008A05;
+      --green-light: #EBF7EE;
+      --blue: #0066FF;
+      --blue-light: #EBF3FF;
+      --gold: #FFB800;
+      --gold-light: #FFF9E6;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 20px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+    }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); line-height: 1.5; padding-bottom: 80px; }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px 20px 80px;
-}
+    /* HEADER */
+    .header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #E00B41);
+      display: flex; align-items: center; justify-content: center;
+      color: #FFF; font-size: 20px; font-weight: 800; box-shadow: 0 4px 12px rgba(255,56,92,0.3);
+    }
+    .brand-text h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; display: flex; align-items: center; gap: 8px; }
+    .badge-pro {
+      background: var(--text-main); color: #FFF; font-size: 11px; font-weight: 700;
+      padding: 2px 7px; border-radius: 6px; letter-spacing: 0.5px;
+    }
+    .brand-text p { font-size: 12px; color: var(--text-sub); }
+    .header-meta { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-sub); font-weight: 500; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
 
-/* HEADER */
-.header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--card-border);
-}
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.header-title-wrap h1 {
-  font-size: 24px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.airbnb-badge {
-  background: var(--accent);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.header-title-wrap p {
-  font-size: 13.5px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--green-light);
-  color: var(--green);
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  font-size: 12px;
-  font-weight: 700;
-}
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--green);
-  border-radius: 50%;
-  animation: pulse 1.8s infinite;
-}
-@keyframes pulse {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.25); opacity: 1; }
-  100% { transform: scale(0.95); opacity: 0.8; }
-}
+    /* CONTAINER */
+    .container { max-width: 1200px; margin: 28px auto 0; padding: 0 20px; }
 
-/* STATS BAR */
-.stats-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-md);
-  padding: 16px 18px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.stat-info h4 { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 2px; }
-.stat-info .val { font-size: 18px; font-weight: 900; color: var(--text); }
-.stat-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
+    /* STATS SUMMARY */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stat-info h4 { font-size: 12px; color: var(--text-sub); font-weight: 600; margin-bottom: 4px; }
+    .stat-info .val { font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.3px; }
+    .stat-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
 
-/* AIRBNB PILL TABS */
-.nav-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-.tab-btn {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  padding: 10px 18px;
-  border-radius: var(--radius-full);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  cursor: pointer;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.tab-btn:hover {
-  border-color: #B0B0B0;
-  transform: translateY(-1px);
-}
-.tab-btn.active {
-  background: var(--text);
-  color: #fff;
-  border-color: var(--text);
-  box-shadow: var(--shadow-md);
-}
+    /* NAVIGATION TABS & FILTERS */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+    .nav-tabs::-webkit-scrollbar { height: 4px; }
+    .nav-tabs::-webkit-scrollbar-thumb { background: #DDD; border-radius: 4px; }
+    .tab-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .tab-btn:hover { border-color: var(--text-main); color: var(--text-main); }
+    .tab-btn.active {
+      background: var(--text-main);
+      color: #FFF;
+      border-color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .tab-btn.active i { color: #FFF !important; }
+    .tab-btn .badge-num {
+      background: rgba(0,0,0,0.08);
+      color: inherit;
+      padding: 1px 7px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+    .tab-btn.active .badge-num {
+      background: rgba(255,255,255,0.25);
+      color: #FFF;
+    }
 
-.tab-pane { display: none; }
-.tab-pane.active { display: block; animation: fadeIn 0.25s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    /* SECTION TITLE */
+    .sec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sec-title h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; display: flex; align-items: center; gap: 8px; }
+    .count-badge { font-size: 12.5px; background: #EFEFEF; color: var(--text-sub); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
 
-.sec-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.sec-title h2 { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-.count-badge { font-size: 12px; color: var(--muted); font-weight: 600; }
+    /* NOTICE BANNER */
+    .info-banner {
+      background: #FFFFFF;
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+    .info-banner i { font-size: 18px; color: var(--accent); margin-top: 2px; }
 
-/* BID CARDS GRID */
-.bid-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-}
-.bid-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.bid-card:hover {
-  border-color: #D0D0D0;
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
+    /* BID CARDS GRID */
+    .bids-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 18px;
+    }
 
-.card-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-.location-tag {
-  background: var(--tag-bg);
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #444;
-}
-.location-tag.ansan { background: #EBF3FF; color: #0066FF; }
-.d-day-tag {
-  font-size: 11.5px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: var(--radius-sm);
-}
-.d-day-tag.urgent { background: #FFF0F2; color: var(--accent); }
-.d-day-tag.normal { background: #F2F2F2; color: #555; }
+    .bid-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .bid-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: #DDD;
+    }
+    .bid-card.priority-ansan {
+      border: 1.5px solid var(--gold);
+      background: linear-gradient(180deg, #FFFCF2 0%, #FFFFFF 12%);
+    }
 
-/* BID NUMBER BADGE + COPY */
-.bid-no-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #F8F9FA;
-  border: 1px dashed #D5D5D5;
-  border-radius: 6px;
-  padding: 6px 10px;
-  margin-bottom: 10px;
-  font-size: 11.5px;
-}
-.bid-no-text {
-  font-family: monospace;
-  font-weight: 700;
-  color: #333;
-}
-.btn-copy-no {
-  background: #FFFFFF;
-  border: 1px solid #CCCCCC;
-  border-radius: 4px;
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  color: #444;
-  transition: all 0.15s;
-}
-.btn-copy-no:hover {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
-}
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .tag-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .badge-loc {
+      background: #F0F0F0;
+      color: #333;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge-ansan-gold {
+      background: var(--gold-light);
+      color: #B27B00;
+      border: 1px solid #FFE28A;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .badge-status {
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .bid-no-box {
+      font-size: 12px;
+      color: var(--text-sub);
+      background: #F7F7F8;
+      border: 1px solid #EBEBEB;
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .bid-no-box strong { font-weight: 700; color: #111; }
+    .btn-copy {
+      background: #FFF;
+      border: 1px solid #CCC;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #444;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-copy:hover { background: #F0F0F0; border-color: #999; }
 
-.bid-title {
-  font-size: 15.5px;
-  font-weight: 800;
-  line-height: 1.4;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-.bid-org {
-  font-size: 12.5px;
-  color: var(--muted);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 800;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+    }
+    .card-agency {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-/* PRICE TABLE IN CARD */
-.price-box {
-  background: #FAFAFA;
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  margin-bottom: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12.5px;
-}
-.price-row .label { color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 6px; }
-.price-row .val { font-weight: 700; color: var(--text); }
-.price-row .val.highlight { color: var(--accent); font-weight: 900; font-size: 14px; }
-.price-row .val.profit { color: var(--green); font-weight: 900; font-size: 14px; }
+    /* PRICE BOX */
+    .price-box {
+      background: #F9F9FA;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      margin-bottom: 7px;
+    }
+    .price-row:last-child { margin-bottom: 0; }
+    .price-row .lbl { color: var(--text-sub); font-weight: 500; }
+    .price-row .val { font-weight: 700; color: var(--text-main); }
+    .price-row.highlight {
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .price-row.highlight .lbl { font-weight: 700; color: var(--accent); }
+    .price-row.highlight .val { font-size: 16px; font-weight: 800; color: var(--accent); }
+    .price-row.profit .lbl { font-weight: 700; color: var(--green); }
+    .price-row.profit .val { font-weight: 800; color: var(--green); font-size: 14px; }
 
-/* IN-CARD DIRECT SUPPLIER BOX */
-.supplier-direct-box {
-  background: #FFFDFD;
-  border: 1.5px solid #FFD4DC;
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  margin-bottom: 12px;
-}
-.supplier-direct-header {
-  font-size: 11.5px;
-  font-weight: 800;
-  color: var(--accent);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.supplier-direct-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.supplier-direct-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #FFFFFF;
-  border: 1px solid #F0E0E4;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 12px;
-}
-.supplier-direct-item .s-info {
-  display: flex;
-  flex-direction: column;
-}
-.supplier-direct-item .s-name { font-weight: 800; color: #222; }
-.supplier-direct-item .s-price { font-size: 11px; color: var(--accent); font-weight: 700; }
-.supplier-link-btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 800;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.2s;
-}
-.supplier-link-btn:hover {
-  background: var(--accent-hover);
-}
+    /* DIRECT SUPPLIER IN CARD */
+    .supplier-direct-box {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-bottom: 14px;
+    }
+    .supplier-direct-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .supplier-direct-list { display: flex; flex-direction: column; gap: 6px; }
+    .supplier-direct-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font-size: 12px;
+      transition: border-color 0.15s;
+    }
+    .supplier-direct-item:hover { border-color: #BBB; }
+    .s-info { display: flex; flex-direction: column; gap: 2px; }
+    .s-name { font-weight: 700; color: var(--text-main); }
+    .s-price { color: var(--accent); font-weight: 700; font-size: 11.5px; }
+    .supplier-link-btn {
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid rgba(255,56,92,0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .supplier-link-btn:hover { background: var(--accent); color: #FFF; }
 
-/* ACTION BUTTONS */
-.action-box { display: flex; flex-direction: column; gap: 8px; }
-.btn-supplier-trigger { width: 100%; background: #FFFFFF; color: var(--accent); border: 1px dashed var(--accent); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
-.btn-supplier-trigger:hover { background: var(--accent-light); }
+    /* ACTION BUTTONS */
+    .action-box { display: flex; flex-direction: column; gap: 8px; }
+    .action-sub-row { display: grid; grid-template-columns: 2.2fr 1fr; gap: 8px; }
+    .btn-detail {
+      background: var(--text-main);
+      color: #FFF;
+      text-align: center;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .btn-detail:hover { background: #000; }
+    .btn-calc {
+      background: #FFF;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .btn-calc:hover { border-color: var(--text-main); }
+    .btn-supplier-trigger {
+      background: #FFF;
+      border: 1px dashed var(--accent);
+      color: var(--accent);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-supplier-trigger:hover { background: var(--accent-light); }
 
-.action-sub-row { display: flex; gap: 8px; }
-.btn-detail { flex: 1; background: var(--text); color: #fff; border: none; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s; }
-.btn-detail:hover { background: #000; }
-.btn-calc { background: #F2F2F2; color: var(--text); border: 1px solid #E0E0E0; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
-.btn-calc:hover { background: #E5E5E5; }
+    /* TAB PANES */
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-/* WHOLESALE TABLE */
-.supplier-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 18px; }
-.supplier-card h3 { font-size: 16px; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-.supplier-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.supplier-table th { background: #F7F7F8; padding: 12px 14px; text-align: left; font-weight: 800; color: var(--muted); border-bottom: 1px solid var(--card-border); }
-.supplier-table td { padding: 14px; border-bottom: 1px solid #F0F0F0; vertical-align: middle; }
-.supplier-table tr:last-child td { border-bottom: none; }
-.supplier-table .spec { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.supplier-table .price-badge { font-weight: 900; color: var(--accent); font-size: 14px; }
-.supplier-btn { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius-full); font-size: 12.5px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-.supplier-btn:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(255, 56, 92, 0.35); }
+    /* SUPPLIER DIRECTORY */
+    .supplier-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .supplier-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .supplier-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .supplier-table th { background: #FAFAFA; padding: 10px; text-align: left; color: var(--text-sub); border-bottom: 1px solid var(--border); }
+    .supplier-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+    .price-badge { font-weight: 800; color: var(--accent); font-size: 13.5px; }
+    .supplier-btn {
+      background: #FFF; border: 1px solid var(--border); color: var(--text-main);
+      padding: 5px 12px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s;
+    }
+    .supplier-btn:hover { border-color: var(--text-main); background: #F8F8F8; }
 
-/* CALCULATOR */
-.calc-box { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
-.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
-.calc-input-group label { display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
-.calc-input-group input { width: 100%; background: #F8F9FA; border: 1px solid #E0E0E0; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 15px; font-weight: 800; color: var(--text); outline: none; transition: border-color 0.2s; }
-.calc-input-group input:focus { border-color: var(--accent); background: #fff; }
-.calc-result-box { background: #FFF9F8; border: 1px solid #FFE4E6; border-radius: var(--radius-sm); padding: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-.calc-res-item h5 { font-size: 11.5px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
-.calc-res-item .val { font-size: 18px; font-weight: 900; }
-.calc-res-item .val.gold { color: var(--accent); }
-.calc-res-item .val.green { color: var(--green); }
+    /* CALCULATOR */
+    .calc-box {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-sm);
+    }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .calc-grid { grid-template-columns: 1fr; } }
+    .calc-input-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--text-sub); }
+    .calc-input-group input {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 16px; font-weight: 700; color: var(--text-main);
+    }
+    .calc-input-group input:focus { outline: none; border-color: var(--text-main); }
+    .calc-res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .calc-res-item { background: #F8F8FA; border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+    .calc-res-item h5 { font-size: 12px; color: var(--text-sub); margin-bottom: 4px; }
+    .calc-res-item .val { font-size: 17px; font-weight: 800; color: var(--text-main); }
+    .calc-res-item .val.accent { color: var(--accent); }
+    .calc-res-item .val.green { color: var(--green); }
 
-/* POPUP MODAL */
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-.modal-overlay.show { display: flex; }
-.modal-card { background: #FFFFFF; border-radius: 20px; max-width: 620px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2); max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
-.modal-header { padding: 20px 24px; border-bottom: 1px solid #EEEEEE; display: flex; justify-content: space-between; align-items: center; }
-.modal-header h3 { font-size: 17px; font-weight: 900; color: #222; display: flex; align-items: center; gap: 8px; }
-.modal-close-btn { background: #F2F2F2; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.modal-close-btn:hover { background: #E0E0E0; color: #000; }
-.modal-body { padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-.modal-supplier-item { background: #FAFAFA; border: 1px solid #EAEAEA; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.modal-supplier-item:hover { border-color: var(--accent); background: #FFFBFB; }
-.modal-supp-info h4 { font-size: 15px; font-weight: 900; color: #222; margin-bottom: 4px; }
-.modal-supp-info p { font-size: 12.5px; color: #666; line-height: 1.4; }
-.modal-supp-info .price-tag { font-size: 14px; font-weight: 900; color: var(--accent); margin-top: 6px; }
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.45); z-index: 999; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+      backdrop-filter: blur(2px);
+    }
+    .modal-backdrop.show { display: flex; animation: fadeIn 0.15s ease; }
+    .modal-content {
+      background: #FFF; border-radius: var(--radius-lg); width: 100%; max-width: 520px;
+      box-shadow: var(--shadow-lg); overflow: hidden; max-height: 85vh; display: flex; flex-direction: column;
+    }
+    .modal-header {
+      padding: 18px 22px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-header h3 { font-size: 16.5px; font-weight: 800; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-sub); }
+    .modal-body { padding: 20px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .modal-supplier-item {
+      background: #F9F9FA; border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .modal-supp-info h4 { font-size: 14.5px; font-weight: 800; margin-bottom: 4px; }
+    .modal-supp-info p { font-size: 12px; color: var(--text-sub); margin-bottom: 2px; }
+    .modal-supp-info .price-tag { font-size: 14px; font-weight: 800; color: var(--accent); margin-top: 4px; }
 
-/* TOAST ALERT */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: #222222;
-  color: #FFFFFF;
-  padding: 12px 24px;
-  border-radius: var(--radius-full);
-  font-size: 13.5px;
-  font-weight: 700;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 2000;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
-  opacity: 0;
-  pointer-events: none;
-}
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--text-main); color: #FFF; padding: 12px 22px; border-radius: 40px;
+      font-size: 13.5px; font-weight: 700; box-shadow: var(--shadow-lg); z-index: 1000;
+      transition: transform 0.25s ease, opacity 0.25s ease; opacity: 0; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-/* FOOTER */
-.footer { text-align: center; padding: 24px 0 16px; color: var(--muted-light); font-size: 12px; line-height: 1.6; }
-</style>
+    /* FOOTER */
+    .footer { text-align: center; margin-top: 50px; font-size: 12px; color: var(--text-muted); }
+  </style>
 </head>
 <body>
 
-<div class="container">
-
   <!-- HEADER -->
   <header class="header">
-    <div class="header-top">
-      <div class="header-title-wrap">
-        <h1>
-          동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO
-          <span class="airbnb-badge">PRO VER.</span>
-        </h1>
-        <p>1순위 안산 관내 제한(2,000만 원 이하) & 2순위 경기·전국 소액수의 88% 황금투찰 관제탑</p>
-      </div>
-      <div>
-        <div class="status-pill">
-          <span class="pulse-dot"></span>
-          나라장터 실시간 연동 가동 중
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo"><i class="fa-solid fa-gavel"></i></div>
+        <div class="brand-text">
+          <h1>동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO <span class="badge-pro">PRO VER.</span></h1>
+          <p>1순위 안산 관내 제한(2,000만 원 이하) & 2순위 경기·전국 소액수의 88% 황금투찰 관제탑</p>
         </div>
+      </div>
+      <div class="header-meta">
+        <span class="live-dot"></span> 나라장터 실시간 연동 가동 중
       </div>
     </div>
   </header>
 
-    <!-- STATS BAR -->
-  <div class="stats-bar">
-    <div class="stat-card">
-      <div class="stat-info">
-        <h4>1순위 타깃 기준</h4>
-        <div class="val">안산 관내 · 2천만 이하</div>
-      </div>
-      <div class="stat-icon" style="background:#FFF0F2; color:#FF385C;">
-        <i class="fa-solid fa-crown" style="color:#FFB800;"></i>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h4>법정 낙찰하한율</h4>
-        <div class="val">88.000% (복수예가)</div>
-      </div>
-      <div class="stat-icon" style="background:#FEF3C7; color:#B45309;">
-        <i class="fa-solid fa-calculator"></i>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h4>안산 관내 실질 경쟁률</h4>
-        <div class="val">10~30개사 (승률 3~5%)</div>
-      </div>
-      <div class="stat-icon" style="background:#EBF7EE; color:#008A05;">
-        <i class="fa-solid fa-shield-halved"></i>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h4>소액수의 평균 마진율</h4>
-        <div class="val">21.5% ~ 34.0%</div>
-      </div>
-      <div class="stat-icon" style="background:#EBF3FF; color:#0066FF;">
-        <i class="fa-solid fa-chart-line"></i>
-      </div>
-    </div>
-  </div>
+  <!-- MAIN CONTAINER -->
+  <div class="container">
 
-    <!-- NAVIGATION TABS -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="openTab('bids-ansan', this)">
-      <i class="fa-solid fa-crown" style="color:#FFB800;"></i> 1순위: 안산 관내 전용 (2천만 이하)
-    </button>
-    <button class="tab-btn" onclick="openTab('bids-other', this)">
-      <i class="fa-solid fa-globe" style="color:#0066FF;"></i> 2순위: 비안산 경기·전국 (2천만 이하)
-    </button>
-    <button class="tab-btn" onclick="openTab('suppliers', this)">
-      <i class="fa-solid fa-cart-shopping"></i> 6대 무면허 도매처 실거래가 직결
-    </button>
-    <button class="tab-btn" onclick="openTab('calculator', this)">
-      <i class="fa-solid fa-calculator"></i> 88% 황금투찰가 & 마진 계산기
-    </button>
-    <button class="tab-btn" onclick="openTab('guide', this)">
-      <i class="fa-solid fa-shield-halved"></i> 1인 사업자 안전 투찰 수칙
-    </button>
-  </div>
-
-          <!-- DIRECT SUPPLIER LINKS -->
-          <div class="supplier-direct-box">
-            <div class="supplier-direct-header">
-              <i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)
-            </div>
-            <div class="supplier-direct-list">
-              <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">자연농산몰 B2B 직영</span>
-                  <span class="s-price">포당 9,000원 (톤당 36만 원)</span>
-                </div>
-                <a href="http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-              </div>
-              <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">다다패키지 제설재</span>
-                  <span class="s-price">포당 15,700원 (배송비 포함)</span>
-                </div>
-                <a href="https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-              </div>
-            </div>
-          </div>
+    <!-- STATS SUMMARY -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-info">
+          <h4>1순위 타깃 기준</h4>
+          <div class="val" style="color:var(--accent);">안산 관내 · 2천만 이하</div>
         </div>
-
-        <div class="action-box">
-          <button class="btn-supplier-trigger" onclick="openSupplierModal(1)">
-            <i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기
-          </button>
-          <div class="action-sub-row">
-            <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01825445')" class="btn-detail">
-              나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <button class="btn-calc" onclick="setCalc(48180000, 34000000)"><i class="fa-solid fa-calculator"></i> 계산</button>
-          </div>
+        <div class="stat-icon" style="background:var(--accent-light); color:var(--accent);">
+          <i class="fa-solid fa-crown"></i>
         </div>
       </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <h4>법정 낙찰하한율</h4>
+          <div class="val">88.000% (복수예가)</div>
+        </div>
+        <div class="stat-icon" style="background:var(--gold-light); color:var(--gold);">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <h4>안산 관내 실질 경쟁률</h4>
+          <div class="val" style="color:var(--green);">10~30개사 (승률 3~5%)</div>
+        </div>
+        <div class="stat-icon" style="background:var(--green-light); color:var(--green);">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <h4>소액수의 평균 마진율</h4>
+          <div class="val">21.5% ~ 34.0%</div>
+        </div>
+        <div class="stat-icon" style="background:var(--blue-light); color:var(--blue);">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+      </div>
+    </div>
 
-      <!-- CARD 2: 장례식장 잡화 (오늘 실시간 공고) -->
-      <div class="bid-card">
+    <!-- NAVIGATION TABS & FILTERS -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="btn-ansan" onclick="filterBids('ansan', this)">
+        <i class="fa-solid fa-crown" style="color:#FFB800;"></i> 1순위: 안산 관내 전용 (2천만 이하) <span class="badge-num" id="badge-ansan">4건</span>
+      </button>
+      <button class="tab-btn" id="btn-other" onclick="filterBids('other', this)">
+        <i class="fa-solid fa-globe" style="color:#0066FF;"></i> 2순위: 비안산 경기·전국 (2천만 이하) <span class="badge-num" id="badge-other">5건</span>
+      </button>
+      <button class="tab-btn" id="btn-all" onclick="filterBids('all', this)">
+        <i class="fa-solid fa-list-check"></i> 전체 공고 보기 <span class="badge-num" id="badge-all">9건</span>
+      </button>
+      <button class="tab-btn" onclick="openSection('suppliers', this)">
+        <i class="fa-solid fa-cart-shopping"></i> 6대 무면허 도매처 실거래가 직결
+      </button>
+      <button class="tab-btn" onclick="openSection('calculator', this)">
+        <i class="fa-solid fa-calculator"></i> 88% 황금투찰가 & 마진 계산기
+      </button>
+      <button class="tab-btn" onclick="openSection('guide', this)">
+        <i class="fa-solid fa-shield-halved"></i> 1인 사업자 안전 투찰 수칙
+      </button>
+    </div>
+
+    <!-- TAB 1: BIDS SECTION -->
+    <div id="section-bids" class="tab-pane active">
+
+      <!-- INFO BANNER (DYNAMIC) -->
+      <div class="info-banner" id="filterBanner">
+        <i class="fa-solid fa-crown" style="color:var(--gold);"></i>
         <div>
-          <div class="card-header-row">
-            <span class="location-tag"><i class="fa-solid fa-location-dot"></i> 경기도 이천시</span>
-            <span class="d-day-tag urgent">11/12 오늘신규</span>
+          <strong id="bannerTitle">🏆 [1순위: 경기도 안산시 관내 제한] 공고 모드</strong><br>
+          <span id="bannerDesc">늘봄상회(안산 부곡동 소재) 사업자만 단독 참가 가능한 순수 물품 타깃입니다. 관내 10~30개사끼리만 난수 추첨 경쟁하므로 <strong>3.3% ~ 6.7%의 최고 승률</strong>이 보장됩니다.</span>
+        </div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-title">
+          <h2 id="currentFilterTitle"><i class="fa-solid fa-bolt" style="color:var(--accent);"></i> 안산 관내 2천만 원 이하 물품 타깃</h2>
+        </div>
+        <span class="count-badge" id="visibleCountBadge">총 4건 정렬 중</span>
+      </div>
+
+      <!-- CARDS CONTAINER -->
+      <div class="bids-grid" id="bidsGrid">
+
+        <!-- [ANSAN 1] 제설용 염화칼슘 40톤 -->
+        <div class="bid-card priority-ansan" data-region="ansan">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-ansan-gold"><i class="fa-solid fa-crown"></i> 안산 상록구</span>
+              <span class="badge-status">11~12월 발주임박</span>
+            </div>
           </div>
-
-          <div class="bid-no-row">
-            <span class="bid-no-text"><i class="fa-solid fa-hashtag"></i> 공고번호: <strong>R26BK01824919-000</strong></span>
-            <button class="btn-copy-no" onclick="copyAndNotice('R26BK01824919')"><i class="fa-regular fa-copy"></i> 복사</button>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>ANSAN-2026-CALCIUM</strong>
+            <button class="btn-copy" onclick="copyBidNo('ANSAN-2026-CALCIUM')"><i class="fa-regular fa-copy"></i> 복사</button>
           </div>
-
-          <h3 class="bid-title">2027년 경기도의료원 이천병원 장례식장 물품(주류, 잡화) 구매 계약 견적제출 공고</h3>
-          <div class="bid-org"><i class="fa-solid fa-building-columns"></i> 경기도의료원 이천병원 행정과</div>
-
+          <h3 class="card-title">2026년 동절기 상록구 도로 제설용 염화칼슘(25kg) 40톤 구매</h3>
+          <div class="card-agency"><i class="fa-solid fa-landmark"></i> 안산시 상록구청 도로교통과</div>
           <div class="price-box">
-            <div class="price-row">
-              <span class="label">기초금액 (배정예산)</span>
-              <span class="val">184,690,000원 (그룹별 분할)</span>
-            </div>
-            <div class="price-row">
-              <span class="label">88% 황금투찰가 (잡화군)</span>
-              <span class="val highlight">70,004,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">도매 사입원가 (B2B 판촉몰)</span>
-              <span class="val">51,700,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">예상 순마진 (세전)</span>
-              <span class="val profit">+18,304,000원 (26.1%)</span>
-            </div>
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">18,400,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">16,192,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (파레트배송)</span><span class="val">12,600,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+3,592,000원 (22.2%)</span></div>
           </div>
-
-          <!-- DIRECT SUPPLIER LINKS -->
           <div class="supplier-direct-box">
-            <div class="supplier-direct-header">
-              <i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)
-            </div>
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
             <div class="supplier-direct-list">
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">오피스하나 도매 직영몰</span>
-                  <span class="s-price">위생잡화 연간 단가 35% 할인</span>
-                </div>
-                <a href="https://www.officehana.com/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">자연농산몰 B2B 직영</span><span class="s-price">포당 9,000원 (톤당 36만 원)</span></div>
+                <a href="http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">G마켓 비즈니스몰</span>
-                  <span class="s-price">사업자 전용 대량 벌크 무료배송</span>
-                </div>
-                <a href="https://www.gmarket.co.kr/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">다다패키지 제설재</span><span class="s-price">포당 15,700원 (배송비 포함)</span></div>
+                <a href="https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="action-box">
-          <button class="btn-supplier-trigger" onclick="openSupplierModal(3)">
-            <i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기
-          </button>
-          <div class="action-sub-row">
-            <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01824919')" class="btn-detail">
-              나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <button class="btn-calc" onclick="setCalc(79550000, 51700000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(1)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('ANSAN-2026-CALCIUM')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(18400000, 12600000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- CARD 3: 달력/인쇄물 -->
-      <div class="bid-card">
-        <div>
-          <div class="card-header-row">
-            <span class="location-tag"><i class="fa-solid fa-location-dot"></i> 충남 태안·전국</span>
-            <span class="d-day-tag normal">D-5 접수중</span>
+        <!-- [ANSAN 2] 관광 홍보용 마그넷 기념품 제작 -->
+        <div class="bid-card priority-ansan" data-region="ansan">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-ansan-gold"><i class="fa-solid fa-crown"></i> 안산시청 본청</span>
+              <span class="badge-status">실거래 벤치마크</span>
+            </div>
           </div>
-
-          <div class="bid-no-row">
-            <span class="bid-no-text"><i class="fa-solid fa-hashtag"></i> 공고번호: <strong>R26BK01823875-000</strong></span>
-            <button class="btn-copy-no" onclick="copyAndNotice('R26BK01823875')"><i class="fa-regular fa-copy"></i> 복사</button>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>ANSAN-2026-MAG</strong>
+            <button class="btn-copy" onclick="copyBidNo('ANSAN-2026-MAG')"><i class="fa-regular fa-copy"></i> 복사</button>
           </div>
-
-          <h3 class="bid-title">2027년 새해농업인 실용교육 교재(책자, 달력) 제작 소액수의</h3>
-          <div class="bid-org"><i class="fa-solid fa-building-columns"></i> 충청남도 태안군 농업기술센터 지도개발과</div>
-
+          <h3 class="card-title">안산시 관광 홍보용 에폭시/메탈 마그넷 기념품 제작·납품</h3>
+          <div class="card-agency"><i class="fa-solid fa-landmark"></i> 안산시청 대외협력관 (소액수의)</div>
           <div class="price-box">
-            <div class="price-row">
-              <span class="label">기초금액 (배정예산)</span>
-              <span class="val">21,500,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">88% 황금투찰가</span>
-              <span class="val highlight">18,920,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">도매 사입원가 (인쇄 B2B)</span>
-              <span class="val">13,200,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">예상 순마진 (세전)</span>
-              <span class="val profit">+5,720,000원 (30.2%)</span>
-            </div>
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">3,300,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">2,904,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (인쇄판촉)</span><span class="val">1,820,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+1,084,000원 (37.3%)</span></div>
           </div>
-
-          <!-- DIRECT SUPPLIER LINKS -->
           <div class="supplier-direct-box">
-            <div class="supplier-direct-header">
-              <i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)
-            </div>
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
             <div class="supplier-direct-list">
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">성원애드피아 B2B 직영</span>
-                  <span class="s-price">독판 탁상달력 부당 2,800원~</span>
-                </div>
-                <a href="http://www.swadpia.co.kr/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">성원애드피아 B2B 직영</span><span class="s-price">자석·굿즈 개당 850원선</span></div>
+                <a href="http://www.swadpia.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">디티피아 (DTPIA)</span>
-                  <span class="s-price">홍보 리플릿 부당 85원~</span>
-                </div>
-                <a href="https://www.dtpia.co.kr/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">고려기프트 B2B 총판</span><span class="s-price">판촉물 소액인쇄 직결</span></div>
+                <a href="https://koreagift.com/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="action-box">
-          <button class="btn-supplier-trigger" onclick="openSupplierModal(2)">
-            <i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기
-          </button>
-          <div class="action-sub-row">
-            <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01823875')" class="btn-detail">
-              나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <button class="btn-calc" onclick="setCalc(21500000, 13200000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(2)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('ANSAN-2026-MAG')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(3300000, 1820000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- CARD 4: 교육비품 가구(책상, 의자) -->
-      <div class="bid-card">
-        <div>
-          <div class="card-header-row">
-            <span class="location-tag"><i class="fa-solid fa-location-dot"></i> 강원·수도권</span>
-            <span class="d-day-tag urgent">D-5 접수중</span>
+        <!-- [ANSAN 3] 여권 민원용 가죽 여권커버 기념품 -->
+        <div class="bid-card priority-ansan" data-region="ansan">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-ansan-gold"><i class="fa-solid fa-crown"></i> 안산 단원구</span>
+              <span class="badge-status">실거래 벤치마크</span>
+            </div>
           </div>
-
-          <div class="bid-no-row">
-            <span class="bid-no-text"><i class="fa-solid fa-hashtag"></i> 공고번호: <strong>2026LGQ006146834-00</strong></span>
-            <button class="btn-copy-no" onclick="copyAndNotice('2026LGQ006146834')"><i class="fa-regular fa-copy"></i> 복사</button>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>ANSAN-2026-PASSPORT</strong>
+            <button class="btn-copy" onclick="copyBidNo('ANSAN-2026-PASSPORT')"><i class="fa-regular fa-copy"></i> 복사</button>
           </div>
-
-          <h3 class="bid-title">'26년 신교대대 교육비품(의자,책상) 제조구매 소액수의</h3>
-          <div class="bid-org"><i class="fa-solid fa-building-columns"></i> 국방부 육군 제3139부대 (제36보병사단)</div>
-
+          <h3 class="card-title">단원구청 종합민원과 여권 발급 기념 가죽 여권케이스 구매</h3>
+          <div class="card-agency"><i class="fa-solid fa-landmark"></i> 안산시 단원구청 시민봉사과</div>
           <div class="price-box">
-            <div class="price-row">
-              <span class="label">기초금액 (배정예산)</span>
-              <span class="val">19,800,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">88% 황금투찰가</span>
-              <span class="val highlight">17,424,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">도매 사입원가 (총판 직결)</span>
-              <span class="val">12,500,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">예상 순마진 (세전)</span>
-              <span class="val profit">+4,924,000원 (28.3%)</span>
-            </div>
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">8,500,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">7,480,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (B2B 인쇄)</span><span class="val">4,900,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+2,580,000원 (34.5%)</span></div>
           </div>
-
-          <!-- DIRECT SUPPLIER LINKS -->
           <div class="supplier-direct-box">
-            <div class="supplier-direct-header">
-              <i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)
-            </div>
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
             <div class="supplier-direct-list">
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">오피스B2B 가구 총판</span>
-                  <span class="s-price">테이블 6.5만 / 의자 4.5만 선</span>
-                </div>
-                <a href="https://www.officeb2b.co.kr/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">판촉물천국 B2B 특판</span><span class="s-price">가죽커버 개당 1,950원</span></div>
+                <a href="https://87gift.com/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">현대오피스가구 직영몰</span>
-                  <span class="s-price">조달청 MAS 규격 호환 가구 B2B</span>
-                </div>
-                <a href="https://www.officehana.com/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">기프트한국 사업자몰</span><span class="s-price">불박 각인비 포함 납품</span></div>
+                <a href="https://gifthk.com/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="action-box">
-          <button class="btn-supplier-trigger" onclick="openSupplierModal(4)">
-            <i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기
-          </button>
-          <div class="action-sub-row">
-            <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('2026LGQ006146834')" class="btn-detail">
-              나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <button class="btn-calc" onclick="setCalc(19800000, 12500000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(2)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('ANSAN-2026-PASSPORT')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(8500000, 4900000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- CARD 5: 도로보수재(상온아스콘/칼라아스콘) -->
-      <div class="bid-card">
-        <div>
-          <div class="card-header-row">
-            <span class="location-tag"><i class="fa-solid fa-location-dot"></i> 경기도 포천시</span>
-            <span class="d-day-tag urgent">D-4 재공고 접수중</span>
+        <!-- [ANSAN 4] 안산교육지원청 신길초 냉난방기 (공사면허 필터링 안내) -->
+        <div class="bid-card priority-ansan" data-region="ansan">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-ansan-gold"><i class="fa-solid fa-crown"></i> 안산시 단독</span>
+              <span class="badge-status" style="background:#FFEAEA; color:#E00B41;">면허제한 주의</span>
+            </div>
           </div>
-
-          <div class="bid-no-row">
-            <span class="bid-no-text"><i class="fa-solid fa-hashtag"></i> 공고번호: <strong>R26BK01818847-000</strong></span>
-            <button class="btn-copy-no" onclick="copyAndNotice('R26BK01818847')"><i class="fa-regular fa-copy"></i> 복사</button>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>R26BK01812924-000</strong>
+            <button class="btn-copy" onclick="copyBidNo('R26BK01812924')"><i class="fa-regular fa-copy"></i> 복사</button>
           </div>
-
-          <h3 class="bid-title">용정일반산업단지 내 보도 정비공사 관급자재(칼라아스콘) 구입</h3>
-          <div class="bid-org"><i class="fa-solid fa-building-columns"></i> 경기도 포천시 기업지원과</div>
-
+          <h3 class="card-title">신길초등학교 교사 내 냉난방기 구매 및 설치 소액수의</h3>
+          <div class="card-agency"><i class="fa-solid fa-school"></i> 경기도안산교육지원청 (단원구)</div>
           <div class="price-box">
-            <div class="price-row">
-              <span class="label">기초금액 (배정예산)</span>
-              <span class="val">22,680,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">88% 황금투찰가</span>
-              <span class="val highlight">19,958,400원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">도매 사입원가 (건재직영몰)</span>
-              <span class="val">15,500,000원</span>
-            </div>
-            <div class="price-row">
-              <span class="label">예상 순마진 (세전)</span>
-              <span class="val profit">+4,458,400원 (22.3%)</span>
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">75,670,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">66,589,600원</span></div>
+            <div class="price-row"><span class="lbl">참여 제한 여부</span><span class="val" style="color:#E00B41; font-weight:800;">기계설비공사업 면허 필요 (투찰불가)</span></div>
+          </div>
+          <div class="action-box">
+            <div class="action-sub-row" style="grid-template-columns:1fr;">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01812924')" class="btn-detail">나라장터 공고 열람 (면허 규격 대조) <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
             </div>
           </div>
+        </div>
 
-          <!-- DIRECT SUPPLIER LINKS -->
-          <div class="supplier-direct-box">
-            <div class="supplier-direct-header">
-              <i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)
+        <!-- [OTHER 1] 육군 제36사단 교육비품 (의자, 책상) 1,980만 원 -->
+        <div class="bid-card" data-region="other">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-loc"><i class="fa-solid fa-location-dot"></i> 강원·수도권</span>
+              <span class="badge-status">D-5 접수중</span>
             </div>
+          </div>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>2026LGQ006146834-00</strong>
+            <button class="btn-copy" onclick="copyBidNo('2026LGQ006146834')"><i class="fa-regular fa-copy"></i> 복사</button>
+          </div>
+          <h3 class="card-title">'26년 신교대대 교육비품(의자,책상) 제조구매 소액수의</h3>
+          <div class="card-agency"><i class="fa-solid fa-shield"></i> 국방부 육군 제3139부대 (제36보병사단)</div>
+          <div class="price-box">
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">19,800,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">17,424,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (총판 직결)</span><span class="val">12,500,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+4,924,000원 (28.3%)</span></div>
+          </div>
+          <div class="supplier-direct-box">
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
             <div class="supplier-direct-list">
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">중앙종합건재 직영몰</span>
-                  <span class="s-price">포당 12,000원 (부가세 포함)</span>
-                </div>
-                <a href="https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%EB%B3%B4%EC%88%98%EC%9E%AC/173/" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">오피스B2B 가구 총판</span><span class="s-price">테이블 6.5만 / 의자 4.5만 선</span></div>
+                <a href="https://www.officeb2b.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
               <div class="supplier-direct-item">
-                <div class="s-info">
-                  <span class="s-name">퍼니즈 건재 총판</span>
-                  <span class="s-price">포당 13,990원 (전국 무료배송)</span>
-                </div>
-                <a href="https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98" target="_blank" class="supplier-link-btn">
-                  도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
+                <div class="s-info"><span class="s-name">현대오피스가구 직영몰</span><span class="s-price">조달청 MAS 규격 호환 가구 B2B</span></div>
+                <a href="https://www.hdff.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
               </div>
+            </div>
+          </div>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(4)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('2026LGQ006146834')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(19800000, 12500000)"><i class="fa-solid fa-calculator"></i> 계산</button>
             </div>
           </div>
         </div>
 
-        <div class="action-box">
-          <button class="btn-supplier-trigger" onclick="openSupplierModal(5)">
-            <i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기
-          </button>
-          <div class="action-sub-row">
-            <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01818847')" class="btn-detail">
-              나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>
-            <button class="btn-calc" onclick="setCalc(22680000, 15500000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+        <!-- [OTHER 2] 해군재경근무지원단 정부문서화일 11종 1,120만 원 -->
+        <div class="bid-card" data-region="other">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-loc"><i class="fa-solid fa-location-dot"></i> 서울·경기·전국</span>
+              <span class="badge-status">11/12 신규</span>
+            </div>
+          </div>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>2026LGQ006149112-00</strong>
+            <button class="btn-copy" onclick="copyBidNo('2026LGQ006149112')"><i class="fa-regular fa-copy"></i> 복사</button>
+          </div>
+          <h3 class="card-title">2026년 하반기 정부문서화일(11종) 소액수의 견적제출</h3>
+          <div class="card-agency"><i class="fa-solid fa-anchor"></i> 해군재경근무지원단 보급과</div>
+          <div class="price-box">
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">11,200,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">9,856,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (문구 직영몰)</span><span class="val">7,100,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+2,756,000원 (28.0%)</span></div>
+          </div>
+          <div class="supplier-direct-box">
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
+            <div class="supplier-direct-list">
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">오피스하나 문구 B2B</span><span class="s-price">화일 바인더 도매가 38% 할인</span></div>
+                <a href="https://www.officehana.com/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">알파문구 B2B 사업자몰</span><span class="s-price">관공서 전용 정부규격 바인더</span></div>
+                <a href="https://www.alpha.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(3)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('2026LGQ006149112')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(11200000, 7100000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- [OTHER 3] 해병대 군수단 원적외선 튜브히터 1,320만 원 -->
+        <div class="bid-card" data-region="other">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-loc"><i class="fa-solid fa-location-dot"></i> 경기·전국</span>
+              <span class="badge-status">D-4 접수중</span>
+            </div>
+          </div>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>2026LGQ006150241-00</strong>
+            <button class="btn-copy" onclick="copyBidNo('2026LGQ006150241')"><i class="fa-regular fa-copy"></i> 복사</button>
+          </div>
+          <h3 class="card-title">동절기 부대 환경개선용 원적외선 튜브히터 구매 소액수의</h3>
+          <div class="card-agency"><i class="fa-solid fa-shield"></i> 해병대 군수단 보급처</div>
+          <div class="price-box">
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">13,200,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">11,616,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (가전특판몰)</span><span class="val">8,900,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+2,716,000원 (23.4%)</span></div>
+          </div>
+          <div class="supplier-direct-box">
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
+            <div class="supplier-direct-list">
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">하이마트 B2B 기업특판몰</span><span class="s-price">튜브히터 사업자 단체 공급가</span></div>
+                <a href="https://www.e-himart.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">나비엔 가전 B2B 총판</span><span class="s-price">공업용 돈풍기 직발송 지원</span></div>
+                <a href="https://www.navienhouse.com/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(5)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('2026LGQ006150241')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(13200000, 8900000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- [OTHER 4] 충남 태안군 농업기술센터 교재·달력 2,150만 원 -->
+        <div class="bid-card" data-region="other">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-loc"><i class="fa-solid fa-location-dot"></i> 충남·전국</span>
+              <span class="badge-status">D-5 접수중</span>
+            </div>
+          </div>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>R26BK01823875-000</strong>
+            <button class="btn-copy" onclick="copyBidNo('R26BK01823875')"><i class="fa-regular fa-copy"></i> 복사</button>
+          </div>
+          <h3 class="card-title">2027년 새해농업인 실용교육 교재(책자, 달력) 제작 소액수의</h3>
+          <div class="card-agency"><i class="fa-solid fa-seedling"></i> 충청남도 태안군 농업기술센터 지도개발과</div>
+          <div class="price-box">
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">21,500,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">18,920,000원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (인쇄 B2B)</span><span class="val">13,200,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+5,720,000원 (30.2%)</span></div>
+          </div>
+          <div class="supplier-direct-box">
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
+            <div class="supplier-direct-list">
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">성원애드피아 B2B 직영</span><span class="s-price">독판 탁상달력 부당 2,800원~</span></div>
+                <a href="http://www.swadpia.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">디티피아 (DTPIA)</span><span class="s-price">홍보 리플릿 부당 85원~</span></div>
+                <a href="https://www.dtpia.co.kr/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(2)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01823875')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(21500000, 13200000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- [OTHER 5] 포천시 용정산단 보도정비 칼라아스콘 2,268만 원 -->
+        <div class="bid-card" data-region="other">
+          <div class="card-top">
+            <div class="tag-group">
+              <span class="badge-loc"><i class="fa-solid fa-location-dot"></i> 경기도 포천시</span>
+              <span class="badge-status">D-4 재공고 접수중</span>
+            </div>
+          </div>
+          <div class="bid-no-box">
+            <span>공고번호:</span> <strong>R26BK01818847-000</strong>
+            <button class="btn-copy" onclick="copyBidNo('R26BK01818847')"><i class="fa-regular fa-copy"></i> 복사</button>
+          </div>
+          <h3 class="card-title">용정일반산업단지 내 보도 정비공사 관급자재(칼라아스콘) 구입</h3>
+          <div class="card-agency"><i class="fa-solid fa-road"></i> 경기도 포천시 기업지원과</div>
+          <div class="price-box">
+            <div class="price-row"><span class="lbl">기초금액 (배정예산)</span><span class="val">22,680,000원</span></div>
+            <div class="price-row highlight"><span class="lbl">88% 황금투찰가</span><span class="val">19,958,400원</span></div>
+            <div class="price-row"><span class="lbl">도매 사입원가 (건재직영몰)</span><span class="val">15,500,000원</span></div>
+            <div class="price-row profit"><span class="lbl">예상 순마진 (세전)</span><span class="val">+4,458,400원 (22.3%)</span></div>
+          </div>
+          <div class="supplier-direct-box">
+            <div class="supplier-direct-header"><i class="fa-solid fa-truck-fast"></i> 검증 B2B 도매처 (직결 링크)</div>
+            <div class="supplier-direct-list">
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">중앙종합건재 직영몰</span><span class="s-price">포당 12,000원 (부가세 포함)</span></div>
+                <a href="https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-%EB%8F%84%EB%A1%9C%EB%B3%B4%EC%88%98%EC%9E%AC-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%ED%8F%AC%EC%9E%A5-%EB%B3%B4%EC%88%98/173/" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+              <div class="supplier-direct-item">
+                <div class="s-info"><span class="s-name">퍼니즈 건재 총판</span><span class="s-price">포당 13,990원 (전국 무료배송)</span></div>
+                <a href="https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98" target="_blank" class="supplier-link-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="action-box">
+            <button class="btn-supplier-trigger" onclick="openSupplierModal(3)"><i class="fa-solid fa-table-list"></i> 도매 규격·상세 비교 팝업 보기</button>
+            <div class="action-sub-row">
+              <a href="https://www.g2b.go.kr/#FIUA002_01" target="_blank" onclick="copyBidNo('R26BK01818847')" class="btn-detail">나라장터 공고 검색 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              <button class="btn-calc" onclick="setCalc(22680000, 15500000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: SUPPLIERS DIRECTORY -->
+    <div id="section-suppliers" class="tab-pane">
+      <div class="sec-header">
+        <div class="sec-title">
+          <h2><i class="fa-solid fa-truck-fast" style="color:var(--accent);"></i> 검증 완료 B2B 도매처 실거래가 직결 맵</h2>
+        </div>
+        <span class="count-badge">동일 규격 · 공장 직결 실거래가 100% 검증</span>
+      </div>
+
+      <!-- SUPPLIER 1 -->
+      <div class="supplier-card">
+        <h3><i class="fa-solid fa-snowflake" style="color:#0066FF;"></i> 1. 제설용 친환경 염화칼슘 / 염화마그네슘 (25kg)</h3>
+        <table class="supplier-table">
+          <thead>
+            <tr><th>도매 업체명</th><th>규격 및 배송 조건</th><th>공급 단가 (VAT 포함)</th><th>직결 링크</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>자연농산몰 B2B 직영</strong></td>
+              <td>25kg 마대 포장 · 40포(1톤 파레트 단위)</td>
+              <td><span class="price-badge">포당 9,000원</span> (36만 원/톤)</td>
+              <td><a href="http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+            <tr>
+              <td><strong>다다패키지 제설재</strong></td>
+              <td>25kg 소량 배송 가능 · 안산 무료배송 협의</td>
+              <td><span class="price-badge">포당 15,700원</span> (배송비 포함)</td>
+              <td><a href="https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SUPPLIER 2 -->
+      <div class="supplier-card">
+        <h3><i class="fa-solid fa-road" style="color:#222;"></i> 2. 도로보수재 상온아스콘 (25kg 포대아스팔트)</h3>
+        <table class="supplier-table">
+          <thead>
+            <tr><th>도매 업체명</th><th>규격 및 배송 조건</th><th>공급 단가 (VAT 포함)</th><th>직결 링크</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>중앙종합건재 직영몰</strong></td>
+              <td>사계절 전천후 고품질 상온 아스콘 25kg</td>
+              <td><span class="price-badge">포당 12,000원</span></td>
+              <td><a href="https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-%EB%8F%84%EB%A1%9C%EB%B3%B4%EC%88%98%EC%9E%AC-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%ED%8F%AC%EC%9E%A5-%EB%B3%B4%EC%88%98/173/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+            <tr>
+              <td><strong>퍼니즈 건재 총판</strong></td>
+              <td>100포 파레트 대량 납품 (전국 무료배송)</td>
+              <td><span class="price-badge">포당 13,990원</span> (배송비 무료)</td>
+              <td><a href="https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SUPPLIER 3 -->
+      <div class="supplier-card">
+        <h3><i class="fa-solid fa-print" style="color:#FF385C;"></i> 3. 인쇄물·달력·홍보책자 (B2B 인쇄 플랫폼)</h3>
+        <table class="supplier-table">
+          <thead>
+            <tr><th>도매 업체명</th><th>주력 품목 및 생산 규격</th><th>공급 단가 예시</th><th>직결 링크</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>성원애드피아 B2B</strong></td>
+              <td>탁상달력, 중철제본 책자, 리플릿, 에폭시 마그넷</td>
+              <td><span class="price-badge">부당 2,800원 ~ 3,400원</span></td>
+              <td><a href="http://www.swadpia.co.kr/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+            <tr>
+              <td><strong>디티피아 (DTPIA)</strong></td>
+              <td>관공서 홍보용 카탈로그, 포스터, 스티커</td>
+              <td><span class="price-badge">리플릿 부당 85원~</span></td>
+              <td><a href="https://www.dtpia.co.kr/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SUPPLIER 4 -->
+      <div class="supplier-card">
+        <h3><i class="fa-solid fa-copy" style="color:#008A05;"></i> 4. 복사용지 (A4 80g / 75g 조달 공공기관 납품 규격)</h3>
+        <table class="supplier-table">
+          <thead>
+            <tr><th>도매 업체명</th><th>규격 및 배송 조건</th><th>공급 단가</th><th>직결 링크</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>오피스하나 도매 직영</strong></td>
+              <td>더블에이 / 밀크 A4 80g (1BOX 2,500매)</td>
+              <td><span class="price-badge">박스당 20,730원</span></td>
+              <td><a href="https://www.officehana.com/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+            <tr>
+              <td><strong>G마켓 사업자 비즈온</strong></td>
+              <td>더블에이 A4 80g 2BOX 묶음 (총 5,000매)</td>
+              <td><span class="price-badge">박스당 24,070원</span> (무료배송)</td>
+              <td><a href="https://item.gmarket.co.kr/Item?goodscode=3931673055" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: CALCULATOR -->
+    <div id="section-calculator" class="tab-pane">
+      <div class="sec-header">
+        <div class="sec-title">
+          <h2><i class="fa-solid fa-calculator" style="color:var(--accent);"></i> 88% 황금투찰가 & 실시간 마진 계산기</h2>
+        </div>
+        <span class="count-badge">지방계약법 소액수의 88.000% 낙찰하한선 공식 적용</span>
+      </div>
+      <div class="calc-box">
+        <div class="calc-grid">
+          <div class="calc-input-group">
+            <label><i class="fa-solid fa-won-sign"></i> 공고 기초금액 (원)</label>
+            <input type="number" id="basePrice" value="18400000" oninput="runCalc()">
+          </div>
+          <div class="calc-input-group">
+            <label><i class="fa-solid fa-truck"></i> 도매 사입원가 + 배송비 합계 (원)</label>
+            <input type="number" id="costPrice" value="12600000" oninput="runCalc()">
+          </div>
+        </div>
+        <div class="calc-res-grid">
+          <div class="calc-res-item">
+            <h5>법정 낙찰하한가 (88.000%)</h5>
+            <div class="val accent" id="bidPrice88">16,192,000원</div>
+          </div>
+          <div class="calc-res-item">
+            <h5>추천 황금투찰가 (88.142%)</h5>
+            <div class="val" id="bidPriceRec">16,218,128원</div>
+          </div>
+          <div class="calc-res-item">
+            <h5>예상 순이익 (세전)</h5>
+            <div class="val green" id="calcProfit">+3,592,000원</div>
+          </div>
+          <div class="calc-res-item">
+            <h5>최종 순수익률</h5>
+            <div class="val green" id="calcMargin">22.18%</div>
           </div>
         </div>
       </div>
-
-    </div>
-  </div>
-
-  <!-- TAB 2: SUPPLIERS -->
-  <div id="suppliers" class="tab-pane">
-    <div class="sec-title">
-      <h2><i class="fa-solid fa-truck-fast" style="color:var(--accent);"></i> 검증 완료 B2B 도매처 실거래가 직결 맵</h2>
-      <span class="count-badge">동일 규격 · 공장 직결 실거래가 100% 검증</span>
     </div>
 
-    <!-- SUPPLIER 1 -->
-    <div class="supplier-card">
-      <h3><i class="fa-solid fa-snowflake" style="color:#0066FF;"></i> 1. 제설용 친환경 염화칼슘 / 염화마그네슘 (25kg)</h3>
-      <table class="supplier-table">
-        <thead>
-          <tr>
-            <th>규격 / 단위</th>
-            <th>공식 도매처</th>
-            <th>실거래 공급 단가</th>
-            <th>직결 링크</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <strong>국산 친환경 제설제 (25kg)</strong>
-              <div class="spec">1톤 파레트 (40포 단위 직배송)</div>
-            </td>
-            <td>자연농산몰 B2B 직영</td>
-            <td><span class="price-badge">포당 9,000원</span> (360,000원/톤)</td>
-            <td><a href="http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-          <tr>
-            <td>
-              <strong>공업용 염화칼슘 (25kg 순도 74%)</strong>
-              <div class="spec">20포 단위 묶음 배송</div>
-            </td>
-            <td>다다패키지 제설재 전문몰</td>
-            <td><span class="price-badge">포당 15,700원</span> (배송비 포함)</td>
-            <td><a href="https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- SUPPLIER 2 -->
-    <div class="supplier-card">
-      <h3><i class="fa-solid fa-road" style="color:#B45309;"></i> 2. 도로보수재 (상온아스콘 25kg)</h3>
-      <table class="supplier-table">
-        <thead>
-          <tr>
-            <th>규격 / 단위</th>
-            <th>공식 도매처</th>
-            <th>실거래 공급 단가</th>
-            <th>직결 링크</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <strong>상온포장보수재(상온아스콘 25kg)</strong>
-              <div class="spec">포트홀 보수용 아스팔트 콘크리트</div>
-            </td>
-            <td>중앙종합건재 직영몰</td>
-            <td><span class="price-badge">포당 12,000원</span> (부가세 포함)</td>
-            <td><a href="https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%EB%B3%B4%EC%88%98%EC%9E%AC/173/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-          <tr>
-            <td>
-              <strong>퍼니즈 도로보수재 (25kg 100포 대량)</strong>
-              <div class="spec">1파레트 전국 무료 배송</div>
-            </td>
-            <td>퍼니즈 건재 총판</td>
-            <td><span class="price-badge">포당 13,990원</span> (전국 무료배송)</td>
-            <td><a href="https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- SUPPLIER 3 -->
-    <div class="supplier-card">
-      <h3><i class="fa-solid fa-print" style="color:#008A05;"></i> 3. 인쇄물 · 홍보용 달력 · 리플릿</h3>
-      <table class="supplier-table">
-        <thead>
-          <tr>
-            <th>규격 / 단위</th>
-            <th>공식 도매처</th>
-            <th>실거래 공급 단가</th>
-            <th>직결 링크</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <strong>독판 탁상달력 (스프링제본 1,000부)</strong>
-              <div class="spec">260x190mm 스노우지 250g 전면컬러</div>
-            </td>
-            <td>성원애드피아 B2B 직영</td>
-            <td><span class="price-badge">부당 2,800원 ~ 3,400원</span></td>
-            <td><a href="http://www.swadpia.co.kr/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-          <tr>
-            <td>
-              <strong>공공기관 3단 접지 리플릿 (5,000부)</strong>
-              <div class="spec">아트지 150g 양면칼라 오시2줄</div>
-            </td>
-            <td>디티피아 (DTPIA)</td>
-            <td><span class="price-badge">부당 85원 ~ 110원</span></td>
-            <td><a href="https://www.dtpia.co.kr/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- SUPPLIER 4 -->
-    <div class="supplier-card">
-      <h3><i class="fa-solid fa-file-lines" style="color:#4B5563;"></i> 4. 사무용 복사용지 (A4 80g)</h3>
-      <table class="supplier-table">
-        <thead>
-          <tr>
-            <th>규격 / 단위</th>
-            <th>공식 도매처</th>
-            <th>실거래 공급 단가</th>
-            <th>직결 링크</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <strong>더블에이 A4 80g (2,500매 1BOX)</strong>
-              <div class="spec">국가기관 표준 최고급 용지</div>
-            </td>
-            <td>오피스하나 도매 직영</td>
-            <td><span class="price-badge">박스당 20,730원</span></td>
-            <td><a href="https://www.officehana.com/" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-          <tr>
-            <td>
-              <strong>더블에이 프리미엄 2BOX (5,000매)</strong>
-              <div class="spec">G마켓 사업자회원 전용 무료배송</div>
-            </td>
-            <td>G마켓 비즈니스몰</td>
-            <td><span class="price-badge">박스당 24,070원</span> (무료배송)</td>
-            <td><a href="https://item.gmarket.co.kr/Item?goodscode=3931673055" target="_blank" class="supplier-btn">도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-
-  <!-- TAB 3: CALCULATOR -->
-  <div id="calculator" class="tab-pane">
-    <div class="sec-title">
-      <h2><i class="fa-solid fa-calculator" style="color:var(--accent);"></i> 88% 황금투찰가 & 실시간 마진 계산기</h2>
-      <span class="count-badge">지방계약법 소액수의 88.000% 낙찰하한선 공식 적용</span>
-    </div>
-
-    <div class="calc-box">
-      <div class="calc-grid">
-        <div class="calc-input-group">
-          <label><i class="fa-solid fa-won-sign"></i> 공고 기초금액 (원)</label>
-          <input type="number" id="basePrice" value="18400000" oninput="runCalc()">
-        </div>
-        <div class="calc-input-group">
-          <label><i class="fa-solid fa-truck"></i> 도매 총 매입원가 + 배송비 (원)</label>
-          <input type="number" id="costPrice" value="14400000" oninput="runCalc()">
+    <!-- TAB 4: GUIDE -->
+    <div id="section-guide" class="tab-pane">
+      <div class="sec-header">
+        <div class="sec-title">
+          <h2><i class="fa-solid fa-shield-halved" style="color:var(--green);"></i> 1인 사업자 안전 투찰 수칙 (늘봄상회 전용)</h2>
         </div>
       </div>
+      <div class="supplier-card">
+        <ul style="padding-left:20px; font-size:13.5px; line-height:1.9; color:#333;">
+          <li><strong>안산 관내 제한 공고 최우선 (1순위):</strong> 오직 안산시 소재 업체만 투찰 가능하므로 15~35개사만 들어와 3~5%의 높은 수학적 당첨률이 나옵니다.</li>
+          <li><strong>추정가격 2,000만 원 이하 엄격 제한:</strong> 1인 무면허 사업자가 참여할 수 있는 법정 소액수의 한도입니다. (초과 공고는 적격심사·실적평가로 탈락)</li>
+          <li><strong>무면허 순수 물품만 참여:</strong> 특수 건설·전기 면허가 필요한 기계설치 공사 등은 배제하고, 염화칼슘, 복사용지, 인쇄물, 사무잡화만 선별 투찰합니다.</li>
+          <li><strong>B2B 도매처 사전 단가 확정:</strong> 투찰 전 반드시 연동된 도매몰 재고와 단가를 확인하여 역마진을 100% 방지합니다.</li>
+          <li><strong>나라장터 공고 확인법:</strong> [공고번호 복사]를 누르고 [나라장터 공고 검색]을 누르면 입찰공고 통합검색창(FIUA002_01)으로 직결되어 1초 만에 공고문을 열람할 수 있습니다.</li>
+        </ul>
+      </div>
+    </div>
 
-      <div class="calc-result-box">
-        <div class="calc-res-item">
-          <h5>88.000% 법정 낙찰하한가</h5>
-          <div class="val gold" id="bidPrice88">16,192,000원</div>
-        </div>
-        <div class="calc-res-item">
-          <h5>추천 투찰가 (사정율 100.16%)</h5>
-          <div class="val" id="bidPriceRec">16,218,000원</div>
-        </div>
-        <div class="calc-res-item">
-          <h5>예상 세전 순이익</h5>
-          <div class="val green" id="calcProfit">+1,792,000원</div>
-        </div>
-        <div class="calc-res-item">
-          <h5>최종 순수익률</h5>
-          <div class="val green" id="calcMargin">11.1%</div>
-        </div>
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO · 개인 업무용 관제탑</p>
+      <p style="margin-top:4px;">지방계약법 시행령 제25조(수의계약에 의할 수 있는 경우) 준수 · 실시간 연동</p>
+    </footer>
+
+  </div>
+
+  <!-- SUPPLIER MODAL -->
+  <div class="modal-backdrop" id="supplierModal" onclick="closeModalOnBg(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">검증 B2B 도매처 규격·단가 비교</h3>
+        <button class="modal-close" onclick="closeSupplierModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- DYNAMIC CONTENT -->
       </div>
     </div>
   </div>
 
-  <!-- TAB 4: GUIDE -->
-  <div id="guide" class="tab-pane">
-    <div class="sec-title">
-      <h2><i class="fa-solid fa-shield-halved" style="color:var(--green);"></i> 1인 사업자 안전 투찰 수칙 (늘봄상회 전용)</h2>
-    </div>
-    <div class="supplier-card">
-      <ul style="padding-left:20px; font-size:13.5px; line-height:1.8; color:#333;">
-        <li><strong>안산 관내 제한 공고 집중:</strong> 관내 15~35개 업체만 참여하므로 3~5%의 높은 수학적 당첨률이 발생합니다.</li>
-        <li><strong>무면허 순수 물품만 참여:</strong> 특수 면허나 시설 요건이 없는 염화칼슘, 복사용지, 인쇄물, 청소용품만 투찰합니다.</li>
-        <li><strong>B2B 도매처 사전 단가 확정:</strong> 투찰 전 반드시 도매몰 재고와 단가를 확인하여 역마진을 100% 방지합니다.</li>
-        <li><strong>나라장터 공고 확인법:</strong> [공고번호 복사]를 누르고 나라장터 검색창(FIUA002_01)에 붙여넣으면 1초 만에 상세 공고문 열람이 가능합니다.</li>
-      </ul>
-    </div>
-  </div>
+  <!-- TOAST -->
+  <div class="toast" id="toast">공고번호가 복사되었습니다!</div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>동곤 안산·경기 B2G 소액수의 투찰 레이더 PRO · 늘봄상회(155-02-03811) 전용 관제탑</p>
-    <p>© 2026 Donggon B2G Radar. Powered by Sunny Assistant.</p>
-  </footer>
+  <script>
+    const supplierDb = {
+      1: [
+        { name: "자연농산몰 B2B 직영", spec: "염화칼슘 25kg x 40포 (1톤 파레트)", detail: "톤당 360,000원 (포당 9,000원꼴) · 전국 파레트 화물 직배송", price: "9,000원 / 포", link: "http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001" },
+        { name: "다다패키지 제설재", spec: "친환경 제설제 25kg (소량 배송 가능)", detail: "포당 15,700원 무료배송 · 안산 상록구/단원구 직납 협의", price: "15,700원 / 포", link: "https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/" }
+      ],
+      2: [
+        { name: "성원애드피아 B2B", spec: "탁상달력 / 에폭시 마그넷 / 홍보물", detail: "관공서 대량 발주 전문 플랫폼 · 온라인 자동 견적 지원", price: "마그넷 850원선 / 달력 2,800원~", link: "http://www.swadpia.co.kr/" },
+        { name: "고려기프트 B2B 총판", spec: "가죽 여권케이스 / 민원용 판촉물", detail: "불박 인쇄비 포함 납품가 · 전국 지자체 직납 실적 다수", price: "여권케이스 1,950원~", link: "https://koreagift.com/" }
+      ],
+      3: [
+        { name: "중앙종합건재 직영몰", spec: "도로보수재 상온아스콘 25kg 포대", detail: "사계절 전천후 도로 보수용 특수 아스팔트재", price: "포당 12,000원 (VAT포함)", link: "https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-%EB%8F%84%EB%A1%9C%EB%B3%B4%EC%88%98%EC%9E%AC-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%ED%8F%AC%EC%9E%A5-%EB%B3%B4%EC%88%98/173/" },
+        { name: "퍼니즈 건재 총판", spec: "100포 파레트 대량 납품", detail: "지자체 도로과 관급자재 규격 호환재 · 무료배송", price: "포당 13,990원", link: "https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98" }
+      ],
+      4: [
+        { name: "오피스B2B 가구 총판", spec: "관공서 납품용 접이식 테이블 / 의자", detail: "조달 규격 호환 가구 대량 특판가 공급", price: "테이블 6.5만 / 의자 4.5만 선", link: "https://www.officeb2b.co.kr/" },
+        { name: "현대오피스가구 직영몰", spec: "신교대대/교육비품 전문 세트", detail: "내구성 강화 강관 프레임 세트 공급", price: "세트당 견적 할인율 32%", link: "https://www.hdff.co.kr/" }
+      ],
+      5: [
+        { name: "하이마트 B2B 기업특판몰", spec: "원적외선 튜브히터 (돈풍기) 대용량", detail: "사업자 등록증 제출 시 특판 공급가 즉시 적용", price: "대당 420,000원선", link: "https://www.e-himart.co.kr/" },
+        { name: "나비엔 가전 B2B 총판", spec: "산업용 오일/원적외선 히터", detail: "군부대·관공서 현장 직배송 지원", price: "특판가 협의", link: "https://www.navienhouse.com/" }
+      ]
+    };
 
-</div>
+    // FILTER FUNCTION (KEY REQUIREMENT: CLICK TO FILTER BY REGION)
+    function filterBids(region, btn) {
+      // 1. Activate tab button
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
 
-<!-- AIRBNB STYLE SUPPLIER MODAL -->
-<div class="modal-overlay" id="supplierModal" onclick="closeModalOnBg(event)">
-  <div class="modal-card">
-    <div class="modal-header">
-      <h3 id="modalTitle"><i class="fa-solid fa-cart-shopping" style="color:var(--accent);"></i> 검증 도매처</h3>
-      <button class="modal-close-btn" onclick="closeSupplierModal()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="modal-body" id="modalBody">
-      <!-- DYNAMIC CONTENT -->
-    </div>
-  </div>
-</div>
+      // 2. Ensure bids section is shown
+      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+      document.getElementById("section-bids").classList.add("active");
 
-<!-- TOAST ALERT -->
-<div class="toast" id="toastBox">
-  <i class="fa-solid fa-circle-check" style="color:#22C55E;"></i>
-  <span id="toastMsg">공고번호가 복사되었습니다!</span>
-</div>
+      // 3. Filter cards
+      const cards = document.querySelectorAll(".bid-card");
+      let visibleCount = 0;
 
-<script>
-const BID_SUPPLIERS = {
-  1: {
-    title: "용인시 기흥구 제설용 염화칼슘 검증 도매처",
-    items: [
-      {
-        name: "자연농산몰 B2B 직영",
-        spec: "국산 친환경 제설제 (25kg 포당 9,000원 / 톤당 360,000원)",
-        detail: "1톤 파레트(40포) 단위 안산 관내 화물 직배송 지원. 조달청 친환경 인증 규격 충족.",
-        price: "포당 9,000원 (최저가 1위)",
-        link: "http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001"
-      },
-      {
-        name: "다다패키지 제설재 전문몰",
-        spec: "공업용 염화칼슘 (25kg 순도 74% 20포 단위)",
-        detail: "소량 및 파레트 묶음 배송 가능. 긴급 보충용으로 활용.",
-        price: "포당 15,700원 (배송비 포함)",
-        link: "https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/"
+      cards.forEach(card => {
+        const cardRegion = card.getAttribute("data-region");
+        if (region === "all") {
+          card.style.display = "flex";
+          visibleCount++;
+        } else if (region === cardRegion) {
+          card.style.display = "flex";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      // 4. Update banner & title
+      const banner = document.getElementById("filterBanner");
+      const title = document.getElementById("currentFilterTitle");
+      const badge = document.getElementById("visibleCountBadge");
+
+      if (region === "ansan") {
+        banner.style.display = "flex";
+        banner.style.borderLeftColor = "var(--gold)";
+        document.getElementById("bannerTitle").innerText = "🏆 [1순위: 경기도 안산시 관내 제한] 공고 모드";
+        document.getElementById("bannerDesc").innerHTML = "늘봄상회(안산 부곡동 소재) 사업자만 단독 참가 가능한 순수 물품 타깃입니다. 관내 10~30개사끼리만 난수 추첨 경쟁하므로 <strong>3.3% ~ 6.7%의 최고 승률</strong>이 보장됩니다.";
+        title.innerHTML = '<i class="fa-solid fa-crown" style="color:var(--gold);"></i> 1순위: 안산 관내 2천만 원 이하 물품 타깃';
+        badge.innerText = `총 ${visibleCount}건 정렬 중`;
+      } else if (region === "other") {
+        banner.style.display = "flex";
+        banner.style.borderLeftColor = "var(--blue)";
+        document.getElementById("bannerTitle").innerText = "🌐 [2순위: 비안산 경기·전국] 2천만 이하 공고 모드";
+        document.getElementById("bannerDesc").innerHTML = "수도권 및 전국 대상 2천만 원 이하 소액수의 공고입니다. 안산 공고 대기 중에 보조적으로 투찰하여 파이프라인 볼륨을 확보합니다.";
+        title.innerHTML = '<i class="fa-solid fa-globe" style="color:var(--blue);"></i> 2순위: 비안산 경기·전국 2천만 이하 물품 타깃';
+        badge.innerText = `총 ${visibleCount}건 정렬 중`;
+      } else {
+        banner.style.display = "none";
+        title.innerHTML = '<i class="fa-solid fa-list-check" style="color:var(--text-main);"></i> 2천만 원 이하 소액수의 전체 공고';
+        badge.innerText = `총 ${visibleCount}건 전체 표시`;
       }
-    ]
-  },
-  2: {
-    title: "새해농업인 교육교재(달력·책자) 인쇄 검증 도매처",
-    items: [
-      {
-        name: "성원애드피아 B2B 직영",
-        spec: "독판 탁상달력 스프링제본 1,000부 기준 (260x190mm)",
-        detail: "스노우지 250g 전면컬러. 발주 후 4일 이내 관공서 직발송.",
-        price: "부당 2,800원 ~ 3,400원",
-        link: "http://www.swadpia.co.kr/"
-      },
-      {
-        name: "디티피아 (DTPIA)",
-        spec: "공공기관 3단 접지 리플릿 (5,000부 양면칼라)",
-        detail: "국가기관 인쇄물 전용 빠른 견적 시스템 지원.",
-        price: "부당 85원 ~ 110원",
-        link: "https://www.dtpia.co.kr/"
+    }
+
+    // SECTION SWITCHER
+    function openSection(secId, btn) {
+      document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById("section-" + secId).classList.add("active");
+      if (btn) btn.classList.add("active");
+    }
+
+    // COPY BID NUMBER
+    function copyBidNo(bidNo) {
+      navigator.clipboard.writeText(bidNo).then(() => {
+        showToast(`공고번호 [${bidNo}] 복사 완료! 나라장터 검색창에 붙여넣으세요.`);
+      }).catch(() => {
+        showToast(`공고번호: ${bidNo}`);
+      });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.innerText = msg;
+      t.classList.add("show");
+      setTimeout(() => { t.classList.remove("show"); }, 2800);
+    }
+
+    // MODAL
+    function openSupplierModal(key) {
+      const list = supplierDb[key] || [];
+      let html = "";
+      list.forEach(item => {
+        html += `
+          <div class="modal-supplier-item">
+            <div class="modal-supp-info">
+              <h4>${item.name}</h4>
+              <p><strong>규격:</strong> ${item.spec}</p>
+              <p>${item.detail}</p>
+              <div class="price-tag">공급단가: ${item.price}</div>
+            </div>
+            <div class="modal-supp-action">
+              <a href="${item.link}" target="_blank" class="supplier-btn">
+                도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById("modalBody").innerHTML = html;
+      document.getElementById("supplierModal").classList.add("show");
+    }
+
+    function closeSupplierModal() {
+      document.getElementById("supplierModal").classList.remove("show");
+    }
+
+    function closeModalOnBg(e) {
+      if (e.target.id === "supplierModal") {
+        closeSupplierModal();
       }
-    ]
-  },
-  3: {
-    title: "이천병원 장례식장 고객용 잡화류 검증 도매처",
-    items: [
-      {
-        name: "오피스하나 도매 직영몰",
-        spec: "공공기관 · 장례식장 고객용 위생 잡화 연간 단가 B2B",
-        detail: "일회용기, 위생팩, 장갑, 냅킨 전 품목 35% 도매 할인 납품.",
-        price: "도매가 35% 할인 직결",
-        link: "https://www.officehana.com/"
-      },
-      {
-        name: "G마켓 사업자 비즈니스몰",
-        spec: "사업자회원 전용 대량 벌크 잡화 무료배송",
-        detail: "묶음배송 지원 및 세금계산서 100% 즉시 발행.",
-        price: "대량 도매가 + 무료배송",
-        link: "https://www.gmarket.co.kr/"
-      }
-    ]
-  },
-  4: {
-    title: "신교대대 교육비품(의자·책상) 검증 도매처",
-    items: [
-      {
-        name: "오피스B2B 가구 총판",
-        spec: "연수용 접이식 포밍테이블 & 메쉬 사무용 의자 세트",
-        detail: "관내 현장 무료 조립 및 배치 위탁 가능 (인건비 절감).",
-        price: "테이블 6.5만 / 의자 4.5만 선",
-        link: "https://www.officeb2b.co.kr/"
-      },
-      {
-        name: "현대오피스가구 직영몰",
-        spec: "조달청 MAS 등록 규격 호환 관사 전용 가구",
-        detail: "일괄 납품 시 추가 할인 적용.",
-        price: "세트당 15만~18만 원 선",
-        link: "https://www.officehana.com/"
-      }
-    ]
-  },
-  5: {
-    title: "용정산단 보도정비 칼라아스콘(도로보수) 검증 도매처",
-    items: [
-      {
-        name: "중앙종합건재 직영몰",
-        spec: "상온포장보수재(상온아스콘 25kg 포트홀 긴급보수용)",
-        detail: "포당 12,000원(부가세포함). 경기 남부 지역 파레트 화물 즉시 출하.",
-        price: "포당 12,000원 (부가세 포함)",
-        link: "https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%EB%B3%B4%EC%88%98%EC%9E%AC/173/"
-      },
-      {
-        name: "퍼니즈 건재 총판",
-        spec: "퍼니즈 도로보수재 25kg (100포 단위 1파레트 전국 무료배송)",
-        detail: "500포 발주 시 5파레트 직배송. 포당 13,990원.",
-        price: "포당 13,990원 (전국 무료배송)",
-        link: "https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98"
-      }
-    ]
-  }
-};
+    }
 
-function copyBidNo(no) {
-  navigator.clipboard.writeText(no).catch(err => {
-    const el = document.createElement("textarea");
-    el.value = no;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-  });
-}
+    // CALCULATOR
+    function setCalc(base, cost) {
+      document.getElementById("basePrice").value = base;
+      document.getElementById("costPrice").value = cost;
+      const calcBtn = document.querySelectorAll(".tab-btn")[4];
+      openSection('calculator', calcBtn);
+      runCalc();
+    }
 
-function copyAndNotice(no) {
-  copyBidNo(no);
-  showToast(`공고번호 [${no}] 복사 완료! 나라장터 검색창에 붙여넣으세요.`);
-}
+    function runCalc() {
+      const base = parseFloat(document.getElementById("basePrice").value) || 0;
+      const cost = parseFloat(document.getElementById("costPrice").value) || 0;
+      const bid88 = Math.round(base * 0.88);
+      const bidRec = Math.round(base * 0.88142);
+      const profit = bid88 - cost;
+      const margin = bid88 > 0 ? ((profit / bid88) * 100).toFixed(2) : 0;
 
-function showToast(msg) {
-  const toast = document.getElementById("toastBox");
-  document.getElementById("toastMsg").innerText = msg;
-  toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
-}
+      document.getElementById("bidPrice88").innerText = bid88.toLocaleString() + "원";
+      document.getElementById("bidPriceRec").innerText = bidRec.toLocaleString() + "원";
+      document.getElementById("calcProfit").innerText = (profit >= 0 ? "+" : "") + profit.toLocaleString() + "원";
+      document.getElementById("calcProfit").style.color = profit >= 0 ? "#008A05" : "#E00B41";
+      document.getElementById("calcMargin").innerText = margin + "%";
+    }
 
-function openSupplierModal(bidId) {
-  const data = BID_SUPPLIERS[bidId];
-  if (!data) return;
-  document.getElementById("modalTitle").innerHTML = `<i class="fa-solid fa-cart-shopping" style="color:var(--accent);"></i> ${data.title}`;
-  
-  let html = "";
-  data.items.forEach(item => {
-    html += `
-      <div class="modal-supplier-item">
-        <div class="modal-supp-info">
-          <h4>${item.name}</h4>
-          <p><strong>규격:</strong> ${item.spec}</p>
-          <p>${item.detail}</p>
-          <div class="price-tag">공급단가: ${item.price}</div>
-        </div>
-        <div class="modal-supp-action">
-          <a href="${item.link}" target="_blank" class="supplier-btn">
-            도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        </div>
-      </div>
-    `;
-  });
-  
-  document.getElementById("modalBody").innerHTML = html;
-  document.getElementById("supplierModal").classList.add("show");
-}
-
-function closeSupplierModal() {
-  document.getElementById("supplierModal").classList.remove("show");
-}
-
-function closeModalOnBg(e) {
-  if (e.target.id === "supplierModal") {
-    closeSupplierModal();
-  }
-}
-
-function openTab(tabId, btn) {
-  document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById(tabId).classList.add("active");
-  btn.classList.add("active");
-}
-
-function setCalc(base, cost) {
-  document.getElementById("basePrice").value = base;
-  document.getElementById("costPrice").value = cost;
-  document.querySelectorAll(".tab-btn")[2].click();
-  runCalc();
-}
-
-function runCalc() {
-  const base = parseFloat(document.getElementById("basePrice").value) || 0;
-  const cost = parseFloat(document.getElementById("costPrice").value) || 0;
-  const bid88 = Math.round(base * 0.88);
-  const bidRec = Math.round(base * 0.88142);
-  const profit = bid88 - cost;
-  const margin = bid88 > 0 ? ((profit / bid88) * 100).toFixed(2) : 0;
-
-  document.getElementById("bidPrice88").innerText = bid88.toLocaleString() + "원";
-  document.getElementById("bidPriceRec").innerText = bidRec.toLocaleString() + "원";
-  document.getElementById("calcProfit").innerText = (profit >= 0 ? "+" : "") + profit.toLocaleString() + "원";
-  document.getElementById("calcProfit").style.color = profit >= 0 ? "#008A05" : "#E00B41";
-  document.getElementById("calcMargin").innerText = margin + "%";
-}
-runCalc();
-</script>
-
+    // INITIAL RUN: DEFAULT TO 1ST PRIORITY (ANSAN ONLY)
+    filterBids('ansan', document.getElementById('btn-ansan'));
+    runCalc();
+  </script>
 </body>
 </html>
