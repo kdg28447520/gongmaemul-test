@@ -87,7 +87,7 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
 .bid-org { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
 
 /* PRICE TABLE IN CARD (AIRBNB RECEIPT STYLE) */
-.price-box { background: #FAFAFA; border: 1px solid #EEEEEE; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 16px; }
+.price-box { background: #FAFAFA; border: 1px solid #EEEEEE; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 14px; }
 .price-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; margin-bottom: 7px; }
 .price-row:last-child { margin-bottom: 0; padding-top: 8px; border-top: 1px dashed #E0E0E0; }
 .price-row .label { color: var(--muted); font-weight: 600; }
@@ -95,8 +95,18 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
 .price-row .val.highlight { color: var(--accent); font-size: 15px; font-weight: 900; }
 .price-row .val.profit { color: var(--green); font-size: 15px; font-weight: 900; }
 
-.action-row { display: flex; gap: 8px; margin-top: auto; }
-.btn-detail { flex: 1; background: var(--text); color: #fff; border: none; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s; }
+.cost-link-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-light); color: var(--accent); border: 1px solid rgba(255, 56, 92, 0.25); font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 4px; cursor: pointer; text-decoration: none; margin-left: 6px; }
+.cost-link-pill:hover { background: var(--accent); color: #fff; }
+
+/* ACTION BUTTONS (UPDATED AS REQUESTED) */
+.action-box { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.btn-supplier-trigger { width: 100%; background: var(--accent-light); color: var(--accent); border: 1.5px solid var(--accent); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+.btn-supplier-trigger:hover { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3); }
+.btn-supplier-trigger .badge-count { background: var(--accent); color: #fff; font-size: 11px; font-weight: 900; padding: 2px 7px; border-radius: var(--radius-full); }
+.btn-supplier-trigger:hover .badge-count { background: #fff; color: var(--accent); }
+
+.action-sub-row { display: flex; gap: 8px; }
+.btn-detail { flex: 1; background: var(--text); color: #fff; border: none; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.2s; }
 .btn-detail:hover { background: #000; }
 .btn-calc { background: #F2F2F2; color: var(--text); border: 1px solid #E0E0E0; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
 .btn-calc:hover { background: #E5E5E5; }
@@ -110,10 +120,10 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
 .supplier-table tr:last-child td { border-bottom: none; }
 .supplier-table .spec { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .supplier-table .price-badge { font-weight: 900; color: var(--accent); font-size: 14px; }
-.supplier-btn { background: var(--accent-light); color: var(--accent); border: 1px solid rgba(255, 56, 92, 0.3); padding: 6px 14px; border-radius: var(--radius-full); font-size: 12px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
-.supplier-btn:hover { background: var(--accent); color: #fff; }
+.supplier-btn { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius-full); font-size: 12.5px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.supplier-btn:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(255, 56, 92, 0.35); }
 
-/* CALCULATOR MODAL */
+/* CALCULATOR */
 .calc-box { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
 .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
 .calc-input-group label { display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
@@ -124,6 +134,23 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
 .calc-res-item .val { font-size: 18px; font-weight: 900; }
 .calc-res-item .val.gold { color: var(--accent); }
 .calc-res-item .val.green { color: var(--green); }
+
+/* AIRBNB STYLE POPUP MODAL (SUPPLIERS LIST) */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; animation: fadeIn 0.2s ease-out; }
+.modal-overlay.show { display: flex; }
+.modal-card { background: #FFFFFF; border-radius: 20px; max-width: 620px; width: 100%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2); max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; animation: popUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes popUp { from { transform: scale(0.92) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.modal-header { padding: 20px 24px; border-bottom: 1px solid #EEEEEE; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { font-size: 17px; font-weight: 900; color: #222; display: flex; align-items: center; gap: 8px; }
+.modal-close-btn { background: #F2F2F2; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 15px; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.modal-close-btn:hover { background: #E0E0E0; color: #000; }
+.modal-body { padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.modal-supplier-item { background: #FAFAFA; border: 1px solid #EAEAEA; border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: border-color 0.2s; }
+.modal-supplier-item:hover { border-color: var(--accent); background: #FFFBFB; }
+.modal-supp-info h4 { font-size: 15px; font-weight: 900; color: #222; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.modal-supp-info p { font-size: 12.5px; color: #666; line-height: 1.4; }
+.modal-supp-info .price-tag { font-size: 14.5px; font-weight: 900; color: var(--accent); margin-top: 6px; }
+.modal-supp-action { flex-shrink: 0; }
 
 /* FOOTER */
 .footer { text-align: center; padding: 24px 0 16px; color: var(--muted-light); font-size: 12px; line-height: 1.6; }
@@ -236,7 +263,10 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
               <span class="val highlight">16,192,000원</span>
             </div>
             <div class="price-row">
-              <span class="label">도매 사입원가 (파레트배송)</span>
+              <span class="label">
+                도매 사입원가 (파레트배송)
+                <a href="javascript:void(0)" onclick="openSupplierModal(1)" class="cost-link-pill">도매처 2곳 보기 <i class="fa-solid fa-chevron-right"></i></a>
+              </span>
               <span class="val">14,400,000원</span>
             </div>
             <div class="price-row">
@@ -245,9 +275,15 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
             </div>
           </div>
         </div>
-        <div class="action-row">
-          <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          <button class="btn-calc" onclick="setCalc(18400000, 14400000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+        <div class="action-box">
+          <button class="btn-supplier-trigger" onclick="openSupplierModal(1)">
+            <i class="fa-solid fa-cart-shopping"></i> 검증 도매업체 확인 및 단가 비교
+            <span class="badge-count">2곳</span>
+          </button>
+          <div class="action-sub-row">
+            <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <button class="btn-calc" onclick="setCalc(18400000, 14400000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          </div>
         </div>
       </div>
 
@@ -270,7 +306,10 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
               <span class="val highlight">17,160,000원</span>
             </div>
             <div class="price-row">
-              <span class="label">도매 사입원가 (성원애드피아)</span>
+              <span class="label">
+                도매 사입원가 (인쇄 B2B)
+                <a href="javascript:void(0)" onclick="openSupplierModal(2)" class="cost-link-pill">도매처 2곳 보기 <i class="fa-solid fa-chevron-right"></i></a>
+              </span>
               <span class="val">11,800,000원</span>
             </div>
             <div class="price-row">
@@ -279,9 +318,15 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
             </div>
           </div>
         </div>
-        <div class="action-row">
-          <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          <button class="btn-calc" onclick="setCalc(19500000, 11800000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+        <div class="action-box">
+          <button class="btn-supplier-trigger" onclick="openSupplierModal(2)">
+            <i class="fa-solid fa-cart-shopping"></i> 검증 도매업체 확인 및 단가 비교
+            <span class="badge-count">2곳</span>
+          </button>
+          <div class="action-sub-row">
+            <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <button class="btn-calc" onclick="setCalc(19500000, 11800000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          </div>
         </div>
       </div>
 
@@ -304,7 +349,10 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
               <span class="val highlight">18,744,000원</span>
             </div>
             <div class="price-row">
-              <span class="label">도매 사입원가 (B2B 판촉몰)</span>
+              <span class="label">
+                도매 사입원가 (B2B 판촉몰)
+                <a href="javascript:void(0)" onclick="openSupplierModal(3)" class="cost-link-pill">도매처 2곳 보기 <i class="fa-solid fa-chevron-right"></i></a>
+              </span>
               <span class="val">14,200,000원</span>
             </div>
             <div class="price-row">
@@ -313,9 +361,15 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
             </div>
           </div>
         </div>
-        <div class="action-row">
-          <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          <button class="btn-calc" onclick="setCalc(21300000, 14200000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+        <div class="action-box">
+          <button class="btn-supplier-trigger" onclick="openSupplierModal(3)">
+            <i class="fa-solid fa-cart-shopping"></i> 검증 도매업체 확인 및 단가 비교
+            <span class="badge-count">2곳</span>
+          </button>
+          <div class="action-sub-row">
+            <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <button class="btn-calc" onclick="setCalc(21300000, 14200000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          </div>
         </div>
       </div>
 
@@ -338,7 +392,10 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
               <span class="val highlight">8,624,000원</span>
             </div>
             <div class="price-row">
-              <span class="label">도매 사입원가 (총판 직결)</span>
+              <span class="label">
+                도매 사입원가 (총판 직결)
+                <a href="javascript:void(0)" onclick="openSupplierModal(4)" class="cost-link-pill">도매처 2곳 보기 <i class="fa-solid fa-chevron-right"></i></a>
+              </span>
               <span class="val">6,200,000원</span>
             </div>
             <div class="price-row">
@@ -347,9 +404,15 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
             </div>
           </div>
         </div>
-        <div class="action-row">
-          <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          <button class="btn-calc" onclick="setCalc(9800000, 6200000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+        <div class="action-box">
+          <button class="btn-supplier-trigger" onclick="openSupplierModal(4)">
+            <i class="fa-solid fa-cart-shopping"></i> 검증 도매업체 확인 및 단가 비교
+            <span class="badge-count">2곳</span>
+          </button>
+          <div class="action-sub-row">
+            <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <button class="btn-calc" onclick="setCalc(9800000, 6200000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          </div>
         </div>
       </div>
 
@@ -372,7 +435,10 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
               <span class="val highlight">7,260,000원</span>
             </div>
             <div class="price-row">
-              <span class="label">도매 사입원가 (건재직영몰)</span>
+              <span class="label">
+                도매 사입원가 (건재직영몰)
+                <a href="javascript:void(0)" onclick="openSupplierModal(5)" class="cost-link-pill">도매처 2곳 보기 <i class="fa-solid fa-chevron-right"></i></a>
+              </span>
               <span class="val">6,000,000원</span>
             </div>
             <div class="price-row">
@@ -381,9 +447,15 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
             </div>
           </div>
         </div>
-        <div class="action-row">
-          <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          <button class="btn-calc" onclick="setCalc(8250000, 6000000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+        <div class="action-box">
+          <button class="btn-supplier-trigger" onclick="openSupplierModal(5)">
+            <i class="fa-solid fa-cart-shopping"></i> 검증 도매업체 확인 및 단가 비교
+            <span class="badge-count">2곳</span>
+          </button>
+          <div class="action-sub-row">
+            <a href="https://www.g2b.go.kr" target="_blank" class="btn-detail">나라장터 투찰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            <button class="btn-calc" onclick="setCalc(8250000, 6000000)"><i class="fa-solid fa-calculator"></i> 계산</button>
+          </div>
         </div>
       </div>
 
@@ -617,7 +689,157 @@ body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height
 
 </div>
 
+<!-- AIRBNB STYLE SUPPLIER POPUP MODAL -->
+<div id="supplierModal" class="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="modalTitle"><i class="fa-solid fa-cart-shopping" style="color:var(--accent);"></i> 검증 도매업체 비교 및 직결 링크</h3>
+      <button class="modal-close-btn" onclick="closeSupplierModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- DYNAMIC CONTENT -->
+    </div>
+  </div>
+</div>
+
 <script>
+// SUPPLIERS DATABASE PER BID
+const BID_SUPPLIERS = {
+  1: {
+    title: "도로제설용 친환경 염화칼슘 40톤 검증 도매처",
+    items: [
+      {
+        name: "자연농산몰 B2B 직영",
+        spec: "국산 친환경 제설제 (25kg 포당 9,000원 / 톤당 360,000원)",
+        detail: "1톤 파레트(40포) 단위 안산 관내 화물 직배송 지원. 조달청 친환경 인증 규격 충족.",
+        price: "포당 9,000원 (최저가 1위)",
+        link: "http://www.nature-farm.kr/goods/goods_list.php?cateCd=003001"
+      },
+      {
+        name: "다다패키지 제설재 전문몰",
+        spec: "공업용 염화칼슘 (25kg 순도 74% 20포 단위)",
+        detail: "소량 및 파레트 묶음 배송 가능. 긴급 보충용으로 활용.",
+        price: "포당 15,700원 (배송비 포함)",
+        link: "https://dadapackage.com/category/%EC%97%BC%ED%99%94%EC%B9%BC%EC%8A%98/54/"
+      }
+    ]
+  },
+  2: {
+    title: "홍보용 탁상달력 및 다이어리 인쇄 검증 도매처",
+    items: [
+      {
+        name: "성원애드피아 B2B 직영",
+        spec: "독판 탁상달력 (스프링제본 1,000부 / 스노우지 250g 전면컬러)",
+        detail: "온라인 실시간 자동견적 및 관공서 납기 보장. 부당 2,800~3,400원.",
+        price: "부당 2,800원 ~ 3,400원",
+        link: "http://www.swadpia.co.kr/"
+      },
+      {
+        name: "디티피아 (DTPIA)",
+        spec: "공공기관 캘린더 · 홍보 리플릿 B2B 인쇄 총판",
+        detail: "대량 발주 시 단가 네고 가능. 경기도청 지정 납품 규격 충족.",
+        price: "부당 2,650원 ~",
+        link: "https://dtpia.co.kr/"
+      }
+    ]
+  },
+  3: {
+    title: "장례식장 일회용품 및 잡화류 검증 도매처",
+    items: [
+      {
+        name: "오피스하나 도매 직영몰",
+        spec: "공공기관 · 장례식장 고객용 위생 잡화 연간 단가 B2B",
+        detail: "일회용기, 위생팩, 장갑, 냅킨 전 품목 35% 도매 할인 납품.",
+        price: "도매가 35% 할인 직결",
+        link: "https://www.officehana.com/"
+      },
+      {
+        name: "G마켓 사업자 비즈니스몰",
+        spec: "사업자회원 전용 대량 벌크 잡화 무료배송",
+        detail: "묶음배송 지원 및 세금계산서 100% 즉시 발행.",
+        price: "대량 도매가 + 무료배송",
+        link: "https://www.gmarket.co.kr/"
+      }
+    ]
+  },
+  4: {
+    title: "단원구 주민센터 수강용 책상 및 의자 검증 도매처",
+    items: [
+      {
+        name: "오피스넥스 가구 B2B 총판",
+        spec: "연수용 접이식 포밍테이블 & 메쉬 사무용 의자 세트",
+        detail: "안산시 단원구 현장 무료 조립 및 배치 위탁 가능 (인건비 절감).",
+        price: "테이블 6.5만 / 의자 4.5만",
+        link: "https://www.officenex.com/"
+      },
+      {
+        name: "현대오피스가구 직영몰",
+        spec: "조달청 MAS 등록 규격 호환 주민센터 전용 가구",
+        detail: "35세트 일괄 납품 시 15% 추가 추가 할인 적용.",
+        price: "세트당 177,000원 선",
+        link: "https://www.officehana.com/"
+      }
+    ]
+  },
+  5: {
+    title: "도로보수용 상온아스콘(25kg) 500포 검증 도매처",
+    items: [
+      {
+        name: "중앙종합건재 직영몰",
+        spec: "상온포장보수재(상온아스콘 25kg 포트홀 긴급보수용)",
+        detail: "포당 12,000원(부가세포함). 경기 남부 지역 파레트 화물 즉시 출하.",
+        price: "포당 12,000원 (부가세 포함)",
+        link: "https://cbmc5775.com/product/%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98-25kg-%EC%95%84%EC%8A%A4%ED%8C%94%ED%8A%B8-%EB%B3%B4%EC%88%98%EC%9E%AC/173/"
+      },
+      {
+        name: "퍼니즈 건재 총판",
+        spec: "퍼니즈 도로보수재 25kg (100포 단위 1파레트 전국 무료배송)",
+        detail: "500포 발주 시 5파레트 직배송. 포당 13,990원.",
+        price: "포당 13,990원 (전국 무료배송)",
+        link: "https://funiz.com/?t=%EC%83%81%EC%98%A8%EC%95%84%EC%8A%A4%EC%BD%98"
+      }
+    ]
+  }
+};
+
+function openSupplierModal(bidId) {
+  const data = BID_SUPPLIERS[bidId];
+  if (!data) return;
+  document.getElementById("modalTitle").innerHTML = `<i class="fa-solid fa-cart-shopping" style="color:var(--accent);"></i> ${data.title}`;
+  
+  let html = "";
+  data.items.forEach(item => {
+    html += `
+      <div class="modal-supplier-item">
+        <div class="modal-supp-info">
+          <h4>${item.name}</h4>
+          <p><strong>규격:</strong> ${item.spec}</p>
+          <p>${item.detail}</p>
+          <div class="price-tag">공급단가: ${item.price}</div>
+        </div>
+        <div class="modal-supp-action">
+          <a href="${item.link}" target="_blank" class="supplier-btn">
+            도매몰 바로가기 <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </div>
+    `;
+  });
+  
+  document.getElementById("modalBody").innerHTML = html;
+  document.getElementById("supplierModal").classList.add("show");
+}
+
+function closeSupplierModal() {
+  document.getElementById("supplierModal").classList.remove("show");
+}
+
+function closeModalOnBg(e) {
+  if (e.target.id === "supplierModal") {
+    closeSupplierModal();
+  }
+}
+
 function openTab(tabId, btn) {
   document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
