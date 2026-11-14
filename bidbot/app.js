@@ -449,8 +449,8 @@
       const enc = encodeURIComponent(q);
       return [
         { name: "네이버 B2B 최저가", spec: "업소용·관공서 납품 단가 대조", link: `https://msearch.shopping.naver.com/search/all?query=${enc}` },
-        { name: "오너클랜 B2B 위탁배송", spec: "도매 위탁·직발송 재고 확인", link: `https://www.ownerclan.com/V2/product/search.php?keyword=${enc}` },
-        { name: "도매매 (도매꾹 B2B)", spec: "사업자 도매 단가", link: `https://domemedb.domeggook.com/index/item/supplyList.php?skey=${enc}&mode=search` },
+        { name: "오너클랜 B2B 위탁배송", spec: "도매 위탁·직발송 재고 확인", link: `https://www.ownerclan.com/V2/product/search.php?topSearchKeyword=${enc}&topSearchType=all` },
+        { name: "도매매 (도매꾹 B2B)", spec: "사업자 도매 단가", link: `https://domemedb.domeggook.com/index/item/supplyList.php?sf=subject&enc=utf8&fromOversea=0&mode=search&sw=${enc}` },
         { name: "쿠팡 비즈니스", spec: "대용량 로켓배송 빠른 납기", link: `https://www.coupang.com/np/search?q=${enc}` },
         { name: "도매꾹 (모바일)", spec: "모바일 전용 바로가기", link: `https://mobile.domeggook.com/itemlist?so=rd&pg=1&kw=${enc}&kwType=title` },
       ];
