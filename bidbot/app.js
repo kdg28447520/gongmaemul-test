@@ -132,6 +132,15 @@
   });
   const VENDORS = Array.from(V.values());
 
+  /* 게시판 실시간 + 수집 공고 + 지난 물품 공고를 한 목록으로 */
+  const ACTIVE_ALL = (function () {
+    const seen = {};
+    const out = [];
+    D.active.forEach((a) => { if (!seen[a.no]) { seen[a.no] = 1; out.push(a); } });
+    D.recentGoods.forEach((a) => { if (!seen[a.no]) { seen[a.no] = 1; out.push(Object.assign({}, a, { past: true })); } });
+    return out.sort((x, y) => (y.date + y.no).localeCompare(x.date + x.no));
+  })();
+
   /* ---------------- keyword matching ---------------- */
   function expand(kw) {
     if (!S.synOn) return [kw];
@@ -215,7 +224,7 @@
     return D.planned.filter((p) => hits(p.title + " " + (p.scale || "")));
   }
   function activeMatches() {
-    return D.active.filter((a) => hits(a.title + " " + (a.desc || "")));
+    return ACTIVE_ALL.filter((a) => hits(a.title + " " + (a.desc || "")));
   }
   function contractMatches() {
     return D.contracts.filter((c) => hits(c[2]));
@@ -243,7 +252,7 @@
       { label: "감시 키워드", value: S.keywords.length, unit: "개", cls: "hl" },
       { label: "발주예정 매칭", value: pl.length, unit: "건" },
       { label: "그중 물품·2천만↓", value: under20.length, unit: "건", cls: "hl" },
-      { label: "최근 공고 매칭", value: ac.length, unit: "건" },
+      { label: "공고·물품 매칭", value: ac.length, unit: "건" },
       { label: "과거 3년 유사", value: ct.length, unit: "건", cls: "warn" },
       { label: "예정 금액 합계", value: eok(amt), unit: "억 원" },
     ]);
