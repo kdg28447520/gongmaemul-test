@@ -1109,13 +1109,36 @@ function autoStyle(text, i){
   return { asset, grade, motion, rain };
 }
 
+function refineGroups(groups, maxScenes){
+  const g = groups.slice();
+  let guard = 0;
+  const longest = () => { let li = 0; for (let i = 1; i < g.length; i++) if (g[i].length > g[li].length) li = i; return li; };
+  while (g.length < maxScenes && guard++ < 8) {
+    const li = longest();
+    if (g[li].length <= 46) break;
+    const s = g[li];
+    const parts = s.split(/(?<=[.!?。？！])\s+/).filter(Boolean);
+    if (parts.length > 1) {
+      const total = s.length; let acc = 0, idx = 1;
+      for (let i = 0; i < parts.length; i++) { acc += parts[i].length; if (acc >= total / 2) { idx = i + 1; break; } }
+      const a = parts.slice(0, idx).join(' '), b = parts.slice(idx).join(' ');
+      if (a && b) { g.splice(li, 1, a, b); continue; }
+    }
+    const mid = Math.floor(s.length / 2);
+    let cut = s.lastIndexOf(' ', mid);
+    if (cut < mid * 0.55) cut = mid;
+    g.splice(li, 1, s.slice(0, cut).trim(), s.slice(cut).trim());
+  }
+  return g;
+}
+
 function doSplit(){
   const raw = document.getElementById('scriptInput').value;
   const sents = sentencesOf(raw);
   if (!sents.length) { toast('대본을 먼저 붙여넣어 주세요.'); return; }
   const len = raw.replace(/\s/g, '').length;
   let n = Math.min(6, Math.max(4, Math.round(len / 62)));
-  const groups = packInto(sents, n);
+  const groups = refineGroups(packInto(sents, n), 6);
   state.scenes = groups.map((g, i) => {
     const st = autoStyle(g, i);
     const dur = Math.max(2.5, Math.min(6, Math.round((1.9 + g.length / 22) * 2) / 2));
@@ -1127,6 +1150,7 @@ function doSplit(){
   }
   renderAll(); jumpTo(0, true);
   toast('✂️ 대본 → ' + state.scenes.length + '씬 자동 분할 완료 (' + fmt(totalDur()) + '초)');
+  runQA();
 }
 
 /* ---------- 자막 자동 교정 ---------- */
