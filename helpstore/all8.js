@@ -119,8 +119,8 @@
     const p = priceOf(it);
     if (!p) return { lv: "bad", text: "판매가 미산정" };
     if (p < 12000) return { lv: "warn", text: "12,000원 미만 · 로켓 고정비 주의" };
-    if (it.refPrice && p >= it.refPrice) return { lv: "warn", text: "쿠팡 대조가(" + won(it.refPrice) + ") 이상" };
-    if (it.refPrice) return { lv: "ok", text: "대조가보다 " + won(it.refPrice - p) + " 낮음" };
+    if (it.refPrice && p >= it.refPrice) return { lv: "warn", text: "대조가(" + won(it.refPrice) + ") 이상" };
+    if (it.refPrice) return { lv: "ok", text: "대조가 -" + won(it.refPrice - p) };
     return { lv: "ok", text: "가격 규칙 통과" };
   }
 
