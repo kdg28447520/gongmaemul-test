@@ -849,7 +849,7 @@ function renderSceneList(){
           '</div>' +
           '<textarea class="sub-in' + (qa.sub ? ' bad' : '') + '" data-f="text" placeholder="이 씬 자막">' + esc(s.text) + '</textarea>' +
           '<div class="charline"><span>' + len + '자 · ' + (qa.lines || countLines(s)) + '줄' + (qa.sub ? ' ⚠︎' : '') + '</span>' +
-            '<span>Safe-Zone OK</span></div>' +
+            '<span' + (qa.sub ? ' style="color:#ff8f8f"' : '') + '>' + (qa.sub ? 'Safe-Zone 침범' : 'Safe-Zone OK') + '</span></div>' +
           '<div class="s-tools">' +
             '<label class="tiny">⏱</label>' +
             '<input type="number" class="dur-in" data-f="dur" min="1" max="12" step="0.5" value="' + s.dur + '">' +
@@ -865,7 +865,7 @@ function renderSceneList(){
           '<input class="say-in" data-f="say" placeholder="이 장면만 말로 고치기 — 예: \'밤 분위기 빗속 느낌으로\', \'흑백\', \'유품 클로즈업\', \'따뜻하게\'">' +
           '<button class="btn sm pri" data-act="say">🎨 적용</button>' +
         '</div>' +
-        '<div class="say-msg"></div>' +
+        '<div class="say-msg' + (s._say ? ' on' : '') + '">' + esc(s._say || '') + '</div>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -1019,8 +1019,7 @@ function applySay(index, raw, card){
   if (hitAsset && s.asset !== hitAsset) {
     s.asset = hitAsset;
     s.customImg = null; s.customUrl = null; s.customName = null;
-    if (!changed.length) changed.push('이미지 ' + ASSETS[hitAsset].name);
-    else changed.push('이미지 ' + ASSETS[hitAsset].name);
+    changed.push('이미지 ' + ASSETS[hitAsset].name);
   }
 
   /* "2번 장면" 같은 번호 언급은 무시(이 카드만 바뀜) */
@@ -1031,15 +1030,9 @@ function applySay(index, raw, card){
   }
 
   /* 적용 결과 반영 */
+  s._say = '✅ 씬 ' + (index + 1) + '만 적용 → ' + changed.join(' · ');
   renderAll();
   jumpTo(index, true);
-  const card2 = document.querySelector('.scene[data-i="' + index + '"]');
-  if (card2) {
-    card2.classList.add('on');
-    const m2 = card2.querySelector('.say-msg');
-    msg(m2, '✅ 씬 ' + (index + 1) + '만 적용 → ' + changed.join(' · '), false);
-    card2.querySelector('.say-in').value = '';
-  }
   toast('🎨 씬 ' + (index + 1) + '만 고쳤습니다 · ' + changed.join(' · '));
 }
 function msg(el, t, err){
@@ -1152,15 +1145,15 @@ function autoFixSubs(){
     let t = String(s.text || '').replace(/\s+/g, ' ').trim();
     let guard = 0;
     let lines = wrapSmart(t, W - 132, state.fontSize).length;
-    while ((t.length > 44 || lines > 2) && guard++ < 12) {
-      const max = t.length > 44 ? 44 : Math.max(12, Math.floor(t.length * 0.82));
+    while ((t.length > 45 || lines > 2) && guard++ < 12) {
+      const max = t.length > 45 ? 45 : Math.max(12, Math.floor(t.length * 0.82));
       t = shorten(t, max);
       lines = wrapSmart(t, W - 132, state.fontSize).length;
     }
     if (t !== s.text) { s.text = t; fixed++; }
   });
   renderAll();
-  toast(fixed ? '✂️ 자막 ' + fixed + '건 자동 줄맞춤 완료 (2줄·44자 이내)' : '교정할 자막이 없습니다.');
+  toast(fixed ? '✂️ 자막 ' + fixed + '건 자동 줄맞춤 완료 (2줄·45자 이내)' : '교정할 자막이 없습니다.');
   return fixed;
 }
 
@@ -1187,7 +1180,7 @@ function runQA(){
   if (empty.length) { errors++; items.push({ ok:false, t:'② 자막 검사 — 씬 ' + empty.join(', ') + ' 자막 비어 있음' }); }
   if (over.length) { warns++; subIssues++; items.push({ ok:false, t:'② 자막 길이 초과 — 씬 ' + over.join(', ') + ' (45자 초과)', why:'한 씬 자막이 45자를 넘으면 하단에서 잘립니다' }); }
   if (zone.length) { warns++; subIssues++; items.push({ ok:false, t:'② Safe-Zone 침범 — 씬 ' + zone.join(', ') + ' (3줄 초과)', why:'9:16 하단 UI 영역을 침범합니다' }); }
-  if (!empty.length && !over.length && !zone.length) items.push({ ok:true, t:'② 자막 겹침·길이 — 전 씬 44자·2줄 이내 (Safe-Zone 통과)' });
+  if (!empty.length && !over.length && !zone.length) items.push({ ok:true, t:'② 자막 겹침·길이 — 전 씬 45자·2줄 이내 (Safe-Zone 통과)' });
 
   /* ③ 제목·오디오·타이밍 */
   const title = document.getElementById('titleInput').value.trim();
