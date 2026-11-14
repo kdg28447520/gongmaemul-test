@@ -822,7 +822,7 @@
       const total = supply + vat;
       $("#docTotal").innerHTML = `<span>공급가액 <b>${fmt(supply)}원</b></span>
         <span>부가세 ${q.vat ? "<b>" + fmt(vat) + "원</b>" : "별도"}</span>
-        <span>합계 <b>${fmt(total)}원</b> <span class="muted small">(${korAmt(total)}원정)</span></span>`;
+        <span>합계 <b>${fmt(total)}원</b>${total ? ` <span class="muted small">(${korAmt(total)}원정)</span>` : ""}</span>`;
 
       paper.innerHTML = `
         <h3>견 적 서</h3>
