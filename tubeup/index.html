@@ -80,13 +80,13 @@ input,textarea,select{font-family:inherit;color:inherit}
 .hint{font-size:10.5px;color:var(--tx3);font-weight:700}
 
 label.lbl{display:block;font-size:10.5px;font-weight:800;color:var(--tx3);letter-spacing:.02em;margin:0 0 5px}
-textarea,inp,select{}
-.ta,input[type=text],select,.num-in{
+textarea,.ta,input[type=text],select,.num-in{
   width:100%;background:#0b0e15;border:1px solid var(--line2);border-radius:11px;
   padding:10px 11px;font-size:12.5px;font-weight:600;color:var(--tx);outline:none;
   transition:border-color .15s,box-shadow .15s;
 }
-textarea{resize:vertical;min-height:96px;line-height:1.62}
+[hidden]{display:none !important}
+textarea{resize:vertical;min-height:104px;line-height:1.62;font-size:12.5px}
 input[type=text]:focus,select:focus,textarea:focus{border-color:rgba(139,92,246,.75);box-shadow:0 0 0 3px rgba(139,92,246,.14)}
 input::placeholder,textarea::placeholder{color:#525b70;font-weight:600}
 
@@ -428,13 +428,13 @@ const PRESETS = {
       '기름때 묻은 작업복이 창피하다며, 아들은 결혼식에 아버지를 부르지 않았습니다.',
       '그 아버지는 40년 동안 같은 공장에서 구두 한 켤레를 만들며 아들을 키웠습니다.',
       '아버지가 쓰러진 밤, 병원 복도에서 아들은 낡은 편지 한 장을 꺼내 들었습니다.',
-      '찢어진 작업복 주머니에서 나온 통장에는 1억 5천만 원과 짧은 메모가 남아 있었습니다.'
+      '작업복 주머니에서 나온 통장에는 1억 5천만 원과 짧은 메모가 있었습니다.'
     ].join('\n'),
     scenes:[
       {text:'기름때 묻은 작업복이 창피하다며, 아들은 결혼식에 아버지를 부르지 않았습니다.', asset:'anger',    dur:3.5},
       {text:'그 아버지는 40년 동안 같은 공장에서 구두 한 켤레를 만들며 아들을 키웠습니다.', asset:'workshop', dur:4.0},
       {text:'아버지가 쓰러진 밤, 병원 복도에서 아들은 낡은 편지 한 장을 꺼내 들었습니다.', asset:'hospital', dur:4.0},
-      {text:'찢어진 작업복 주머니에서 나온 통장에는 1억 5천만 원과 짧은 메모가 남아 있었습니다.', asset:'passbook', dur:4.5}
+      {text:'작업복 주머니에서 나온 통장에는 1억 5천만 원과 짧은 메모가 있었습니다.', asset:'passbook', dur:4.5}
     ]
   },
   dog: {
@@ -570,14 +570,14 @@ function drawFrame(scene, t, prog){
 
     if (fit === 'frame') {
       ctx.save();
-      ctx.filter = 'blur(30px) brightness(.48) saturate(.9)';
+      ctx.filter = 'blur(30px) brightness(.62) saturate(.95)';
       drawCover(img, 0.5, 0.5, 1.34, 0);
       ctx.restore();
       ctx.filter = FILTERS[scene.grade] || 'none';
-      let dw = W * 1.0, dh = W * img.naturalHeight / img.naturalWidth;
-      if (dh > H * 0.9) { dh = H * 0.9; dw = dh * img.naturalWidth / img.naturalHeight; }
+      let dw = W * 1.06, dh = W * 1.06 * img.naturalHeight / img.naturalWidth;
+      if (dh > H * 0.92) { dh = H * 0.92; dw = dh * img.naturalWidth / img.naturalHeight; }
       const dx = (W - dw) / 2;
-      const dy = (H - dh) / 2 + (fy - 0.5) * 60;
+      const dy = (H - dh) / 2 - 34 + (fy - 0.5) * 60;
       ctx.drawImage(img, dx, dy, dw, dh);
       ctx.strokeStyle = 'rgba(255,255,255,.10)';
       ctx.lineWidth = 2;
@@ -1182,7 +1182,7 @@ function runQA(){
     if (!t) { empty.push(i + 1); return; }
     if (t.length > 45) over.push(i + 1);
     if (wrapSmart(t, W - 132, state.fontSize).length > 3) zone.push(i + 1);
-    s._qa = { sub: (t.length > 45 || wrapSmart(t, W - 132, state.fontSize).length > 2) };
+    s._qa = { sub: (t.length > 45 || wrapSmart(t, W - 132, state.fontSize).length > 3) };
   });
   if (empty.length) { errors++; items.push({ ok:false, t:'② 자막 검사 — 씬 ' + empty.join(', ') + ' 자막 비어 있음' }); }
   if (over.length) { warns++; subIssues++; items.push({ ok:false, t:'② 자막 길이 초과 — 씬 ' + over.join(', ') + ' (45자 초과)', why:'한 씬 자막이 45자를 넘으면 하단에서 잘립니다' }); }
@@ -1464,8 +1464,12 @@ document.getElementById('sizeRange').addEventListener('input', e => {
     }
   } catch (e) {}
   renderAll(); jumpTo(0, false);
+  engine.playing = true;
   requestAnimationFrame(tick);
   syncPlayBtn();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { renderAll(); jumpTo(state.active, false); });
+  }
 })();
 </script>
 </body>
