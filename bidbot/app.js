@@ -369,34 +369,110 @@
       <div class="bid-sub"><b>공고일</b> ${esc(a.date)}${a.gosi ? ` · ${esc(a.gosi)}` : ""}${a.no ? ` · No.${esc(a.no)}` : ""}</div>
       <div class="bid-actions">
         <a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">공고문 원문 ↗</a>
-        <button class="btn ghost" data-supplier="${esc(a.title.slice(0, 30))}">도매가 검색</button>
+        <button class="btn ghost" data-supplier="${esc(a.title)}">도매가 검색</button>
       </div>
     </article>`;
   }
 
   /* ---------------- supplier modal ---------------- */
-  function supplierModal(q) {
-    const enc = encodeURIComponent(q);
-    const items = [
-      { name: "네이버 B2B 최저가", spec: "업소용·관공서 납품 단가 대조", link: `https://msearch.shopping.naver.com/search/all?query=${enc}` },
-      { name: "오너클랜 B2B 위탁배송", spec: "도매 위탁·직발송 재고 확인", link: `https://m.ownerclan.com/V2/product/search.php?keyword=${enc}` },
-      { name: "도매매 (도매꾹 B2B)", spec: "사업자 도매 단가", link: `https://m.domeme.domeggook.com/index/item/itemSearch.php?skey=${enc}` },
-      { name: "쿠팡 비즈니스", spec: "대용량 로켓배송 빠른 납기", link: `https://m.coupang.com/nm/search?q=${enc}` },
-      { name: "도매꾹 (모바일)", spec: "모바일 전용 바로가기", link: `https://mobile.domeggook.com/itemlist?so=rd&pg=1&kw=${enc}&kwType=title` },
-    ];
-    openModal(
-      `도매가 대조 — "${q}"`,
-      `<div class="supp">${items.map((i) => `
+  /* 공고명 → 도매몰 검색어. 조달 서류식 수식어를 걷어내고 물품명만 남긴다. */
+  const SUP_STRONG = ["물품구매", "물품구입", "입찰공고", "입찰재공고", "재공고", "긴급공고", "공고", "구입", "구매", "교체", "설치", "납품", "제작", "가공", "수리", "용역", "임차", "단가계약", "단가", "계약", "선정", "사업", "일체", "포함", "및", "등", "외", "시행", "조사"];
+  const SUP_WEAK = ["민원콜센터", "상담사용", "시청사", "청사", "관리용품", "소모품", "비품", "겨울철", "하절기", "동절기", "대설", "폭설", "대비", "비축", "조달", "확충", "보강", "정비", "하반기", "상반기", "연간", "업무용", "행사용", "홍보용", "사무용", "지원", "일반", "소액", "견적", "제한", "지역", "긴급", "물품", "안산시", "안산"];
+  const SUP_PREFIX = ["노후", "구형", "신형", "고성능", "친환경", "겨울철", "하절기", "동절기", "대설", "폭설", "긴급", "소형", "대형", "관공서용", "사무용", "상담사용"];
+  const SUP_UNIT = /^[\d,.]+\s*(대|개|매|식|종|박스|롤|장|병|캔|봉|포|톤|kg|미터|m|개월|년|월|일|회|건|명|곳|점|조|팀|벌|켤레|쌍|권|부|세트|호|매입|잔|통|팩|봉지|EA|SET)$/i;
+
+  function supCleanToken(raw, noise) {
+    let t = String(raw || "").trim();
+    for (let round = 0; round < 3; round++) {
+      let hit = false;
+      for (const w of SUP_PREFIX) {
+        if (t.length > w.length && t.indexOf(w) === 0) { t = t.slice(w.length); hit = true; }
+      }
+      if (!hit) break;
+    }
+    t = t.replace(/(등|외|및|포함)$/u, "");
+    if (!t) return "";
+    if (noise.indexOf(t) >= 0) return "";
+    if (SUP_UNIT.test(t)) return "";
+    if (/^[\d,.]+$/.test(t)) return "";
+    return t;
+  }
+
+  /* "민원콜센터 상담사용 노후PC 교체" → "PC" / "겨울철 대설 대비 관리용품(염화칼슘 등) 구입" → "염화칼슘" */
+  function extractSearchKeyword(raw) {
+    const src = String(raw == null ? "" : raw);
+    const flat = src.replace(/[\[\](){}<>·・“”"'‘’,;:/\\|~～+*]/g, " ").replace(/\s+/g, " ").trim();
+    if (!flat) return "";
+    const tokens = flat.split(" ").filter(Boolean);
+    const pick = (noise) => {
+      const out = [];
+      tokens.forEach((tok) => {
+        const t = supCleanToken(tok, noise);
+        if (t && out.indexOf(t) < 0) out.push(t);
+      });
+      return out;
+    };
+    let keep = pick(SUP_STRONG.concat(SUP_WEAK));
+    if (!keep.length) keep = pick(SUP_STRONG);
+    if (!keep.length) keep = tokens.slice(0, 2);
+    let q = keep[0] || "";
+    if (q.length > 24) q = q.slice(0, 24);
+    return q || flat.slice(0, 24);
+  }
+
+  function supplierModal(raw) {
+    const origin = String(raw == null ? "" : raw).trim();
+    const initial = extractSearchKeyword(origin) || origin;
+    const items = (q) => {
+      const enc = encodeURIComponent(q);
+      return [
+        { name: "네이버 B2B 최저가", spec: "업소용·관공서 납품 단가 대조", link: `https://msearch.shopping.naver.com/search/all?query=${enc}` },
+        { name: "오너클랜 B2B 위탁배송", spec: "도매 위탁·직발송 재고 확인", link: `https://www.ownerclan.com/V2/product/search.php?keyword=${enc}` },
+        { name: "도매매 (도매꾹 B2B)", spec: "사업자 도매 단가", link: `https://domemedb.domeggook.com/index/item/supplyList.php?skey=${enc}&mode=search` },
+        { name: "쿠팡 비즈니스", spec: "대용량 로켓배송 빠른 납기", link: `https://www.coupang.com/np/search?q=${enc}` },
+        { name: "도매꾹 (모바일)", spec: "모바일 전용 바로가기", link: `https://mobile.domeggook.com/itemlist?so=rd&pg=1&kw=${enc}&kwType=title` },
+      ];
+    };
+    const listHtml = (q) => items(q).map((i) => `
         <div class="supp-item">
           <div>
             <h4>${esc(i.name)}</h4>
             <p>${esc(i.spec)}</p>
           </div>
           <a class="btn ghost sm" href="${esc(i.link)}" target="_blank" rel="noopener">열기 ↗</a>
-        </div>`).join("")}
+        </div>`).join("");
+
+    openModal(
+      `도매가 대조 — "${initial}"`,
+      `<div class="supp">
+        <div class="supp-search">
+          <label for="suppQueryInput">검색어</label>
+          <input id="suppQueryInput" type="text" value="${esc(initial)}" placeholder="핵심 물품명만 (예: 핸드타올)" autocomplete="off" spellcheck="false">
+          <button class="btn primary sm" id="suppApply" type="button">검색어 적용</button>
+        </div>
+        <p class="hint" id="suppOrigin">${origin && initial !== origin
+          ? `공고명 <b>${esc(origin)}</b> → 검색어 <b id="suppKwNote">${esc(initial)}</b> 로 자동 정리했습니다.`
+          : `공고명 그대로 검색합니다. 단어를 바꾸려면 위 칸에서 고치세요.`}</p>
+        <div id="suppList">${listHtml(initial)}</div>
         <p class="hint">투찰 전 이 5곳에서 실제 재고와 단가를 확인하고, 배송비까지 넣어 역마진을 막습니다. 견적 단가는 최저가가 아니라 <b>납기 안에 도착하는 단가</b>로 잡으세요.</p>
       </div>`
     );
+
+    const input = $("#suppQueryInput");
+    const box = $("#suppList");
+    const apply = (value) => {
+      const q = String(value == null ? "" : value).trim();
+      if (!q) return toast("검색어를 입력하세요.");
+      $("#modalTitle").textContent = `도매가 대조 — "${q}"`;
+      box.innerHTML = listHtml(q);
+      const note = $("#suppKwNote");
+      if (note) note.textContent = q;
+    };
+    input.addEventListener("input", () => { if (input.value.trim()) apply(input.value); });
+    $("#suppApply").addEventListener("click", () => apply(input.value));
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); apply(input.value); }
+    });
   }
 
   /* ---------------- PREDICT ---------------- */
