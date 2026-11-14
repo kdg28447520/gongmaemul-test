@@ -215,7 +215,7 @@
     $("#synToggle").checked = S.synOn;
     const syn = S.keywords.filter((k) => SYN[k]);
     $("#synHint").innerHTML = S.synOn
-      ? `동의어 확장 켜짐 — ${syn.length}개 키워드에 자동 확장어를 붙여 검색합니다 (예: 제설 → ${SYN["제설"].slice(0, 4).join(", ")}).`
+      ? `동의어 확장 켜짐 — ${S.keywords.length}개 중 ${syn.length}개 키워드에 자동 확장어를 붙여 검색합니다 (예: 제설 → ${SYN["제설"].slice(0, 4).join(", ")}).`
       : "동의어 확장 꺼짐 — 입력한 글자 그대로만 찾습니다.";
     $("#watchMsg").textContent = watchMessage();
   }
@@ -721,7 +721,7 @@
       label: m.m + "월", c: m.count, a: m.amount,
       hot: m.m >= 11,
       tip: `${m.m}월 합산 · ${m.count}건 · ${eok(m.amount)}억`,
-    })), { w: 900, h: 220, labels: 12 });
+    })), { w: 560, h: 210, labels: 12 });
 
     $("#chartCat").innerHTML = domBars(
       D.cats.slice(0, 8).map((c) => ({ label: c.name, v: c.count })),
@@ -841,7 +841,7 @@
             <tr><td colspan="4" style="text-align:right;font-weight:700">합계금액</td><td>${fmt(total)}</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:12px">위 금액은 부가가치세 ${q.vat ? "포함" : "별도"} 금액 <b>일금 ${korAmt(total)}원정(₩${fmt(total)})</b>으로, 상기 물품을 위 조건대로 납품하고자 견적서를 제출합니다.</p>
+        <p style="margin-top:12px">위 금액은 부가가치세 ${q.vat ? "포함" : "별도"} 금액 <b>${total ? "일금 " + korAmt(total) + "원정" : "일금 0원정"} (₩${fmt(total)})</b>으로, 상기 물품을 위 조건대로 납품하고자 견적서를 제출합니다.</p>
         <p class="p-note" style="margin-top:10px">※ 낙찰 시 계약 상대자로 선정되면 정해진 기한 내에 계약을 체결하고, 물품은 발주기관이 지정한 장소로 직접 납품합니다.</p>
         ${companyBlock()}`;
       return;
@@ -1094,7 +1094,17 @@
     }));
     ["#qTitle", "#qOrg", "#qItem", "#qSpec", "#qQty", "#qUnit", "#qDays"].forEach((id) => $(id).addEventListener("input", renderDoc));
     $("#qVat").addEventListener("change", renderDoc);
-    $("#docPrint").addEventListener("click", () => { window.print(); });
+    $("#docPrint").addEventListener("click", () => {
+      const area = $("#printArea");
+      if (area) {
+        area.innerHTML = "";
+        const clone = $("#paper").cloneNode(true);
+        clone.removeAttribute("contenteditable");
+        area.appendChild(clone);
+      }
+      window.print();
+      setTimeout(() => { if (area) area.innerHTML = ""; }, 1500);
+    });
     $("#docCopy").addEventListener("click", async () => {
       const ok = await copyText($("#paper").innerText);
       toast(ok ? "서류 문구를 복사했습니다." : "복사가 막혔습니다. 직접 선택해 복사하세요.");
