@@ -190,7 +190,12 @@ h2{font-size:15px;font-weight:800;letter-spacing:-.2px;display:flex;align-items:
 .board-note{margin-top:10px;font-size:12px;color:var(--sub);background:var(--blue-050);border:1px solid #dde7ff;border-radius:10px;padding:10px 13px;line-height:1.65}
 
 /* ---------- tables ---------- */
-#scenarioTbl td:first-child,#scenarioTbl th:first-child{width:96px}
+#scenarioTbl{table-layout:fixed;min-width:520px}
+#scenarioTbl th:nth-child(1){width:84px}
+#scenarioTbl th:nth-child(2){width:27%}
+#scenarioTbl th:nth-child(3){width:27%}
+#scenarioTbl th:nth-child(4){width:16%}
+#scenarioTbl th:nth-child(5){width:96px}
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:12px}
 .tbl{width:100%;border-collapse:collapse;font-size:12.8px;min-width:520px}
 .tbl th{
