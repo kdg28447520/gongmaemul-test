@@ -614,6 +614,20 @@
     };
   }
 
+  function matrixCounts() {
+    let ok = 0, warn = 0, bad = 0;
+    queue.forEach((it) => MARKETS.forEach((m) => {
+      const s = evalItem(it, m);
+      if (s.lv === "ok") ok++; else if (s.lv === "warn") warn++; else bad++;
+    }));
+    return { ok: ok, warn: warn, bad: bad };
+  }
+  function updateMatrixCounts() {
+    const c = matrixCounts();
+    const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+    set("a8CntOk", "정상 " + c.ok); set("a8CntWarn", "보완 " + c.warn); set("a8CntBad", "수정 " + c.bad);
+  }
+
   function renderMatrix() {
     const head = document.getElementById("a8MatrixHead");
     const body = document.getElementById("a8MatrixBody");
@@ -621,19 +635,15 @@
     head.innerHTML = "<tr><th>상품 · 판매가</th>" + MARKETS.map((m) =>
       '<th><span style="display:block">' + esc(m.short) + '</span><button class="btn sm ghost" data-csvm="' + m.id + '" type="button" style="margin-top:4px">CSV</button></th>'
     ).join("") + "</tr>";
-    let ok = 0, warn = 0, bad = 0;
     body.innerHTML = queue.map((it) =>
       "<tr><td><b>" + esc(finalName(it)) + '</b><br><span class="small">' + won(priceOf(it)) + "</span></td>" +
       MARKETS.map((m) => {
         const s = evalItem(it, m);
-        if (s.lv === "ok") ok++; else if (s.lv === "warn") warn++; else bad++;
-        return '<td><span class="pill-mini ' + s.lv + '" data-jump="' + m.id + '" title="' + esc(s.reasons) + '">' + s.label + "</span></td>";
+        return '<td data-cell="' + esc(it.id + "|" + m.id) + '"><span class="pill-mini ' + s.lv + '" data-jump="' + m.id + '" title="' + esc(s.reasons) + '">' + s.label + "</span></td>";
       }).join("") + "</tr>"
     ).join("") || '<tr><td colspan="9" class="note">큐가 비었습니다.</td></tr>';
 
-    const c = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
-    c("a8CntOk", "정상 " + ok); c("a8CntWarn", "보완 " + warn); c("a8CntBad", "수정 " + bad);
-
+    updateMatrixCounts();
     $$("[data-csvm]", head).forEach((b) => b.addEventListener("click", () => exportOne(b.dataset.csvm)));
     $$("[data-jump]", body).forEach((b) => b.addEventListener("click", () => { selectMarket(b.dataset.jump); document.getElementById("a8MarketBody").scrollIntoView({ behavior: "smooth", block: "center" }); }));
   }
@@ -662,34 +672,58 @@
     const r = rules[m.id] || {};
     rule.innerHTML = "<b>" + esc(m.name) + "</b> · " + esc(m.rule) +
       '<br><span style="opacity:.85">상품명 한도 ' + (r.byteMax ? r.byteMax + "byte" : r.nameMax + "자") + " · 근거: " + esc(m.src) + "</span>";
-    let ok = 0, warn = 0, bad = 0;
     body.innerHTML = queue.map((it) => {
       const s = evalItem(it, m);
-      if (s.lv === "ok") ok++; else if (s.lv === "warn") warn++; else bad++;
       const nm = finalName(it);
       const len = r.byteMax ? byteLen(nm) + "byte" : chars(nm) + "자";
       const key = it.id + "|" + m.id;
       const cat = mkt.cats[key] || "";
-      return "<tr><td><b>" + esc(it.name) + "</b></td><td>" + esc(nm) + '</td><td class="num">' + len +
+      return '<tr data-row="' + esc(it.id) + '"><td><b>' + esc(it.name) + "</b></td><td>" + esc(nm) + '</td><td class="num">' + len +
         '</td><td><input class="inp a8-rowin" data-cat="' + esc(key) + '" type="text" value="' + esc(cat) + '" placeholder="카테고리 코드"></td>' +
-        '<td><span class="pill-mini ' + s.lv + '">' + s.label + "</span></td>" +
-        '<td class="small">' + esc(s.reasons) + "</td>" +
+        '<td><span class="pill-mini ' + s.lv + '" data-st>' + s.label + "</span></td>" +
+        '<td class="small" data-why>' + esc(s.reasons) + "</td>" +
         '<td><button class="btn sm ghost" data-csvm="' + m.id + '" type="button">CSV</button></td></tr>';
     }).join("") || '<tr><td colspan="7" class="note">큐가 비었습니다.</td></tr>';
 
-    const badge = document.getElementById("a8MarketBadge");
-    if (badge) {
-      badge.textContent = "정상 " + ok + " · 보완 " + warn + " · 수정 " + bad;
-      badge.className = "badge " + (bad ? "bad" : warn ? "warn" : "ok");
-    }
+    updateMarketBadge();
     $$("[data-cat]", body).forEach((el) => {
       el.addEventListener("change", () => {
         mkt.cats[el.dataset.cat] = el.value.trim();
         saveMkt();
-        renderMarkets();
+        const id = el.dataset.cat.split("|")[0];
+        const it = queue.find((x) => x.id === id);
+        if (!it) return;
+        const s = evalItem(it, m);
+        const tr = el.closest("tr");
+        const st = tr && tr.querySelector("[data-st]");
+        if (st) { st.className = "pill-mini " + s.lv; st.textContent = s.label; }
+        const why = tr && tr.querySelector("[data-why]");
+        if (why) why.textContent = s.reasons;
+        $$("[data-cell]").forEach((c) => {
+          if (c.dataset.cell !== el.dataset.cat) return;
+          const sp = c.querySelector("span");
+          if (sp) { sp.className = "pill-mini " + s.lv; sp.textContent = s.label; sp.title = s.reasons; }
+        });
+        updateMatrixCounts();
+        updateMarketBadge();
       });
     });
     $$("[data-csvm]", body).forEach((b) => b.addEventListener("click", () => exportOne(b.dataset.csvm)));
+  }
+
+  function marketCounts(m) {
+    let ok = 0, warn = 0, bad = 0;
+    queue.forEach((it) => { const s = evalItem(it, m); if (s.lv === "ok") ok++; else if (s.lv === "warn") warn++; else bad++; });
+    return { ok: ok, warn: warn, bad: bad };
+  }
+  function updateMarketBadge() {
+    const m = mkById[mkt.sel];
+    if (!m) return;
+    const c = marketCounts(m);
+    const badge = document.getElementById("a8MarketBadge");
+    if (!badge) return;
+    badge.textContent = "정상 " + c.ok + " · 보완 " + c.warn + " · 수정 " + c.bad;
+    badge.className = "badge " + (c.bad ? "bad" : (c.warn ? "warn" : "ok"));
   }
 
   function renderRules() {
@@ -712,7 +746,9 @@
         rules[id] = { nameMax: m.nameMax, byteMax: m.byteMax || 0 };
         if (m.byteMax) rules[id].byteMax = v; else rules[id].nameMax = v;
         saveRules();
-        renderMarkets();
+        renderMatrix();
+        renderMarketTable();
+        renderStatus();
         toast(m.short + " 상품명 한도를 " + v + (m.byteMax ? "byte" : "자") + "로 바꿨습니다");
       });
     });
