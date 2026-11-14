@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>동곤 조달비서 PRO — 안산시 나라장터 입찰 알리미 + 경쟁사 모니터링</title>
+<meta name="description" content="안산시 실측 조달 DB 3,333건 기반 키워드 공고 레이더, 88% 투찰가 예측, 낙찰 경쟁사 추적, 발주 트렌드, 조달 서류 서식까지 한 화면에서.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+<div class="scrim" id="scrim" aria-hidden="true"></div>
+
+<aside class="sidebar" id="sidebar" aria-label="주 메뉴">
+  <div class="sb-brand">
+    <span class="sb-logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+    </span>
+    <div class="sb-brand-txt">
+      <strong>동곤 조달비서</strong>
+      <span class="pro">PRO</span>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <button class="nav-item active" data-view="radar">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l6-6"/></svg>
+      <span>공고 레이더</span><em class="nav-badge" id="badgeRadar">0</em>
+    </button>
+    <button class="nav-item" data-view="predict">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 5-8 4 5"/><path d="M3 21h18"/></svg>
+      <span>투찰 예측기</span>
+    </button>
+    <button class="nav-item" data-view="rivals">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><circle cx="17.5" cy="9.5" r="2.6"/><path d="M15.5 20a5.5 5.5 0 016.5-5.2"/></svg>
+      <span>경쟁사 추적</span><em class="nav-badge" id="badgeFav">0</em>
+    </button>
+    <button class="nav-item" data-view="trend">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg>
+      <span>발주 트렌드</span>
+    </button>
+    <button class="nav-item" data-view="docs">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+      <span>서류·알림</span>
+    </button>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-biz">
+      <span class="dot-live" aria-hidden="true"></span>
+      <div>
+        <b>늘봄상회</b>
+        <span id="sbBizNo">155-02-03811</span>
+      </div>
+    </div>
+    <a class="sb-link" href="https://ansan.go.kr/contract/contents/sub01_04.jsp" target="_blank" rel="noopener">안산시 계약정보 열기 ↗</a>
+    <a class="sb-link" href="https://www.g2b.go.kr" target="_blank" rel="noopener">나라장터 열기 ↗</a>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button class="icon-btn only-mobile" id="menuBtn" aria-label="메뉴 열기">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <div class="topbar-title only-mobile"><strong>동곤 조달비서</strong><span class="pro">PRO</span></div>
+    <div class="topbar-meta">
+      <span class="meta-chip" id="chipDb" title="안산시 3개년 계약 이력 수집 기준일">DB 3,333건 · 수집 2026-11-07</span>
+      <span class="meta-chip ok" id="chipLive" title="안산시 입찰공고 게시판 1페이지 실시간 확인">게시판 실시간 · 2026-11-14</span>
+    </div>
+  </header>
+
+  <main class="content" id="content">
+
+    <!-- ============ 1. 공고 레이더 ============ -->
+    <section class="view active" id="view-radar">
+      <div class="page-head">
+        <div>
+          <h1>공고 레이더</h1>
+          <p>등록한 키워드로 안산시 <b>발주예정</b>·<b>최근 공고</b>·<b>과거 계약</b>을 동시에 훑습니다. 원천은 안산시 계약과정정보공개시스템 실측 DB입니다.</p>
+        </div>
+      </div>
+
+      <div class="kpi-row" id="radarKpi"></div>
+
+      <div class="card kw-card">
+        <div class="card-head">
+          <div>
+            <h2>감시 키워드</h2>
+            <p class="muted">늘봄상회 무면허 물품 기준 기본값입니다. 추가·삭제하면 이 브라우저에 저장됩니다.</p>
+          </div>
+          <div class="kw-head-actions">
+            <label class="switch">
+              <input type="checkbox" id="synToggle" checked>
+              <span></span>
+              <em>동의어 확장</em>
+            </label>
+            <button class="btn ghost sm" id="kwReset">기본값 복원</button>
+          </div>
+        </div>
+        <div class="kw-list" id="kwList"></div>
+        <div class="kw-add">
+          <input id="kwInput" type="text" placeholder="예: 방한장갑, 난방기, 안전화" maxlength="20" autocomplete="off">
+          <button class="btn primary" id="kwAdd">키워드 추가</button>
+        </div>
+        <p class="hint" id="synHint"></p>
+      </div>
+
+      <div class="panel-block">
+        <div class="panel-head">
+          <h2><span class="dot blue"></span> 발주예정 매칭 <em id="cntPlanned" class="count">0</em></h2>
+          <p class="muted">안산시 발주계획 고시에서 추출한 실제 예정 건입니다. 담당 공무원 연락처까지 원문 그대로입니다.</p>
+        </div>
+        <div class="bid-grid" id="listPlanned"></div>
+      </div>
+
+      <div class="panel-block">
+        <div class="panel-head">
+          <h2><span class="dot green"></span> 최근 등록 공고 <em id="cntActive" class="count">0</em></h2>
+          <p class="muted">입찰공고 게시판에서 수집한 공고입니다. 마감일은 공고문 본문에서 추출했으니 제출 전 원문을 한 번 더 확인하세요.</p>
+        </div>
+        <div class="bid-grid" id="listActive"></div>
+        <div class="board-note" id="boardNote"></div>
+      </div>
+
+      <div class="panel-block">
+        <div class="panel-head">
+          <h2><span class="dot amber"></span> 과거 유사 낙찰 <em id="cntPast" class="count">0</em></h2>
+          <p class="muted">같은 키워드로 과거 3년간 실제 계약된 건입니다. 누가 얼마에 가져갔는지가 곧 경쟁 강도입니다.</p>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl" id="pastTbl">
+            <thead><tr><th>계약일</th><th>품목(공고명)</th><th>부서</th><th class="r">계약금액</th><th>업체</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button class="btn ghost" id="pastMore">경쟁사 추적에서 전체 보기 →</button>
+      </div>
+    </section>
+
+    <!-- ============ 2. 투찰 예측기 ============ -->
+    <section class="view" id="view-predict">
+      <div class="page-head">
+        <div>
+          <h1>투찰 예측기</h1>
+          <p>기초금액과 도매원가만 넣으면 낙찰하한선·권장 투찰가·순이익·마진율이 사정률 구간별로 나옵니다.</p>
+        </div>
+      </div>
+
+      <div class="predict-grid">
+        <div class="card">
+          <div class="card-head"><h2>입력</h2><button class="btn ghost sm" id="pfReset">초기화</button></div>
+          <div class="form-grid">
+            <label class="field"><span>기초금액 (원)</span>
+              <input type="number" id="pBase" value="12000000" min="0" step="1000">
+            </label>
+            <label class="field"><span>추정가격 (원) <em class="opt">선택</em></span>
+              <input type="number" id="pEstimate" placeholder="발주예정 금액" min="0" step="1000">
+            </label>
+            <label class="field"><span>낙찰하한율</span>
+              <select id="pFloor">
+                <option value="87.745" selected>87.745% (소액수의 실무 하한)</option>
+                <option value="88">88.000% (법정 하한 표기)</option>
+                <option value="87.7450">87.745% · 사정률 미적용</option>
+              </select>
+            </label>
+            <label class="field"><span>복수예비가격 사정률 범위</span>
+              <select id="pRange">
+                <option value="2" selected>±2%</option>
+                <option value="3">±3%</option>
+                <option value="0">적용 안 함 (0%)</option>
+              </select>
+            </label>
+            <label class="field"><span>도매원가 합계 (원)</span>
+              <input type="number" id="pCost" value="5400000" min="0" step="1000">
+            </label>
+            <label class="field"><span>배송·하차비 (원)</span>
+              <input type="number" id="pShip" value="150000" min="0" step="1000">
+            </label>
+            <label class="field"><span>채권·보증 수수료율 (%)</span>
+              <input type="number" id="pFee" value="1.5" min="0" step="0.1">
+            </label>
+          </div>
+          <div class="preset-row">
+            <span class="muted">실전 프리셋</span>
+            <button class="chip-btn" data-preset="1">핸드타올 300박스</button>
+            <button class="chip-btn" data-preset="2">구강청결제 200박스</button>
+            <button class="chip-btn" data-preset="3">제설도구 1식</button>
+            <button class="chip-btn" data-preset="4">사무 소모품 1식</button>
+          </div>
+        </div>
+
+        <div class="result-col">
+          <div class="card result-main">
+            <div class="res-top">
+              <div>
+                <span class="muted">낙찰하한선 (최소 유효 투찰가)</span>
+                <div class="res-big" id="rFloor">-</div>
+              </div>
+              <span class="fit-badge" id="rFit">-</span>
+            </div>
+            <div class="res-grid">
+              <div><span class="muted">권장 투찰가</span><b id="rRec">-</b></div>
+              <div><span class="muted">도매원가+배송</span><b id="rCost">-</b></div>
+              <div><span class="muted">채권·보증 수수료</span><b id="rFee">-</b></div>
+              <div><span class="muted">순이익</span><b id="rProfit">-</b></div>
+              <div><span class="muted">마진율</span><b id="rMargin">-</b></div>
+              <div><span class="muted">기초금액 대비</span><b id="rRate">-</b></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h2>적합도 판정 <em class="muted small">늘봄상회 1인 무면허 기준</em></h2></div>
+            <ul class="fit-list" id="fitList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>사정률 시나리오</h2>
+          <p class="muted">복수예비가격 4개 평균이 이 구간에 떨어졌을 때의 하한선과 손익입니다.</p>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl" id="scenarioTbl">
+            <thead><tr><th>사정률</th><th class="r">낙찰하한선</th><th class="r">순이익</th><th class="r">마진율</th><th>판정</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="hint">※ 사정률은 개찰 전 알 수 없습니다. 이 표는 구간별 손익을 보여주는 시뮬레이션이며, 실제 낙찰가 예측치가 아닙니다.</p>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn primary" id="goQuote">이 조건으로 견적서 만들기 →</button>
+      </div>
+    </section>
+
+    <!-- ============ 3. 경쟁사·낙찰 추적 ============ -->
+    <section class="view" id="view-rivals">
+      <div class="page-head">
+        <div>
+          <h1>경쟁사·낙찰 추적</h1>
+          <p>안산시 3개년 물품 계약 3,333건에서 업체·품목·부서별 낙찰 이력을 그대로 조회합니다.</p>
+        </div>
+        <div class="head-actions">
+          <a class="btn ghost sm" href="https://ansan.go.kr/contract/contents/sub01_04.jsp" target="_blank" rel="noopener">안산시 계약정보 ↗</a>
+          <a class="btn ghost sm" href="https://www.g2b.go.kr" target="_blank" rel="noopener">나라장터 ↗</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="filter-row">
+          <input type="search" id="rvQ" placeholder="업체명 · 품목 · 부서 검색" autocomplete="off">
+          <input type="number" id="rvMin" placeholder="최소 금액" min="0" step="1000000">
+          <input type="number" id="rvMax" placeholder="최대 금액" min="0" step="1000000">
+          <select id="rvYear">
+            <option value="all">전체 기간</option>
+            <option value="2026">2026년</option>
+            <option value="2025">2025년</option>
+            <option value="2024">2024년</option>
+            <option value="2023">2023년</option>
+          </select>
+          <label class="switch sm">
+            <input type="checkbox" id="rvFavOnly">
+            <span></span><em>즐겨찾기만</em>
+          </label>
+        </div>
+        <div class="seg" role="tablist">
+          <button class="seg-btn active" data-mode="vendor">업체 랭킹</button>
+          <button class="seg-btn" data-mode="contract">계약 이력</button>
+        </div>
+        <div id="rvBody"></div>
+      </div>
+      <p class="hint">원천 DB에는 계약금액만 있고 <b>사정률·투찰금액·복수예비가격</b>은 포함되어 있지 않습니다. 없는 값을 지어내지 않고, 계약 결과만 그대로 보여줍니다.</p>
+      <div class="panel-block" id="favBlock">
+        <div class="panel-head">
+          <h2><span class="dot blue"></span> 관심 경쟁사</h2>
+          <p class="muted">☆ 로 저장한 업체입니다. 다시 누르면 해제됩니다.</p>
+        </div>
+        <div class="fav-list" id="favList"></div>
+      </div>
+    </section>
+
+    <!-- ============ 4. 발주 트렌드 ============ -->
+    <section class="view" id="view-trend">
+      <div class="page-head">
+        <div>
+          <h1>발주 캘린더 &amp; 트렌드</h1>
+          <p>3개년 실측 계약 데이터로 본 안산시 발주 리듬입니다. 얼마를, 어느 달에, 어느 부서가 쓰는지가 다음 달 준비를 정합니다.</p>
+        </div>
+      </div>
+
+      <div class="kpi-row" id="trendKpi"></div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><h2>월별 발주 (37개월)</h2><p class="muted">막대 = 계약 건수, 선 = 계약 금액(억 원)</p></div>
+          <span class="legend"><i class="lg-bar"></i>건수 <i class="lg-line"></i>금액</span>
+        </div>
+        <div class="chart" id="chartMonthly"></div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><div><h2>월(1~12월) 누적</h2><p class="muted">3개년 합산 — 연말 집중도</p></div></div>
+          <div class="chart" id="chartMoy"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h2>품목군 비중</h2><p class="muted">계약명 키워드 자동 분류(추정)</p></div></div>
+          <div class="chart" id="chartCat"></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-head"><div><h2>발주 부서 상위 10</h2><p class="muted">계약 건수 기준</p></div></div>
+          <div class="chart" id="chartDept"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h2>연도별</h2><p class="muted">건수 · 금액 · 평균 단가</p></div></div>
+          <div class="tbl-wrap">
+            <table class="tbl" id="yearTbl">
+              <thead><tr><th>연도</th><th class="r">건수</th><th class="r">금액</th><th class="r">평균</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="hint">2023·2026년은 수집 구간(2023-11~2026-11)이 일부만 포함되어 실제 연간 수치보다 적습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. 서류·알림 ============ -->
+    <section class="view" id="view-docs">
+      <div class="page-head">
+        <div>
+          <h1>조달 서류 · 알림</h1>
+          <p>늘봄상회 정보로 3종 서식을 바로 채워 인쇄(PDF)합니다. 발주기관이 별도 서식을 요구하면 그것이 우선입니다.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>사업자 정보 <em class="muted small">저장됨</em></h2><button class="btn ghost sm" id="coReset">기본값 복원</button></div>
+        <div class="form-grid">
+          <label class="field"><span>상호</span><input id="coName" type="text"></label>
+          <label class="field"><span>대표자</span><input id="coCeo" type="text"></label>
+          <label class="field"><span>사업자등록번호</span><input id="coBiz" type="text"></label>
+          <label class="field"><span>개업일</span><input id="coOpen" type="text"></label>
+          <label class="field wide"><span>주소</span><input id="coAddr" type="text"></label>
+          <label class="field"><span>연락처</span><input id="coTel" type="text"></label>
+          <label class="field"><span>이메일</span><input id="coMail" type="text" placeholder="선택"></label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="doc-tabs" role="tablist">
+          <button class="doc-tab active" data-doc="quote">① 소액수의 견적서</button>
+          <button class="doc-tab" data-doc="integrity">② 청렴계약이행서약서</button>
+          <button class="doc-tab" data-doc="pledge">③ 수의계약 각서</button>
+        </div>
+
+        <div class="doc-toolbar" id="quoteFields">
+          <label class="field"><span>공고명(건명)</span><input id="qTitle" type="text" placeholder="예: 2026년 동절기 제설도구 구입"></label>
+          <label class="field"><span>발주기관</span><input id="qOrg" type="text" value="안산시청"></label>
+          <label class="field"><span>품명</span><input id="qItem" type="text" placeholder="예: 방한장갑 (기능성)"></label>
+          <label class="field"><span>규격</span><input id="qSpec" type="text" placeholder="예: 10켤레 1세트"></label>
+          <label class="field"><span>수량</span><input id="qQty" type="number" value="1" min="0"></label>
+          <label class="field"><span>단가 (원)</span><input id="qUnit" type="number" value="0" min="0" step="100"></label>
+          <label class="field"><span>부가세</span>
+            <select id="qVat"><option value="1">포함</option><option value="0">별도</option></select>
+          </label>
+          <label class="field"><span>납기 (일)</span><input id="qDays" type="number" value="14" min="1"></label>
+        </div>
+
+        <div class="doc-total" id="docTotal"></div>
+
+        <div class="paper-wrap">
+          <div class="paper" id="paper"></div>
+        </div>
+
+        <div class="doc-actions">
+          <button class="btn primary" id="docPrint">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>
+            인쇄 / PDF 저장
+          </button>
+          <button class="btn ghost" id="docCopy">문구 복사</button>
+          <button class="btn ghost" id="docEdit">내용 수정</button>
+        </div>
+        <p class="hint">인쇄 대화상자에서 대상을 <b>PDF로 저장</b>으로 고르면 서류 파일로 남길 수 있습니다. 서명·직인은 인쇄 후 날인합니다.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><h2>알림 센터</h2><p class="muted">유료 알림톡 대신 피클 써니의 정기 워치와 파일 내보내기로 운영합니다.</p></div>
+        </div>
+        <div class="notify-grid">
+          <div class="notify-box">
+            <h2>피클 써니 정기 워치</h2>
+            <p>아래 문구를 그대로 써니에게 보내면 매일 아침 정해진 시간에 안산시 입찰공고와 발주예정을 훑어, 등록 키워드에 걸리는 <b>2,000만 원 이하 물품</b>만 골라 알려줍니다.</p>
+            <pre id="watchMsg"></pre>
+            <div class="row-actions">
+              <button class="btn primary sm" id="watchCopy">문구 복사</button>
+              <span class="muted small">키워드를 바꾸면 문구도 자동으로 바뀝니다.</span>
+            </div>
+          </div>
+          <div class="notify-box">
+            <h2>내 데이터 내보내기</h2>
+            <p>키워드·즐겨찾기·사업자정보·매칭 결과를 파일로 보관합니다. 구글시트에 붙여도 바로 표가 됩니다.</p>
+            <div class="row-actions">
+              <button class="btn ghost sm" id="expKw">키워드 CSV</button>
+              <button class="btn ghost sm" id="expMatch">매칭 발주예정 CSV</button>
+              <button class="btn ghost sm" id="expCt">계약이력 CSV</button>
+              <button class="btn ghost sm" id="expJson">전체 백업 JSON</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p><b>동곤 조달비서 PRO</b> · 개인 업무용 관제탑 · 데이터 출처: 안산시 계약과정정보공개시스템(실측 3,333건, 2026-11-07 수집) · 안산시 입찰공고 게시판</p>
+    <p class="muted small">본 화면은 실제 계약·공고 데이터를 그대로 보여줍니다. 사정률·투찰금액 등 원천에 없는 값은 표시하지 않으며, 투찰 예측기는 입력값 기반 시뮬레이션입니다. 최종 판단과 투찰 책임은 사업자에게 있습니다.</p>
+  </footer>
+</div>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2 id="modalTitle">상세</h2>
+      <button class="icon-btn" id="modalClose" aria-label="닫기">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="data.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
