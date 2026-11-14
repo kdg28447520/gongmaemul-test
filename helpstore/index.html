@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>동곤 헬프스토어 PRO — 소싱·광고·마진·상세페이지·GEO 무료 셀러 도구</title>
-<meta name="description" content="쿠팡·스마트스토어 셀러를 위한 무료·무제한 데이터 도구. 소싱 마진계산기와 6점 룰 판정, 쿠팡 광고 CSV 분석, 로켓그로스 vs 판매자배송 마진 누수 진단, 상세페이지 컷·카피 제작, GEO 최적화, 시즌 셀러 캘린더.">
+<title>동곤 헬프스토어 PRO — 실측 소싱 DB 기반 셀러 도구</title>
+<meta name="description" content="동곤 님의 실제 원천 DB(버니즈·에코앤팜·스위티푸드 단가, 성장계산기 프리셋, 도매 9선)로 마진·6점 룰을 판정하고, 쿠팡 광고·정산 CSV를 브라우저에서 직접 분석합니다. 100% 무료·서버 전송 없음.">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="동곤 헬프스토어 PRO">
-<meta property="og:description" content="소싱 판정부터 광고·마진·상세페이지·GEO까지. 100% 무료·무제한, 서버 전송 없는 브라우저 도구.">
+<meta property="og:description" content="실측 단가 DB 기반 소싱 판정·광고 분석·마진 누수·상세페이지·GEO·셀러 캘린더.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -20,7 +19,7 @@
       <div class="brand-mark">헬P</div>
       <div class="brand-name">동곤 헬프스토어<em>PRO</em></div>
     </div>
-    <div class="brand-sub">소싱부터 GEO까지 — 셀러 데이터 도구</div>
+    <div class="brand-sub">실측 단가 DB · 소싱부터 GEO까지</div>
   </div>
   <nav class="nav">
     <div class="nav-label">데이터</div>
@@ -36,24 +35,29 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M5 9h14l-1.5 11a2 2 0 0 1-2 1.8h-7A2 2 0 0 1 6.5 20L5 9Z"/><path d="M9.5 14.5c1.5 1 3.5 1 5 0"/></svg>
       <span>매출/마진 누수</span>
     </button>
-    <div class="nav-label">AI</div>
+    <div class="nav-label">AI · 검색</div>
     <button class="nav-item" data-view="studio" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="M21 15l-4.5-4.5L9 19"/></svg>
-      <span>AI 상세페이지 스튜디오</span>
+      <span>상세페이지 스튜디오</span>
     </button>
     <button class="nav-item" data-view="geo" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></svg>
-      <span>GEO 분석</span><span class="nav-tag">AI 검색</span>
+      <span>GEO 스키마 생성</span><span class="nav-tag">JSON-LD</span>
     </button>
     <button class="nav-item" data-view="niche" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 5.3L20 9.2l-4 3.7.9 5.9L12 16l-4.9 2.8.9-5.9-4-3.7 5.8-.9L12 3Z"/></svg>
       <span>틈새 키워드 &amp; 캘린더</span>
     </button>
+    <div class="nav-label">관리</div>
+    <button class="nav-item" data-view="store" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg>
+      <span>내 저장소</span><span class="nav-tag" id="navStoreCount">0</span>
+    </button>
   </nav>
   <div class="nav-foot">
     <div class="free-card">
-      <b>100% 무료 · 무제한</b>
-      <span>회원가입·체험 한도·서버 전송 없이<br>모든 계산이 브라우저에서 실행됩니다.</span>
+      <b>100% 무료 · 서버 전송 0</b>
+      <span>계산·CSV 파싱·이미지 합성·스키마 생성이 모두 브라우저에서 실행됩니다. 저장은 이 기기의 localStorage에만 남습니다.</span>
     </div>
   </div>
 </aside>
@@ -66,217 +70,163 @@
     </button>
     <div class="topbar-title">
       <h1 id="pageTitle">소싱 마진계산기</h1>
-      <p id="pageSub">원가·수수료·광고비를 넣으면 순이익과 6점 룰 판정이 바로 나옵니다.</p>
+      <p id="pageSub">실측 단가 DB에서 상품을 고르면 순이익과 6점 룰 판정이 바로 나옵니다.</p>
     </div>
     <div class="topbar-meta">
       <span class="pill free"><i class="dot"></i>무료·무제한</span>
-      <span class="pill local"><i class="dot"></i>입력값 서버 전송 0</span>
+      <span class="pill local"><i class="dot"></i>실측 DB <b id="dbCount">14</b>종</span>
     </div>
   </header>
 
   <div class="summary">
-    <div class="kpi"><span>현재 후보 판정</span><b id="sumJudge" class="brand">—</b></div>
+    <div class="kpi"><span>선택 상품 · 채널</span><b id="sumProduct" class="brand">—</b></div>
     <div class="kpi"><span>실마진율</span><b id="sumMargin">—</b></div>
-    <div class="kpi"><span>광고 ROAS / 커트라인</span><b id="sumRoas">—</b></div>
+    <div class="kpi"><span>6점 룰 (확인/전체)</span><b id="sumJudge">—</b></div>
     <div class="kpi"><span>다음 시즌 발주 마감</span><b id="sumSeason">—</b></div>
   </div>
 
   <main class="content">
 
-  <!-- ═══════════════ 1. 소싱 마진계산기 ═══════════════ -->
-  <section class="view active" id="view-sourcing-margin" data-title="소싱 마진계산기" data-sub="원가·수수료·광고비를 넣으면 순이익과 6점 룰 판정이 바로 나옵니다.">
-    <div class="preset-row">
-      <span class="preset-label">프리셋</span>
-      <button class="chip" data-preset="stanley" type="button">스탠리 풀메탈 컵홀더</button>
-      <button class="chip" data-preset="tangerine" type="button">극조생 감귤 5kg</button>
-      <button class="chip" data-preset="tray" type="button">차량용 트레이</button>
-      <button class="chip" data-preset="demo" type="button">헬프스토어 데모 (기계식 키보드)</button>
-    </div>
+  <!-- ═══════════ 1. 소싱 마진계산기 ═══════════ -->
+  <section class="view active" id="view-sourcing-margin" data-title="소싱 마진계산기" data-sub="실측 단가 DB에서 상품을 고르면 순이익과 6점 룰 판정이 바로 나옵니다.">
+    <div class="preset-row" id="presetRow"><span class="preset-label">실측 프리셋</span></div>
 
     <div class="grid-2">
       <div class="stack">
         <div class="card">
-          <div class="card-h"><h2>기본 정보</h2><span class="hint">원화 기준</span></div>
+          <div class="card-h"><h2>상품 · 채널</h2><span class="hint">DB에서 불러오면 원가·수수료 자동</span></div>
           <div class="card-b">
             <div class="field">
-              <label for="sName">상품명</label>
-              <input id="sName" type="text" value="스탠리 풀메탈 컵홀더" autocomplete="off">
+              <label for="sProduct">실측 DB 상품 <span class="q">출처 있는 값만</span></label>
+              <select id="sProduct"></select>
             </div>
             <div class="row-2" style="margin-top:10px">
-              <div class="field">
-                <label for="sCategory">카테고리</label>
-                <select id="sCategory">
-                  <option value="living">생활·주방</option>
-                  <option value="fresh">신선식품</option>
-                  <option value="car">차량용품</option>
-                  <option value="beauty">뷰티·건강</option>
-                  <option value="fashion">패션·잡화</option>
-                  <option value="digital">가전·디지털</option>
-                  <option value="pet">반려동물</option>
-                  <option value="hobby">취미·캠핑</option>
+              <div class="field"><label for="sName">상품명</label><input id="sName" type="text" autocomplete="off"></div>
+              <div class="field"><label for="sChannel">판매 채널</label>
+                <select id="sChannel">
+                  <option value="rocket">로켓그로스 (CFS 입출고)</option>
+                  <option value="direct">위탁·산지직송 (배송 포함 공급가)</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="sPrice">판매가</label>
-                <div class="unit"><input id="sPrice" type="number" value="39000" min="0" step="500"><i>원</i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-h"><h2>원가 구조</h2><span class="hint">중국 소싱 기준</span></div>
-          <div class="card-b">
-            <div class="row-2">
-              <div class="field">
-                <label for="sCur">원가 통화</label>
-                <select id="sCur"><option value="CNY">위안 (CNY)</option><option value="KRW">원화 (KRW)</option></select>
-              </div>
-              <div class="field">
-                <label for="sCost">상품 원가</label>
-                <div class="unit"><input id="sCost" type="number" value="32" min="0" step="0.1"><i id="costUnit">CNY</i></div>
-              </div>
             </div>
             <div class="row-2" style="margin-top:10px">
-              <div class="field">
-                <label for="sRate">적용 환율 <span class="q">1 CNY = ?</span></label>
-                <div class="unit"><input id="sRate" type="number" value="195" min="0" step="1"><i>원</i></div>
-              </div>
-              <div class="field">
-                <label for="sShip">해외배송비 <span class="q">건당</span></label>
-                <div class="unit"><input id="sShip" type="number" value="4800" min="0" step="100"><i>원</i></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-h"><h2>비용 구조</h2><span class="hint">기본값은 참고치</span></div>
-          <div class="card-b">
-            <div class="row-3">
-              <div class="field">
-                <label for="sFee">카테고리 수수료</label>
-                <div class="unit"><input id="sFee" type="number" value="10.8" min="0" max="40" step="0.1"><i>%</i></div>
-              </div>
-              <div class="field">
-                <label for="sAd">광고 ACoS</label>
-                <div class="unit"><input id="sAd" type="number" value="12" min="0" max="80" step="0.5"><i>%</i></div>
-              </div>
-              <div class="field">
-                <label for="sReturn">반품률</label>
-                <div class="unit"><input id="sReturn" type="number" value="3" min="0" max="60" step="0.5"><i>%</i></div>
-              </div>
-            </div>
-            <p class="note" style="margin-top:10px">반품 1건당 손실은 <b>원가 + 해외배송비 + 처리비 5,000원</b>(재판매 불가 가정)으로 잡습니다. 실제 반품 정책에 맞춰 반품률만 조정하세요.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-h"><h2>시장 데이터 <span class="badge brand">6점 룰</span></h2></div>
-          <div class="card-b">
-            <div class="row-2">
-              <div class="field">
-                <label for="sSearch">월 최대 검색량 <span class="q">주력 키워드</span></label>
-                <div class="unit"><input id="sSearch" type="number" value="9500" min="0" step="100"><i>회</i></div>
-              </div>
-              <div class="field">
-                <label for="sAdShare">경쟁 광고 비중</label>
-                <div class="unit"><input id="sAdShare" type="number" value="25" min="0" max="100" step="0.1"><i>%</i></div>
-              </div>
+              <div class="field"><label for="sFeeCat">카테고리 수수료</label><select id="sFeeCat"></select></div>
+              <div class="field"><label for="sPrice">판매가</label><div class="unit"><input id="sPrice" type="number" min="0" step="100"><i>원</i></div></div>
             </div>
             <div class="row-2" style="margin-top:10px">
-              <div class="field">
-                <label for="sVariety">가격대 다양성</label>
+              <div class="field"><label for="sSupply">매입 원가 <span class="q">랜딩·배송 포함</span></label><div class="unit"><input id="sSupply" type="number" min="0" step="100"><i>원</i></div></div>
+              <div class="field"><label for="sCfs">CFS 입출고·배송 <span class="q">규격 자동</span></label><div class="unit"><input id="sCfs" type="number" min="0" step="50"><i>원</i></div></div>
+            </div>
+            <div class="row-2" style="margin-top:10px">
+              <div class="field"><label for="sDims">규격 <span class="q">가로×세로×높이·무게</span></label><input id="sDims" type="text" placeholder="예: 150×150×200mm · 450g"></div>
+              <div class="field"><label for="sCfsName">CFS 등급</label><input id="sCfsName" type="text" readonly></div>
+            </div>
+            <p class="note" id="sSourceNote" style="margin-top:10px"></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>광고 · 반품</h2><span class="hint">근거 없으면 비워 두세요</span></div>
+          <div class="card-b">
+            <div class="row-2">
+              <div class="field"><label for="sAd">광고 ACoS</label><div class="unit"><input id="sAd" type="number" min="0" max="80" step="0.1" placeholder="미입력"><i>%</i></div></div>
+              <div class="field"><label for="sRet">반품률</label><div class="unit"><input id="sRet" type="number" min="0" max="60" step="0.1" placeholder="미입력"><i>%</i></div></div>
+            </div>
+            <p class="note" style="margin-top:10px">동곤 님의 실제 광고·반품 실적이 아직 DB에 없습니다. 비우면 0으로 계산하고, 위 판정에 <b>‘광고·반품 미반영’</b>으로 표시합니다. 실제 수치를 넣으면 그대로 재계산됩니다.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>시장 데이터 <span class="badge brand">6점 룰</span></h2><span class="hint">모르면 ‘미확인’</span></div>
+          <div class="card-b">
+            <div class="row-2">
+              <div class="field"><label for="sDemand">네이버 데이터랩 지수 <span class="q">0~100</span></label><div class="unit"><input id="sDemand" type="number" min="0" max="100" step="0.1" placeholder="미확인"><i>지수</i></div></div>
+              <div class="field"><label for="sAdShare">경쟁 광고 비중</label><div class="unit"><input id="sAdShare" type="number" min="0" max="100" step="0.1" placeholder="미확인"><i>%</i></div></div>
+            </div>
+            <div class="row-2" style="margin-top:10px">
+              <div class="field"><label for="sVariety">가격대 다양성</label>
                 <select id="sVariety">
-                  <option value="single">단일 (한 가격대뿐)</option>
-                  <option value="medium">보통 (2~3개 가격대)</option>
-                  <option value="wide" selected>다양 (4개 이상)</option>
+                  <option value="">미확인</option>
+                  <option value="single">단일 가격대</option>
+                  <option value="medium">2~3개 가격대</option>
+                  <option value="wide">4개 이상 (빈틈 존재)</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="sReviews">상위 경쟁 리뷰 수</label>
-                <div class="unit"><input id="sReviews" type="number" value="400" min="0" step="10"><i>개</i></div>
-              </div>
+              <div class="field"><label for="sReviews">상위 경쟁 리뷰 수</label><div class="unit"><input id="sReviews" type="number" min="0" step="10" placeholder="미확인"><i>개</i></div></div>
             </div>
-            <div class="row-2" style="margin-top:10px">
-              <div class="field">
-                <label for="sTrend">트렌드 방향</label>
-                <select id="sTrend">
-                  <option value="up" selected>상승</option>
-                  <option value="flat">보합</option>
-                  <option value="down">하락</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="sMonth">판매 목표 시즌</label>
-                <select id="sMonth">
-                  <option value="auto" selected>자동 (카테고리 기준)</option>
-                  <option value="1">1~2월 설</option>
-                  <option value="3">3월 신학기·화이트데이</option>
-                  <option value="5">5월 가정의 달</option>
-                  <option value="7">7~8월 바캉스</option>
-                  <option value="9">9~10월 추석</option>
-                  <option value="11">11월 블프·수능</option>
-                  <option value="12">12월 연말</option>
-                </select>
-              </div>
+            <div class="field" style="margin-top:10px"><label for="sTrend">트렌드 방향</label>
+              <select id="sTrend">
+                <option value="">미확인</option>
+                <option value="up">상승</option>
+                <option value="flat">보합</option>
+                <option value="down">하락</option>
+              </select>
             </div>
-            <p class="note" style="margin-top:10px">검색량·광고 비중은 쿠팡 광고 콘솔·키워드 도구에서 확인한 값을 그대로 넣으세요. 비워 두면 0으로 계산되어 불리하게 판정됩니다.</p>
+            <p class="note" style="margin-top:10px">3개 항목(광고 비중·가격대·리뷰)은 쿠팡 검색 화면에서 직접 확인해야 합니다. 미확인 항목은 점수에서 빼고, 몇 개를 확인하면 판정이 확정되는지 알려 드립니다.</p>
           </div>
+        </div>
+
+        <div class="strip">
+          <button class="btn primary" id="btnSaveProduct" type="button">이 판정 저장</button>
+          <button class="btn" id="btnResetProduct" type="button">DB 값으로 되돌리기</button>
         </div>
       </div>
 
-      <div class="card" id="sourcingResult">
+      <div class="card">
         <div class="verdict">
           <div class="verdict-top">
-            <span class="badge warn" id="rJudgeBadge">보류</span>
-            <span class="badge gray" id="rJudgeSub">룰 엔진</span>
-            <span class="score">합산 <b id="rScore">0</b> / 6점</span>
+            <span class="badge warn" id="rBadge">대기</span>
+            <span class="badge gray" id="rSub">룰 엔진</span>
+            <span class="score">확인 <b id="rConfirmed">0</b> / 6</span>
           </div>
-          <p class="verdict-line" id="rOneLine">값을 입력하면 한 줄 판정이 나옵니다.</p>
+          <p class="verdict-line" id="rOneLine">상품을 고르면 판정이 나옵니다.</p>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-cell"><span>건당 순이익</span><b id="rNet">—</b><small id="rNetSub">광고·반품 포함</small></div>
+          <div class="kpi-cell"><span>건당 순이익</span><b id="rNet">—</b><small id="rNetSub">수수료·CFS 반영</small></div>
           <div class="kpi-cell"><span>실마진율</span><b id="rMargin">—</b><small>판매가 대비</small></div>
           <div class="kpi-cell"><span>BEP ROAS</span><b id="rBep">—</b><small>광고 손익분기</small></div>
           <div class="kpi-cell"><span>손익분기 판매가</span><b id="rBepPrice">—</b><small>순이익 0 기준</small></div>
         </div>
         <div class="sec">
-          <h3>판매가 분해 <span class="mini" id="rPriceNote">39,000원</span></h3>
+          <h3>판매가 분해 <span class="mini" id="rPriceNote"></span></h3>
           <div class="bar" id="rBar"></div>
           <div class="legend" id="rLegend"></div>
         </div>
         <div class="sec">
-          <h3>6점 룰 판정 근거 <span class="right badge gray" id="rRuleScore">0 / 6</span></h3>
+          <h3>6점 룰 판정 근거 <span class="right"><span class="badge gray" id="rRuleScore">0 / 6</span></span></h3>
           <div class="tbl-wrap">
             <table class="tbl">
-              <thead><tr><th>항목</th><th>수치</th><th>평가</th><th class="num">점수</th></tr></thead>
+              <thead><tr><th>항목</th><th>수치</th><th>판정</th><th class="num">점수</th></tr></thead>
               <tbody id="rRuleBody"></tbody>
             </table>
           </div>
         </div>
         <div class="sec">
-          <h3>경쟁 리뷰에서 드러나는 빈틈 <span class="mini">3대 개선점</span></h3>
+          <h3>경쟁 리뷰 빈틈 <span class="mini">실제 리뷰 불만 유형</span></h3>
           <ul class="blist" id="rGaps"></ul>
         </div>
         <div class="sec">
-          <h3>시즌 타이밍 <span class="mini">피크 2~3주 전 발주 역산</span></h3>
+          <h3>다음 시즌 발주 역산</h3>
           <div id="rSeason"></div>
         </div>
         <div class="sec">
-          <h3>타겟 메모</h3>
-          <div id="rTarget" class="note"></div>
+          <h3>데이터 출처</h3>
+          <div id="rSource" class="note"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ 2. 쿠팡 AI 광고 분석 ═══════════════ -->
-  <section class="view" id="view-ad-analyze" data-title="쿠팡 AI 광고 분석" data-sub="광고 보고서 CSV를 넣으면 끌 키워드·지킬 키워드를 갈라 드립니다.">
+  <!-- ═══════════ 2. 광고 분석 ═══════════ -->
+  <section class="view" id="view-ad-analyze" data-title="쿠팡 AI 광고 분석" data-sub="내 쿠팡 광고 보고서 CSV를 넣으면 끌 키워드·지킬 키워드가 갈립니다.">
+    <div class="callout info" style="margin-bottom:14px">
+      <b>실데이터 전용 화면입니다.</b> 예시 키워드·매출을 미리 깔지 않았습니다. 쿠팡 광고센터에서 내려받은 보고서를 올리면 그 숫자로만 계산하고, 올리기 전에는 아래 ‘예상 손익 시뮬레이터’로 내 상품의 손익분기 CPC만 계산합니다.
+    </div>
+
     <div class="grid-2">
       <div class="stack">
         <div class="card">
-          <div class="card-h"><h2>목표 설정</h2><span class="hint">커트라인 = 손익분기</span></div>
+          <div class="card-h"><h2>목표 설정</h2><span class="hint">커트라인 = 광고 포함 손익분기</span></div>
           <div class="card-b">
             <div class="slider-row">
               <div class="lab"><span>목표 ROAS</span><b id="aGoalVal">365%</b></div>
@@ -287,9 +237,9 @@
               <input type="range" id="aCut" min="100" max="900" step="5" value="440">
             </div>
             <div class="strip" style="margin-top:12px">
-              <button class="btn sm ghost" id="aCutFromMargin" type="button">소싱 마진율로 커트라인 자동 계산</button>
+              <button class="btn sm ghost" id="aCutFromMargin" type="button">선택 상품 마진으로 커트라인 계산</button>
             </div>
-            <p class="note" style="margin-top:8px">커트라인은 <b>광고비 포함 손익분기 ROAS</b>입니다. 소싱 계산기의 실마진율을 쓰면 커트라인 = 100 ÷ 마진율이 됩니다.</p>
+            <p class="note" style="margin-top:8px">커트라인 = 100 ÷ 실마진율. 결제 수수료·CFS가 반영된 소싱 계산기 마진을 그대로 씁니다.</p>
           </div>
         </div>
 
@@ -299,16 +249,16 @@
             <div class="drop" id="aDrop">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></svg>
               <b>파일을 끌어다 놓거나 클릭</b>
-              <span>쿠팡 광고센터에서 내려받은 보고서 그대로</span>
+              <span>쿠팡 광고센터 보고서 원본 (CSV·TSV)</span>
               <input type="file" id="aFile" accept=".csv,.tsv,.txt" class="hidden">
             </div>
             <div class="field" style="margin-top:12px">
-              <label for="aPaste">또는 표를 그대로 붙여넣기 <span class="q">엑셀 복사 가능</span></label>
-              <textarea id="aPaste" placeholder="키워드&#9;노출수&#9;클릭수&#9;광고비&#9;주문수&#9;전환매출&#10;기계식 키보드&#9;12000&#9;90&#9;9800&#9;1&#9;39000"></textarea>
+              <label for="aPaste">또는 표를 그대로 붙여넣기</label>
+              <textarea id="aPaste" placeholder="키워드&#9;노출수&#9;클릭수&#9;광고비&#9;주문수&#9;전환매출"></textarea>
             </div>
             <div class="strip" style="margin-top:10px">
               <button class="btn primary" id="aRun" type="button">분석 실행</button>
-              <button class="btn" id="aSample" type="button">샘플 데이터 로드</button>
+              <button class="btn" id="aTemplate" type="button">CSV 머리글 넣기</button>
               <button class="btn ghost" id="aClear" type="button">초기화</button>
             </div>
             <p class="note" id="aStatus" style="margin-top:10px">인식된 컬럼: — / 0행</p>
@@ -316,10 +266,24 @@
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>부정키워드</h2></div>
+          <div class="card-h"><h2>예상 손익 시뮬레이터</h2><span class="hint">내 상품 마진 × 내 광고 조건</span></div>
           <div class="card-b">
-            <p class="note" style="margin-bottom:8px">끌 키워드로 분류된 목록입니다. 쿠팡 광고센터 부정키워드에 그대로 붙여넣으세요.</p>
-            <div class="codebox copyable" id="aNegList">분석을 실행하면 여기에 표시됩니다.</div>
+            <p class="note" style="margin-bottom:10px">보고서를 올리기 전, 선택 상품의 실마진으로 <b>손익분기 CPC·CPA</b>를 계산합니다. 클릭·전환 수치는 내 보고서에서 확인한 값을 넣으세요.</p>
+            <div class="row-3">
+              <div class="field"><label for="simCost">월 광고비</label><div class="unit"><input id="simCost" type="number" min="0" step="1000" placeholder="예: 300000"><i>원</i></div></div>
+              <div class="field"><label for="simCpc">평균 CPC</label><div class="unit"><input id="simCpc" type="number" min="0" step="10" placeholder="예: 180"><i>원</i></div></div>
+              <div class="field"><label for="simCvr">전환율</label><div class="unit"><input id="simCvr" type="number" min="0" step="0.1" placeholder="예: 1.5"><i>%</i></div></div>
+            </div>
+            <div class="tbl-wrap" style="margin-top:12px">
+              <table class="tbl"><tbody id="simOut"><tr><td class="note">값을 넣으면 계산됩니다.</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>부정키워드</h2><span class="hint">분석 결과에서만</span></div>
+          <div class="card-b">
+            <div class="codebox copyable" id="aNegList">보고서를 분석하면 여기에 표시됩니다.</div>
             <button class="btn sm" id="aNegCopy" type="button" style="margin-top:8px">목록 복사</button>
           </div>
         </div>
@@ -328,23 +292,19 @@
       <div class="stack">
         <div class="card">
           <div class="card-h"><h2>캠페인 종합 진단</h2><span class="right badge gray" id="aDiagBadge">대기</span></div>
-          <div class="card-b" id="aDiagWrap">
+          <div class="card-b">
             <div class="tbl-wrap">
-              <table class="tbl">
-                <tbody id="aDiagBody">
-                  <tr><td class="note">샘플 데이터를 불러오거나 보고서를 넣고 분석을 실행하세요.</td></tr>
-                </tbody>
-              </table>
+              <table class="tbl"><tbody id="aDiagBody">
+                <tr><td class="note">보고서를 올리고 분석을 실행하세요.</td></tr>
+              </tbody></table>
             </div>
-            <div class="callout info" id="aDiagNote" style="margin-top:12px">분석 전입니다.</div>
+            <div class="callout info" id="aDiagNote" style="margin-top:12px">분석 전입니다. 업로드한 광고 보고서만으로 진단합니다.</div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>이번 주 우선순위 액션 3가지</h2></div>
-          <div class="card-b">
-            <ol class="olist" id="aActions"><li class="note">분석을 실행하면 데이터에 맞춰 자동 생성됩니다.</li></ol>
-          </div>
+          <div class="card-h"><h2>우선순위 액션 3가지</h2></div>
+          <div class="card-b"><ol class="olist" id="aActions"><li class="note">분석 후 데이터에 맞춰 생성됩니다.</li></ol></div>
         </div>
 
         <div class="card">
@@ -362,62 +322,63 @@
             </table>
           </div>
         </div>
+        <div class="strip"><button class="btn" id="btnSaveAd" type="button">이 분석 저장</button></div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ 3. 매출/마진 누수 ═══════════════ -->
-  <section class="view" id="view-margin-leak" data-title="매출/마진 누수 분석" data-sub="로켓그로스 vs 판매자배송, 어디서 마진이 새는지 1:1로 봅니다.">
+  <!-- ═══════════ 3. 마진 누수 ═══════════ -->
+  <section class="view" id="view-margin-leak" data-title="매출/마진 누수 분석" data-sub="같은 상품을 로켓그로스와 판매자배송으로 놓고 비용 항목을 1:1로 비교합니다.">
     <div class="card">
       <div class="tabs" id="mlTabs">
-        <button class="active" data-mltab="compare" type="button">배송유형 1:1 대조</button>
+        <button class="active" data-mltab="compare" type="button">채널 1:1 대조</button>
         <button data-mltab="csv" type="button">정산 CSV 진단</button>
       </div>
+
       <div class="card-b" id="mlPaneCompare">
         <div class="grid-2">
           <div class="stack">
             <div class="card" style="box-shadow:none">
-              <div class="card-h"><h2>공통 조건</h2><span class="hint">같은 상품</span></div>
+              <div class="card-h"><h2>공통 조건</h2><span class="hint">실측 DB에서 불러오기</span></div>
               <div class="card-b">
-                <div class="field"><label for="mlName">상품명</label><input id="mlName" type="text" value="스테인리스 텀블러 900ml" autocomplete="off"></div>
+                <div class="field"><label for="mlProduct">실측 DB 상품</label><select id="mlProduct"></select></div>
                 <div class="row-3" style="margin-top:10px">
-                  <div class="field"><label for="mlPrice">판매가</label><div class="unit"><input id="mlPrice" type="number" value="25900" step="500" min="0"><i>원</i></div></div>
-                  <div class="field"><label for="mlCost">원가</label><div class="unit"><input id="mlCost" type="number" value="7800" step="100" min="0"><i>원</i></div></div>
-                  <div class="field"><label for="mlQty">월 판매량</label><div class="unit"><input id="mlQty" type="number" value="500" step="10" min="0"><i>개</i></div></div>
+                  <div class="field"><label for="mlPrice">판매가</label><div class="unit"><input id="mlPrice" type="number" min="0" step="100"><i>원</i></div></div>
+                  <div class="field"><label for="mlSupply">매입 원가</label><div class="unit"><input id="mlSupply" type="number" min="0" step="100"><i>원</i></div></div>
+                  <div class="field"><label for="mlQty">비교 수량</label><div class="unit"><input id="mlQty" type="number" min="1" step="10" value="100"><i>개</i></div></div>
                 </div>
+                <div class="field" style="margin-top:10px"><label for="mlFee">카테고리 수수료</label><div class="unit"><input id="mlFee" type="number" min="0" step="0.01"><i>%</i></div></div>
               </div>
             </div>
+
             <div class="card" style="box-shadow:none">
-              <div class="card-h"><h2>로켓그로스</h2><span class="hint">쿠팡 위탁</span></div>
+              <div class="card-h"><h2>로켓그로스</h2><span class="hint">CFS 요금표 기준</span></div>
               <div class="card-b">
                 <div class="row-2">
-                  <div class="field"><label for="mlRgFee">수수료율</label><div class="unit"><input id="mlRgFee" type="number" value="10.8" step="0.1" min="0"><i>%</i></div></div>
-                  <div class="field"><label for="mlRgLogi">건당 물류·배송비</label><div class="unit"><input id="mlRgLogi" type="number" value="3196" step="50" min="0"><i>원</i></div></div>
+                  <div class="field"><label for="mlRgLogi">건당 CFS 입출고·배송</label><div class="unit"><input id="mlRgLogi" type="number" min="0" step="50"><i>원</i></div></div>
+                  <div class="field"><label for="mlRgInout">월 보관·입출고 고정비</label><div class="unit"><input id="mlRgInout" type="number" min="0" step="1000" placeholder="미입력"><i>원</i></div></div>
                 </div>
-                <div class="row-2" style="margin-top:10px">
-                  <div class="field"><label for="mlRgInout">월 입출고·보관비</label><div class="unit"><input id="mlRgInout" type="number" value="380000" step="10000" min="0"><i>원</i></div></div>
-                  <div class="field"><label for="mlRgAd">월 광고비</label><div class="unit"><input id="mlRgAd" type="number" value="820000" step="10000" min="0"><i>원</i></div></div>
-                </div>
+                <div class="field" style="margin-top:10px"><label for="mlRgAd">월 광고비</label><div class="unit"><input id="mlRgAd" type="number" min="0" step="1000" placeholder="내 광고센터 실지출"><i>원</i></div></div>
+                <p class="note" style="margin-top:8px">CFS 요금은 growth-calc 요금표(극소형 1,950 ~ 특대형 5,900원)에서 규격으로 자동 선택됩니다. 보관료·광고비는 실적이 없어 비워 두었습니다.</p>
               </div>
             </div>
+
             <div class="card" style="box-shadow:none">
-              <div class="card-h"><h2>판매자배송 (윙)</h2><span class="hint">직접 출고</span></div>
+              <div class="card-h"><h2>판매자배송 (윙)</h2><span class="hint">계약 단가 직접 입력</span></div>
               <div class="card-b">
                 <div class="row-2">
-                  <div class="field"><label for="mlWingFee">수수료율</label><div class="unit"><input id="mlWingFee" type="number" value="10.8" step="0.1" min="0"><i>%</i></div></div>
-                  <div class="field"><label for="mlWingShip">건당 택배비</label><div class="unit"><input id="mlWingShip" type="number" value="2450" step="50" min="0"><i>원</i></div></div>
+                  <div class="field"><label for="mlWingShip">건당 택배비</label><div class="unit"><input id="mlWingShip" type="number" min="0" step="50" placeholder="계약 단가"><i>원</i></div></div>
+                  <div class="field"><label for="mlWingPack">건당 포장·부자재</label><div class="unit"><input id="mlWingPack" type="number" min="0" step="10" placeholder="미입력"><i>원</i></div></div>
                 </div>
-                <div class="row-2" style="margin-top:10px">
-                  <div class="field"><label for="mlWingPack">건당 포장·부자재</label><div class="unit"><input id="mlWingPack" type="number" value="320" step="10" min="0"><i>원</i></div></div>
-                  <div class="field"><label for="mlWingAd">월 광고비</label><div class="unit"><input id="mlWingAd" type="number" value="310000" step="10000" min="0"><i>원</i></div></div>
-                </div>
+                <div class="field" style="margin-top:10px"><label for="mlWingAd">월 광고비</label><div class="unit"><input id="mlWingAd" type="number" min="0" step="1000" placeholder="내 광고센터 실지출"><i>원</i></div></div>
+                <p class="note" style="margin-top:8px">택배 계약 단가가 DB에 없어 비워 두었습니다. 입력 전에는 비교하지 않습니다.</p>
               </div>
             </div>
           </div>
 
           <div class="stack">
             <div class="card">
-              <div class="card-h"><h2>채널별 손익</h2><span class="right badge gray" id="mlVerdict">계산 중</span></div>
+              <div class="card-h"><h2>채널별 손익</h2><span class="right badge gray" id="mlVerdict">대기</span></div>
               <div class="tbl-wrap">
                 <table class="tbl">
                   <thead><tr><th>항목</th><th class="num">로켓그로스</th><th class="num">판매자배송</th><th class="num">차이</th></tr></thead>
@@ -426,11 +387,11 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-h"><h2>마진이 새는 항목</h2><span class="hint">%p 기준</span></div>
+              <div class="card-h"><h2>마진이 새는 항목</h2><span class="hint">수량 기준</span></div>
               <div class="card-b">
                 <div class="tbl-wrap">
                   <table class="tbl">
-                    <thead><tr><th>항목</th><th class="num">로켓그로스</th><th class="num">판매자배송</th><th class="num">손실</th></tr></thead>
+                    <thead><tr><th>항목</th><th class="num">로켓그로스</th><th class="num">판매자배송</th><th class="num">차이</th></tr></thead>
                     <tbody id="mlLossBody"></tbody>
                   </table>
                 </div>
@@ -439,27 +400,29 @@
             </div>
             <div class="card">
               <div class="card-h"><h2>즉시 할 일</h2></div>
-              <div class="card-b"><ol class="olist" id="mlActions"><li class="note">계산 후 자동 생성됩니다.</li></ol></div>
+              <div class="card-b"><ol class="olist" id="mlActions"><li class="note">계산 후 생성됩니다.</li></ol></div>
             </div>
+            <div class="strip"><button class="btn" id="btnSaveLeak" type="button">이 진단 저장</button></div>
           </div>
         </div>
       </div>
 
       <div class="card-b hidden" id="mlPaneCsv">
+        <div class="callout info" style="margin-bottom:12px">쿠팡 정산서(또는 윙 주문 정산 CSV)를 그대로 붙여넣으면 상품별 진짜 마진을 계산합니다. 예시 매출은 넣지 않았습니다.</div>
         <div class="grid-2">
           <div class="card" style="box-shadow:none">
-            <div class="card-h"><h2>판매 정산 데이터</h2><span class="hint">CSV · 붙여넣기</span></div>
+            <div class="card-h"><h2>정산 데이터</h2><span class="hint">CSV · 붙여넣기</span></div>
             <div class="card-b">
               <div class="field">
-                <label for="mlCsv">정산 내역 붙여넣기 <span class="q">상품명·배송유형·판매가·수량·매출·수수료·물류비·광고비·원가</span></label>
+                <label for="mlCsv">정산 내역 <span class="q">상품명·배송유형·판매가·수량·매출·수수료·물류비·광고비·원가</span></label>
                 <textarea id="mlCsv" rows="10" placeholder="상품명,배송유형,판매가,수량,매출,수수료,물류비,광고비,원가"></textarea>
               </div>
               <div class="strip" style="margin-top:10px">
                 <button class="btn primary" id="mlCsvRun" type="button">진단 실행</button>
-                <button class="btn" id="mlCsvSample" type="button">샘플 정산 로드</button>
+                <button class="btn" id="mlCsvTemplate" type="button">머리글 넣기</button>
                 <button class="btn ghost" id="mlCsvClear" type="button">지우기</button>
               </div>
-              <p class="note" style="margin-top:10px">컬럼 이름이 조금 달라도 자동 인식합니다. 광고비·물류비가 비어 있으면 0으로 계산합니다.</p>
+              <p class="note" style="margin-top:10px">컬럼 이름이 조금 달라도 자동 인식합니다. 광고비·물류비가 비면 0으로 계산하고 그 사실을 표시합니다.</p>
             </div>
           </div>
           <div class="stack">
@@ -468,7 +431,7 @@
               <div class="tbl-wrap">
                 <table class="tbl">
                   <thead><tr><th>상품</th><th>배송</th><th class="num">매출</th><th class="num">비용</th><th class="num">순이익</th><th class="num">마진율</th></tr></thead>
-                  <tbody id="mlCsvBody"><tr><td colspan="6" class="note">샘플을 불러오거나 정산 데이터를 붙여넣으세요.</td></tr></tbody>
+                  <tbody id="mlCsvBody"><tr><td colspan="6" class="note">정산 데이터를 붙여넣으세요.</td></tr></tbody>
                 </table>
               </div>
             </div>
@@ -476,7 +439,7 @@
               <div class="card-h"><h2>누수 진단 &amp; 즉시 할 일</h2></div>
               <div class="card-b">
                 <div class="callout warn" id="mlCsvSummary" style="margin-bottom:10px">진단 전입니다.</div>
-                <ol class="olist" id="mlCsvActions"><li class="note">진단 후 자동 생성됩니다.</li></ol>
+                <ol class="olist" id="mlCsvActions"><li class="note">진단 후 생성됩니다.</li></ol>
               </div>
             </div>
           </div>
@@ -485,8 +448,8 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 4. 상세페이지 스튜디오 ═══════════════ -->
-  <section class="view" id="view-studio" data-title="AI 상세페이지 스튜디오" data-sub="누끼 한 장으로 연출 컷을 만들고 4단 카피를 뽑습니다.">
+  <!-- ═══════════ 4. 스튜디오 ═══════════ -->
+  <section class="view" id="view-studio" data-title="상세페이지 스튜디오" data-sub="실제 상품 이미지를 올려 연출 컷을 만들고 4단 카피를 뽑습니다.">
     <div class="grid-2">
       <div class="stack">
         <div class="card">
@@ -498,10 +461,8 @@
               <span>JPG · PNG · WebP · 브라우저 안에서만 처리</span>
               <input type="file" id="stFile" accept="image/*" class="hidden">
             </div>
-            <p class="note" style="margin-top:8px" id="stFileNote">파일을 올리지 않아도 아래 버튼으로 예시 연출을 바로 확인할 수 있습니다.</p>
-            <div class="strip" style="margin-top:8px">
-              <button class="btn sm" id="stDemoImg" type="button">예시 제품 이미지 넣기</button>
-            </div>
+            <p class="note" style="margin-top:8px" id="stFileNote">이미지 없이 배경·프레임·카피 레이아웃만 먼저 확인할 수 있습니다.</p>
+            <div class="strip" style="margin-top:8px"><button class="btn sm" id="stDemoImg" type="button">도형 예시로 배치 확인</button></div>
           </div>
         </div>
 
@@ -519,47 +480,26 @@
               </div>
             </div>
             <div class="row-2" style="margin-top:12px">
-              <div class="field">
-                <label for="stFormat">규격</label>
+              <div class="field"><label for="stFormat">규격</label>
                 <select id="stFormat">
                   <option value="square" selected>연출 컷 · 1080×1080</option>
                   <option value="story">카드뉴스 컷 · 1080×1350</option>
                 </select>
               </div>
-              <div class="field">
-                <label for="stFrame">프레임</label>
-                <select id="stFrame">
-                  <option value="none" selected>없음</option>
-                  <option value="thin">씬 라인</option>
-                  <option value="gold">프리미엄 골드</option>
-                </select>
+              <div class="field"><label for="stFrame">프레임</label>
+                <select id="stFrame"><option value="none" selected>없음</option><option value="thin">씬 라인</option><option value="gold">프리미엄 골드</option></select>
               </div>
             </div>
             <div class="row-2" style="margin-top:10px">
-              <div class="field">
-                <label for="stBadge">배지</label>
-                <select id="stBadge">
-                  <option value="무료배송" selected>무료배송</option>
-                  <option value="당일출고">당일출고</option>
-                  <option value="베스트">베스트</option>
-                  <option value="한정수량">한정수량</option>
-                  <option value="">없음</option>
-                </select>
+              <div class="field"><label for="stBadge">배지</label>
+                <select id="stBadge"><option value="무료배송" selected>무료배송</option><option value="당일출고">당일출고</option><option value="산지직송">산지직송</option><option value="한정수량">한정수량</option><option value="">없음</option></select>
               </div>
               <div class="field" style="justify-content:flex-end">
-                <label style="cursor:pointer;display:flex;align-items:center;gap:6px;padding-bottom:9px">
-                  <input type="checkbox" id="stShadow" checked style="accent-color:#4f46e5"> 바닥 그림자
-                </label>
+                <label style="cursor:pointer;display:flex;align-items:center;gap:6px;padding-bottom:9px"><input type="checkbox" id="stShadow" checked style="accent-color:#4f46e5"> 바닥 그림자</label>
               </div>
             </div>
-            <div class="field" style="margin-top:10px">
-              <label for="stHeadline">메인 헤드라인</label>
-              <input id="stHeadline" type="text" value="차가운 음료가 닿으면 얼굴빛이 달라지는 소주잔" autocomplete="off">
-            </div>
-            <div class="field" style="margin-top:10px">
-              <label for="stSubline">서브 문구</label>
-              <input id="stSubline" type="text" value="4개 세트 · 선물 포장 포함" autocomplete="off">
-            </div>
+            <div class="field" style="margin-top:10px"><label for="stHeadline">메인 헤드라인</label><input id="stHeadline" type="text" autocomplete="off"></div>
+            <div class="field" style="margin-top:10px"><label for="stSubline">서브 문구</label><input id="stSubline" type="text" autocomplete="off"></div>
             <div class="strip" style="margin-top:12px">
               <button class="btn primary" id="stDownload" type="button">PNG 다운로드</button>
               <button class="btn" id="stRender" type="button">미리보기 갱신</button>
@@ -572,25 +512,19 @@
       <div class="stack">
         <div class="card">
           <div class="card-h"><h2>연출 컷 미리보기</h2><span class="right badge brand" id="stSize">1080×1080</span></div>
-          <div class="card-b">
-            <div class="canvas-wrap">
-              <canvas id="stCanvas" width="1080" height="1080"></canvas>
-            </div>
-          </div>
+          <div class="card-b"><div class="canvas-wrap"><canvas id="stCanvas" width="1080" height="1080"></canvas></div></div>
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>4단 상세페이지 카피</h2><span class="right"><span class="badge gray">헬프스토어 4단 구조</span></span></div>
+          <div class="card-h"><h2>4단 상세페이지 카피</h2><span class="right badge gray">헬프스토어 4단 구조</span></div>
           <div class="card-b">
             <div class="row-2">
-              <div class="field"><label for="cName">제품명</label><input id="cName" type="text" value="김홍도 변색 술잔 4p" autocomplete="off"></div>
-              <div class="field"><label for="cTarget">타겟</label><input id="cTarget" type="text" value="40~50대 홈술·모임족" autocomplete="off"></div>
+              <div class="field"><label for="cName">제품명</label><input id="cName" type="text" autocomplete="off"></div>
+              <div class="field"><label for="cTarget">타겟</label><input id="cTarget" type="text" autocomplete="off"></div>
             </div>
             <div class="field" style="margin-top:10px">
               <label for="cPoints">핵심 특장점 <span class="q">줄바꿈 또는 쉼표</span></label>
-              <textarea id="cPoints" rows="4">차가운 음료가 닿으면 네 인물의 얼굴빛이 달라짐
-4개 한 세트, 4칸 분리형 내부 완충재 포장
-발색·세척 방법 안내 카드 1매 동봉</textarea>
+              <textarea id="cPoints" rows="4"></textarea>
             </div>
             <div class="strip" style="margin-top:10px">
               <button class="btn primary" id="cGen" type="button">카피 생성</button>
@@ -603,123 +537,175 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 5. GEO 분석 ═══════════════ -->
-  <section class="view" id="view-geo" data-title="GEO 분석" data-sub="ChatGPT·Claude·Perplexity·Gemini 답변에 브랜드가 인용되도록 준비합니다.">
+  <!-- ═══════════ 5. GEO ═══════════ -->
+  <section class="view" id="view-geo" data-title="GEO 스키마 생성" data-sub="내 실제 도메인의 구조화 데이터(JSON-LD)를 만들고, 필수 항목을 실제로 검사합니다.">
+    <div class="callout info" style="margin-bottom:14px">
+      AI 답변 노출 점수나 점유율은 지어내지 않습니다. 이 화면은 ① 배포용 JSON-LD 생성·검사 ② 실제 자동완성 수집·정리 ③ 4대 AI에서 내 브랜드를 직접 확인하는 링크를 제공합니다.
+    </div>
+
     <div class="grid-2">
       <div class="stack">
         <div class="card">
-          <div class="card-h"><h2>브랜드 정보</h2><span class="hint">JSON-LD 생성 기준</span></div>
+          <div class="card-h"><h2>대상 선택</h2><span class="hint">실제 운영 도메인</span></div>
           <div class="card-b">
-            <div class="field"><label for="gBrand">내 브랜드 · 상품명</label><input id="gBrand" type="text" value="동곤 헬프스토어 김홍도 변색 술잔" autocomplete="off"></div>
+            <div class="field"><label for="gDomain">내 사이트</label><select id="gDomain"></select></div>
             <div class="row-2" style="margin-top:10px">
-              <div class="field"><label for="gCat">카테고리</label><input id="gCat" type="text" value="전통주 잔·술잔 세트" autocomplete="off"></div>
-              <div class="field"><label for="gPrice">가격 (원)</label><div class="unit"><input id="gPrice" type="number" value="32000" step="1000" min="0"><i>원</i></div></div>
+              <div class="field"><label for="gType">스키마 종류</label>
+                <select id="gType">
+                  <option value="product">Product (상품)</option>
+                  <option value="app">SoftwareApplication (앱)</option>
+                  <option value="org">Organization (사이트·브랜드)</option>
+                  <option value="article">Article (가이드 글)</option>
+                </select>
+              </div>
+              <div class="field"><label for="gUrl">페이지 URL</label><input id="gUrl" type="url" autocomplete="off"></div>
             </div>
-            <div class="field" style="margin-top:10px"><label for="gComp">경쟁 브랜드 <span class="q">쉼표로 구분</span></label><input id="gComp" type="text" value="광주요, 이도자기, 한송요" autocomplete="off"></div>
-            <div class="field" style="margin-top:10px"><label for="gQ">대표 검색 질문</label><input id="gQ" type="text" value="모임용 전통 술잔 추천" autocomplete="off"></div>
-            <div class="field" style="margin-top:10px"><label for="gUrl">상품·브랜드 URL <span class="q">스키마에 들어갑니다</span></label><input id="gUrl" type="text" value="https://gongmaemul.co.kr/helpstore/" autocomplete="off"></div>
-            <p class="note" style="margin-top:10px">실제 AI 답변을 크롤링하지 않습니다. 아래 점수는 <b>내가 체크한 준비 상태</b>로 계산한 참고용 지표입니다.</p>
+            <div class="field" style="margin-top:10px"><label for="gName">이름</label><input id="gName" type="text" autocomplete="off"></div>
+            <div class="row-2" style="margin-top:10px">
+              <div class="field"><label for="gCat">카테고리 · 설명</label><input id="gCat" type="text" autocomplete="off"></div>
+              <div class="field"><label for="gPrice">가격 <span class="q">상품일 때</span></label><div class="unit"><input id="gPrice" type="number" min="0" step="1000" placeholder="해당 없으면 비움"><i>원</i></div></div>
+            </div>
+            <div class="field" style="margin-top:10px"><label for="gQ">대표 검색 질문</label><input id="gQ" type="text" autocomplete="off"></div>
+            <div class="row-2" style="margin-top:10px">
+              <div class="field"><label for="gComp">경쟁 브랜드 <span class="q">쉼표 구분</span></label><input id="gComp" type="text" autocomplete="off"></div>
+              <div class="field"><label for="gBrand">브랜드명 <span class="q">Organization</span></label><input id="gBrand" type="text" autocomplete="off"></div>
+            </div>
+            <div class="strip" style="margin-top:12px">
+              <button class="btn primary" id="gRun" type="button">스키마 생성 · 검사</button>
+              <button class="btn" data-copy="gJsonLd" type="button">코드 복사</button>
+            </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>GEO 준비도 체크리스트</h2><span class="right badge gray" id="gReady">0%</span></div>
+          <div class="card-h"><h2>자동완성 수집·정리</h2><span class="hint">직접 확인한 값만</span></div>
           <div class="card-b">
-            <div class="gauge" style="margin-bottom:10px"><i id="gGauge" style="width:0%"></i></div>
-            <div class="checklist" id="gChecks"></div>
+            <p class="note" style="margin-bottom:8px">아래 검색 링크에서 실제 자동완성·연관검색어를 확인한 뒤, 한 줄에 하나씩 붙여넣으세요. 같은 표현을 묶어 롱테일 후보로 정리합니다.</p>
+            <div class="strip" id="acLinks" style="margin-bottom:10px"></div>
+            <div class="field"><label for="acSource">자동완성 붙여넣기</label><textarea id="acSource" rows="6" placeholder="예:&#10;제주 감귤 5kg 로얄과&#10;감귤 5kg 가정용&#10;극조생 감귤 산지직송"></textarea></div>
+            <div class="strip" style="margin-top:10px">
+              <button class="btn primary" id="acRun" type="button">정리</button>
+              <button class="btn" id="acCopy" type="button">목록 복사</button>
+            </div>
+            <div class="tbl-wrap" style="margin-top:12px">
+              <table class="tbl">
+                <thead><tr><th>키워드</th><th class="num">글자</th><th class="num">단어</th><th>유형</th></tr></thead>
+                <tbody id="acList"><tr><td colspan="4" class="note">붙여넣고 정리를 누르세요.</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="stack">
         <div class="card">
-          <div class="card-h"><h2>AI 검색 대응 점수 <span class="exam-badge">참고용 예시</span></h2><span class="hint" id="gScoreNote">체크 기반</span></div>
+          <div class="card-h"><h2>스키마 검사 결과</h2><span class="right badge gray" id="gValidateBadge">대기</span></div>
           <div class="card-b">
-            <div class="scorecard" id="gPlatforms"></div>
-            <p class="note" style="margin-top:10px">점수는 체크리스트 가중치로 계산한 <b>준비도 예시</b>입니다. 실제 AI 답변 노출을 측정한 값이 아닙니다.</p>
+            <div id="gChecks" class="note">스키마를 생성하면 필수 항목을 실제로 검사합니다.</div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>비교표 초안</h2><span class="right"><button class="btn sm" data-copy="gTable" type="button">복사</button></span></div>
+          <div class="card-h"><h2>JSON-LD <span class="badge brand">배포용</span></h2><span class="right"><span class="hint" id="gJsonLen"></span></span></div>
           <div class="card-b">
-            <div class="codebox" id="gTable">브랜드 정보를 넣으면 경쟁사 비교표 초안이 생성됩니다.</div>
-            <p class="note" style="margin-top:8px">AI는 비교표 형태를 인용하기 쉽습니다. 스펙 항목은 실제 값으로 바꿔 쓰세요.</p>
+            <div class="codebox" id="gJsonLd">스키마를 생성하면 여기에 표시됩니다.</div>
+            <p class="note" style="margin-top:8px">가격·재고·별점은 실제 값만 넣으세요. 이 코드는 &lt;head&gt; 또는 본문 하단에 그대로 붙이면 됩니다.</p>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>FAQ 6문항 &amp; JSON-LD</h2><span class="right"><span class="badge brand">배포용 코드</span></span></div>
+          <div class="card-h"><h2>경쟁 비교표 초안</h2><span class="right"><button class="btn sm" data-copy="gTable" type="button">복사</button></span></div>
           <div class="card-b">
-            <ol class="olist" id="gFaq"></ol>
-            <div class="copywrap" style="margin-top:12px">
-              <div class="codebox" id="gJsonLd">&lt;script type="application/ld+json"&gt;…</div>
-              <button class="btn sm" data-copy="gJsonLd" type="button" style="margin-top:8px">스키마 코드 복사</button>
-            </div>
-            <p class="note" style="margin-top:8px">FAQPage + Product 스키마를 함께 넣었습니다. 그대로 &lt;head&gt; 또는 본문 하단에 붙이면 되고, 가격·재고·리뷰 수치는 실제 값으로 유지하세요.</p>
+            <div class="codebox" id="gTable">스키마를 생성하면 비교표 초안이 나옵니다.</div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-h"><h2>표기 통일 점검</h2></div>
-          <div class="card-b" id="gNaming"></div>
+          <div class="card-h"><h2>FAQ 초안</h2><span class="right"><button class="btn sm" data-copy="gFaq" type="button">복사</button></span></div>
+          <div class="card-b">
+            <ol class="olist" id="gFaq"><li class="note">스키마를 생성하면 대표 질문 5개가 나옵니다.</li></ol>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>AI에서 직접 확인</h2><span class="hint">내 눈으로 보는 실제 답변</span></div>
+          <div class="card-b">
+            <div class="strip" id="aiLinks"></div>
+            <p class="note" style="margin-top:8px">같은 질문을 4곳에 던지고, 내 브랜드가 나오는지·경쟁사가 어떤 이름으로 나오는지 직접 기록하세요. 기록은 내 저장소에 남길 수 있습니다.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ 6. 틈새 키워드 & 캘린더 ═══════════════ -->
-  <section class="view" id="view-niche" data-title="틈새 키워드 &amp; 셀러 캘린더" data-sub="시즌 피크 2~3주 전 발주 역산과 타겟별 키워드 조합.">
+  <!-- ═══════════ 6. 틈새 키워드 & 캘린더 ═══════════ -->
+  <section class="view" id="view-niche" data-title="틈새 키워드 &amp; 셀러 캘린더" data-sub="실제 공휴일·시험일 기준 발주 역산과, 실측 상품명에서 뽑은 키워드 조합.">
     <div class="card">
-      <div class="card-h"><h2>다음 시즌 3개 <span class="mini">오늘 기준 자동 계산</span></h2><span class="right badge gray" id="nToday"></span></div>
-      <div class="card-b">
-        <div class="next3" id="nNext"></div>
-      </div>
+      <div class="card-h"><h2>다음 시즌 3개</h2><span class="right badge gray" id="nToday"></span></div>
+      <div class="card-b"><div class="next3" id="nNext"></div></div>
     </div>
 
     <div class="card">
-      <div class="card-h"><h2>월별 셀러 캘린더</h2><span class="hint">피크 · 발주 시점</span></div>
+      <div class="card-h"><h2>2026~2027 셀러 캘린더</h2><span class="hint">공휴일은 우주항공청 월력요항, 수능은 교육부 발표일</span></div>
       <div class="card-b"><div class="cal" id="nCal"></div></div>
     </div>
 
     <div class="card">
-      <div class="card-h"><h2>틈새 키워드 조합기</h2><span class="hint">롱테일 초안</span></div>
+      <div class="card-h"><h2>틈새 키워드 조합기</h2><span class="hint">실측 상품 + 실제 등급·유통 어휘</span></div>
       <div class="card-b">
         <div class="row-3">
-          <div class="field"><label for="nProduct">상품 키워드</label><input id="nProduct" type="text" value="스테인리스 텀블러" autocomplete="off"></div>
-          <div class="field"><label for="nTarget">타겟</label>
-            <select id="nTarget">
-              <option value="4050">40~50대 실용 소비자</option>
-              <option value="single">1인 가구</option>
-              <option value="pet">반려동물 가구</option>
-              <option value="camp">캠핑·차박</option>
-              <option value="newly">신혼·집들이</option>
-              <option value="office">직장인·사무실</option>
-              <option value="senior">시니어·부모님</option>
-            </select>
-          </div>
-          <div class="field"><label for="nAngle">판매 포인트</label>
-            <select id="nAngle">
-              <option value="가성비">가성비</option>
-              <option value="프리미엄">프리미엄</option>
-              <option value="대용량">대용량</option>
-              <option value="휴대용">휴대용</option>
-              <option value="선물">선물</option>
-              <option value="친환경">친환경</option>
-            </select>
-          </div>
+          <div class="field"><label for="nProduct">상품</label><select id="nProduct"></select></div>
+          <div class="field"><label for="nGrade">등급·규격</label><select id="nGrade"></select></div>
+          <div class="field"><label for="nOrigin">유통 형태</label><select id="nOrigin"></select></div>
         </div>
         <div class="strip" style="margin-top:12px">
-          <button class="btn primary" id="nGen" type="button">키워드 조합 생성</button>
+          <button class="btn primary" id="nGen" type="button">조합 생성</button>
           <button class="btn" id="nCopy" type="button">전체 복사</button>
-          <span class="note">검색량은 쿠팡 광고 콘솔·네이버 키워드 도구에서 확인하세요.</span>
+          <span class="note">검색량·경쟁은 쿠팡 광고 콘솔·네이버 키워드 도구에서 확인하세요.</span>
         </div>
         <div class="tbl-wrap" style="margin-top:12px">
           <table class="tbl">
-            <thead><tr><th>키워드</th><th>유형</th><th>노리는 검색</th><th>진입 메모</th></tr></thead>
-            <tbody id="nList"><tr><td colspan="4" class="note">조합을 생성하면 24개 롱테일 키워드가 나옵니다.</td></tr></tbody>
+            <thead><tr><th>키워드</th><th>유형</th><th>노리는 검색</th><th class="num">글자</th></tr></thead>
+            <tbody id="nList"></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h2>B2G 조달 키워드 <span class="mini">도매 9선 연계</span></h2></div>
+      <div class="card-b">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>도매처</th><th>주력</th><th>조달 연계</th><th>URL</th></tr></thead>
+            <tbody id="nB2G"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 7. 내 저장소 ═══════════ -->
+  <section class="view" id="view-store" data-title="내 저장소" data-sub="저장한 판정·광고 분석·진단을 이 기기에서 불러오고 JSON/CSV로 내보냅니다.">
+    <div class="card">
+      <div class="card-h"><h2>저장된 기록 <span class="mini" id="stCount">0건</span></h2>
+        <span class="right strip">
+          <button class="btn sm" id="stExportJson" type="button">JSON 내보내기</button>
+          <button class="btn sm" id="stExportCsv" type="button">CSV 내보내기</button>
+          <button class="btn sm ghost" id="stClear" type="button">전체 삭제</button>
+        </span>
+      </div>
+      <div class="card-b">
+        <p class="note" style="margin-bottom:12px">저장 위치는 이 브라우저의 localStorage입니다. 서버로 전송되지 않고, 브라우저 데이터를 지우면 함께 사라집니다. JSON으로 내보내 두면 다른 기기에서도 복원할 수 있습니다.</p>
+        <div id="stList"></div>
+        <div id="stEmpty" class="callout info">아직 저장된 기록이 없습니다. 소싱 판정·광고 분석·마진 진단 화면에서 ‘저장’을 누르면 여기에 쌓입니다.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><h2>가져오기</h2></div>
+      <div class="card-b">
+        <div class="field"><label for="stImportFile">내보낸 JSON 파일</label><input type="file" id="stImportFile" accept=".json"></div>
+        <p class="note" style="margin-top:8px">같은 항목은 덮어쓰지 않고 새 기록으로 추가됩니다.</p>
       </div>
     </div>
   </section>
@@ -727,13 +713,15 @@
   </main>
 
   <footer class="foot">
-    <b>동곤 헬프스토어 PRO</b> · 모든 계산·CSV 파싱·이미지 합성·JSON-LD 생성은 브라우저에서 실행되며 입력값을 서버로 보내지 않습니다.<br>
-    수수료율·물류비·환율 기본값은 참고치입니다. 실제 계약 조건과 쿠팡 광고센터 수치로 바꿔 쓰세요. AI 검색 점수는 준비도 예시이며 실제 노출을 측정한 값이 아닙니다.
+    <b>동곤 헬프스토어 PRO</b> · 계산·CSV 파싱·이미지 합성·JSON-LD 생성은 모두 브라우저에서 실행되며 입력값을 서버로 보내지 않습니다.<br>
+    수치 출처: <span id="footSources"></span>. 근거가 없는 값은 비워 두었고, 화면에 ‘미확인’으로 표시합니다.
   </footer>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<script src="./data.js"></script>
+<script src="./store.js"></script>
 <script src="./app.js"></script>
 <script src="./tools.js"></script>
 </body>
