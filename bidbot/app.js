@@ -460,13 +460,19 @@
 
     const input = $("#suppQueryInput");
     const box = $("#suppList");
+    const hint = $("#suppOrigin");
+    const syncHint = (q) => {
+      if (!hint) return;
+      if (q === origin) hint.textContent = "공고명 그대로 검색합니다. 단어를 바꾸려면 위 칸에서 고치세요.";
+      else if (q === initial) hint.innerHTML = `공고명 <b>${esc(origin)}</b> → 검색어 <b>${esc(q)}</b> 로 자동 정리했습니다.`;
+      else hint.innerHTML = `직접 입력한 검색어 <b>${esc(q)}</b> 로 5곳 링크를 갱신했습니다.`;
+    };
     const apply = (value) => {
       const q = String(value == null ? "" : value).trim();
       if (!q) return toast("검색어를 입력하세요.");
       $("#modalTitle").textContent = `도매가 대조 — "${q}"`;
       box.innerHTML = listHtml(q);
-      const note = $("#suppKwNote");
-      if (note) note.textContent = q;
+      syncHint(q);
     };
     input.addEventListener("input", () => { if (input.value.trim()) apply(input.value); });
     $("#suppApply").addEventListener("click", () => apply(input.value));
