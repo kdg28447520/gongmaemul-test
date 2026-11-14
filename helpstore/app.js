@@ -237,7 +237,7 @@
     } else if (margin < 10) {
       line = "건당 " + won(net) + "(" + pct(margin) + ")로 마진이 10% 아래입니다. 광고·반품이 붙으면 적자로 돌아서므로 이 조건으로는 진입하지 마세요.";
     } else if (confirmed < 4) {
-      line = "실마진 " + pct(margin) + "(" + won(net) + ")는 확보됩니다. 다만 " + unknownLabels.slice(0, 3).join("·") + " " + (unknownLabels.length > 3 ? "등 " : "") + unknownLabels.length + "개 항목이 미확인이라 최종 판정을 보류합니다. 이 " + (4 - confirmed) + "개를 확인하면 바로 확정됩니다.";
+      line = "실마진 " + pct(margin) + "(" + won(net) + ")는 확보됩니다. 다만 " + unknownLabels.slice(0, 3).join("·") + " " + (unknownLabels.length > 3 ? "등 " : "") + unknownLabels.length + "개가 미확인이라 최종 판정을 보류합니다. 그중 " + (4 - confirmed) + "개만 확인하면 바로 확정됩니다.";
     } else if (verdict === "ok") {
       line = "확인된 " + confirmed + "개 항목 중 " + score + "개를 통과했고, 건당 " + won(net) + "(" + pct(margin) + ")이 남습니다. 진입해도 되는 조건입니다. 아래 리뷰 빈틈을 상세페이지에 먼저 넣고, 다음 시즌 발주 마감에 맞춰 재고를 잡으세요.";
     } else if (verdict === "warn") {
@@ -326,6 +326,12 @@
     const order = addDays(main.d, -Math.round(main.lead * 7));
     const arrive = addDays(main.d, -7);
     const dd = dday(main.d);
+    const overdue = addDays(main.d, -Math.round(main.lead * 7)) < new Date();
+    const noteText = overdue
+      ? "발주 마감일(" + fmtDate(order) + ")이 이미 지났습니다. 지금은 항공 소량·국내 도매로 대응하거나, 다음 시즌을 목표로 준비하세요."
+      : dd <= 21
+        ? "발주 마감이 임박했습니다. 항공 소량이라도 먼저 넣고 다음 시즌 물량을 함께 잡으세요."
+        : "지금 발주하면 피크 전 재고 확보가 가능합니다. 광고는 피크 2주 전부터 켜서 리뷰를 쌓으세요.";
     $("#rSeason").innerHTML =
       '<div class="strip" style="margin-bottom:8px"><span class="badge brand">' + esc(main.name) + "</span>" +
       '<span class="badge gray">' + esc(main.kind) + "</span>" +
@@ -335,7 +341,7 @@
       "<tr><td>발주 마감</td><td><b>" + fmtDate(order, true) + "</b></td><td class='small'>피크 " + main.lead + "주 전</td></tr>" +
       "<tr><td>입고 목표</td><td>" + fmtDate(arrive, true) + "</td><td class='small'>피크 1주 전</td></tr>" +
       "</tbody></table>" +
-      '<p class="note" style="margin-top:8px">' + (dd <= 21 ? "발주 마감이 임박했습니다. 항공 소량이라도 먼저 넣고 다음 시즌 물량을 함께 잡으세요." : "지금 발주하면 피크 전 재고 확보가 가능합니다. 광고는 피크 2주 전부터 켜서 리뷰를 쌓으세요.") + "</p>";
+      '<p class="note" style="margin-top:8px">' + noteText + "</p>";
     const el = $("#sumSeason");
     el.textContent = main.name + " D-" + dd;
     el.className = dd <= 14 ? "bad" : dd <= 35 ? "warn" : "ok";
@@ -521,7 +527,7 @@
     }
     if (keeps.length) {
       const k = keeps.slice().sort((a, c) => c.rev - a.rev)[0];
-      acts.push("<b>" + esc(k.kw) + "</b>에 예산 확대 — ROAS " + pct(k.roas, 0) + ", 매출 " + won(k.rev) + "로 가장 효율이 좋습니다. 끈 키워드 예산을 이쪽으로 옮기세요.");
+      acts.push("<b>" + esc(k.kw) + "</b>에 예산 확대 — ROAS " + pct(k.roas, 0) + ", 매출 " + won(k.rev) + " 기준으로 가장 효율이 좋습니다. 끈 키워드 예산을 이쪽으로 옮기세요.");
     } else if (cvr < 1) {
       acts.push("전환율 " + pct(cvr, 2) + " 개선 — CPC " + Math.round(cpc) + "원은 낮은 편인데 구매가 안 됩니다. 상세 첫 화면(가격·배송·후기)을 다시 잡으세요.");
     }

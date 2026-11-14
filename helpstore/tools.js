@@ -90,7 +90,7 @@
     const losses = items.map((x) => ({ name: x[0], loss: x[1] - x[2] })).filter((x) => x.loss > 0).sort((a, b) => b.loss - a.loss);
     const totalLoss = losses.reduce((a, b) => a + b.loss, 0);
     sum.className = "callout " + (Math.abs(diff) > 0 ? "warn" : "info");
-    sum.innerHTML = "같은 상품·같은 판매가에서 " + (diff >= 0 ? "로켓그로스" : "판매자배송") + "가 " + qty + "개 기준 <b>" + won(Math.abs(diff)) + "</b> 더 남습니다. " +
+    sum.innerHTML = "같은 상품·같은 판매가에서 " + (diff >= 0 ? "로켓그로스가" : "판매자배송이") + " " + qty + "개 기준 <b>" + won(Math.abs(diff)) + "</b> 더 남습니다. " +
       (totalLoss > 0 && losses.length ? "가장 큰 누수는 <b>" + losses[0].name + " " + won(losses[0].loss) + "</b>(전체 차이의 " + Math.round(losses[0].loss / totalLoss * 100) + "%)입니다." : "입력한 비용 항목 차이가 없습니다.");
 
     const list = [];
@@ -493,12 +493,12 @@
       { h: "1. 메인 헤드라인", lines: [name, p1] },
       { h: "2. 공감 도입", paras: [
         target + "라면 한 번쯤 겪어 보셨을 겁니다. 사진은 그럴듯한데 막상 손이 가지 않는 물건.",
-        name + "는 그 지점부터 다르게 잡았습니다. " + p1 + ".",
+        "이 제품은 그 지점부터 다르게 잡았습니다. " + p1 + ".",
         p2 + (pts[2] ? ", " + p3 : "") + " — 받는 날부터 바로 쓰실 수 있습니다."
       ] },
       { h: "3. 사용 장면", lead: "사진이 아니라 장면으로 보여 주세요. 세 가지면 충분합니다.", items: [
-        "아침 준비: 정신없는 아침, " + short + "를 꺼내는 순간 준비가 한 단계 줄어듭니다. " + p1 + ".",
-        "주말 저녁: " + target + "이 가장 편하게 쓰는 시간입니다. " + (pts[1] || "손이 자주 가는 자리에 두고 씁니다") + ".",
+        "아침 준비: 정신없는 아침, 이 제품을 꺼내는 순간 준비가 한 단계 줄어듭니다. " + p1 + ".",
+        "주말 저녁: " + target + "에게 가장 편한 시간입니다. " + (pts[1] || "손이 자주 가는 자리에 두고 씁니다") + ".",
         "선물하는 날: 포장을 열었을 때의 반응까지 계산했습니다. " + (pts[2] || "안내 카드와 함께 보내드립니다") + "."
       ] },
       { h: "4. 출고·품질 신뢰", paras: [
@@ -741,19 +741,39 @@
       const order = addDays(s.d, -Math.round(s.lead * 7));
       const arrive = addDays(s.d, -7);
       const dd = dday(s.d);
-      return '<div class="next-card"><div class="dday">D-' + dd + (dd <= 14 ? " · 발주 임박" : "") + "</div>" +
+      const orderPast = order < new Date();
+      return '<div class="next-card"><div class="dday">D-' + dd + (orderPast ? " · 발주 마감 지남" : dd <= 14 ? " · 발주 임박" : "") + "</div>" +
         "<h4>" + esc(s.name) + "</h4>" +
         "<dl><dt>피크</dt><dd>" + fmtDate(s.d, true) + "</dd>" +
-        "<dt>발주 마감</dt><dd>" + fmtDate(order) + "</dd>" +
+        "<dt>발주 마감</dt><dd>" + fmtDate(order) + (orderPast ? " <span class='pill-mini bad'>지남</span>" : "") + "</dd>" +
         "<dt>입고 목표</dt><dd>" + fmtDate(arrive) + "</dd>" +
         "<dt>근거</dt><dd>" + esc(s.note) + "</dd></dl></div>";
     }).join("");
   }
 
+  const NICHE_VOCAB = {
+    fresh: { grade: HS.DB.keywordVocab.grade, origin: HS.DB.keywordVocab.origin },
+    car: { grade: ["2in1", "대형", "회전형", "논슬립", "단품"], origin: ["로켓배송", "무료배송", "당일출고", "선물용", "차량용"] },
+    living: { grade: ["대용량", "소형", "스테인리스", "세트", "단품"], origin: ["무료배송", "당일출고", "가정용", "선물용", "세트"] },
+    digital: { grade: ["무선", "저소음", "텐키리스", "풀배열", "단품"], origin: ["로켓배송", "당일출고", "사무용", "게이밍", "선물용"] },
+    fashion: { grade: ["오버핏", "슬림", "기본", "세트", "단품"], origin: ["무료배송", "당일출고", "선물용", "커플", "세트"] },
+    etc: { grade: ["기본", "대형", "소형", "세트", "단품"], origin: ["무료배송", "당일출고", "가정용", "선물용", "세트"] }
+  };
+  const vocabFor = (cat) => NICHE_VOCAB[cat] || NICHE_VOCAB.etc;
+  function fillNicheVocab(cat) {
+    const v = vocabFor(cat);
+    const keep = (sel, arr) => {
+      const prev = $(sel).value;
+      $(sel).innerHTML = arr.map((x) => "<option>" + esc(x) + "</option>").join("");
+      if (arr.indexOf(prev) >= 0) $(sel).value = prev;
+    };
+    keep("#nGrade", v.grade);
+    keep("#nOrigin", v.origin);
+  }
+
   function fillNiche() {
     $("#nProduct").innerHTML = DB.products.map((p) => '<option value="' + p.id + '">' + esc(p.name) + "</option>").join("");
-    $("#nGrade").innerHTML = DB.keywordVocab.grade.map((g) => "<option>" + esc(g) + "</option>").join("");
-    $("#nOrigin").innerHTML = DB.keywordVocab.origin.map((o) => "<option>" + esc(o) + "</option>").join("");
+    fillNicheVocab(DB.products[0].feeCat);
     $("#nB2G").innerHTML = DB.suppliers.map((s) =>
       "<tr><td><b>" + esc(s.name) + "</b></td><td class='small'>" + esc(s.cat) + "</td><td class='small'>" + esc(s.b2g) + "</td><td class='small'><a href='" + esc(s.url) + "' target='_blank' rel='noopener'>" + esc(s.url.replace(/^https?:\/\//, "")) + "</a></td></tr>"
     ).join("");
@@ -762,35 +782,45 @@
 
   function genNiche() {
     const p = HS.byId[$("#nProduct").value] || DB.products[0];
+    const fresh = p.feeCat === "fresh";
     const grade = $("#nGrade").value, origin = $("#nOrigin").value;
-    const season = HS.nextEvents(1)[0];
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const giftNames = ["크리스마스", "설날", "어린이날·가정의 달", "추석", "빼빼로데이", "신학기"];
+    const all = DB.seasons.map((s) => Object.assign({}, s, { d: parseDate(s.date) })).filter((s) => s.d >= now).sort((a, b) => a.d - b.d);
+    const season = fresh ? all[0] : (all.filter((s) => giftNames.indexOf(s.name) >= 0)[0] || null);
     const list = [];
     const push = (kw, type, intent) => {
       const k = kw.replace(/\s+/g, " ").trim();
       if (!k || list.some((x) => x.kw === k)) return;
       list.push({ kw: k, type, intent });
     };
-    push(grade + " " + p.name, "등급 롱테일", grade + " 검색");
-    push(origin + " " + p.name, "유통 롱테일", origin + " 구매");
-    push(p.name + " " + grade, "등급", "규격 비교");
-    push(p.name + " " + origin, "유통", "구매 조건");
-    push(p.name + " " + (p.searchTerm || ""), "기본", "상품명 검색");
-    push(p.name + " 5kg", "규격", "중량 검색");
-    push(p.name + " 가정용", "용도", "가정 소비");
-    push(p.name + " 선물 세트", "선물", "선물 수요");
+    push(grade + " " + p.name, "등급·규격", grade + " 검색");
+    push(origin + " " + p.name, "유통·판매", origin + " 구매");
+    push(p.name + " " + grade, "등급·규격", "규격 비교");
+    push(p.name + " " + origin, "유통·판매", "구매 조건");
+    if (p.searchTerm) push(p.searchTerm + " " + origin, "실제 검색어", p.searchTerm + " 구매");
     push(p.name + " 추천", "비교", "구매 전 비교");
     push(p.name + " 후기", "신뢰", "구매 전 확인");
     push(p.name + " 가격", "가격", "가격 민감");
-    push(p.name + " 산지직송", "유통", "직송 선호");
-    push(p.name + " 로얄과", "등급", "등급 선호");
-    push(p.name + " 소과", "등급", "가성비 등급");
-    push(p.name + " 벌크", "용량", "업소·대량");
-    if (p.demandIndex !== undefined) push(HS.categoryLabel(p.feeCat) + " " + p.searchTerm, "카테고리", "카테고리 검색");
-    if (p.name.indexOf("사과") >= 0) { push("엔부사과", "실측 별칭", "빈집 키워드(리뷰 680건 선점 사례)"); push("피치애플", "실측 별칭", "선점 셀러 별칭"); }
-    if (p.name.indexOf("반시") >= 0 || p.name.indexOf("단감") >= 0) push("청도 반시", "실측 별칭", "산지 별칭");
-    if (season) { push(season.name.replace(/\s/g, "") + " " + p.name, "시즌", season.name + " 선물"); push(p.name + " " + season.name.replace(/\s/g, ""), "시즌", season.name + " 구매"); }
-    push(p.name + " 2/3 완숙", "품질", "제철 타이밍");
-    push(p.name + " 무수거 환불", "CS", "파손 걱정 해소");
+    push(p.name + " 선물 세트", "선물", "선물 수요");
+    if (fresh) {
+      push(p.name + " 5kg", "규격", "중량 검색");
+      push(p.name + " 가정용", "용도", "가정 소비");
+      push(p.name + " 산지직송", "유통·판매", "직송 선호");
+      push(p.name + " 벌크", "용량", "업소·대량");
+      push(p.name + " 2/3 완숙", "품질", "제철 타이밍");
+      push(p.name + " 무수거 환불", "CS", "파손 걱정 해소");
+      if (p.name.indexOf("사과") >= 0) { push("엔부사과", "실측 별칭", "빈집 키워드(리뷰 680건 선점 사례)"); push("피치애플", "실측 별칭", "선점 셀러 별칭"); }
+      if (p.name.indexOf("반시") >= 0 || p.name.indexOf("단감") >= 0) push("청도 반시", "실측 별칭", "산지 별칭");
+    } else {
+      push(p.name + " 무료배송", "구매 조건", "배송비 민감");
+      push(p.name + " 당일출고", "구매 조건", "빠른 배송");
+      push(p.name + " 세트", "구성", "객단가 상승");
+    }
+    if (season) {
+      push(season.name + " " + p.name, "시즌", season.name + " 선물");
+      push(p.name + " " + season.name + " 선물", "시즌", season.name + " 선물");
+    }
     const rows = list.slice(0, 24);
     $("#nList").innerHTML = rows.map((r) => "<tr><td><b>" + esc(r.kw) + '</b></td><td><span class="pill-mini brand">' + esc(r.type) + "</span></td><td class='small'>" + esc(r.intent) + '</td><td class="num">' + r.kw.length + "</td></tr>").join("");
     window.__nicheCopy = rows.map((r) => r.kw).join("\n");
@@ -800,7 +830,11 @@
     renderCalendar();
     fillNiche();
     $("#nGen").addEventListener("click", genNiche);
-    $("#nProduct").addEventListener("change", genNiche);
+    $("#nProduct").addEventListener("change", () => {
+      const p = HS.byId[$("#nProduct").value];
+      if (p) fillNicheVocab(p.feeCat);
+      genNiche();
+    });
     $("#nGrade").addEventListener("change", genNiche);
     $("#nOrigin").addEventListener("change", genNiche);
     $("#nCopy").addEventListener("click", () => copyText(window.__nicheCopy || "", "키워드 목록을 복사했습니다"));
