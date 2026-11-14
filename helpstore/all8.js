@@ -151,6 +151,10 @@
   /* ══════════════════════════════════════════
      ① 소싱 큐 · 프리셋
      ══════════════════════════════════════════ */
+  function syncChips() {
+    const cur = (document.getElementById("a8Prefix") || {}).value || "";
+    $$(".preset-row .chip[data-prefix]").forEach((b) => b.classList.toggle("on", b.dataset.prefix === cur));
+  }
   function writePresetInputs() {
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
     set("a8Prefix", preset.prefix);
@@ -158,23 +162,29 @@
     set("a8Fx", preset.fx);
     set("a8Margin", preset.margin);
     set("a8Round", String(preset.round));
-    $$("#a8Prefix ~ .preset-row .chip, .preset-row .chip[data-prefix]").forEach((b) => b.classList.toggle("on", b.dataset.prefix === preset.prefix));
+    syncChips();
     updateFormulaDemo();
   }
   function readPresetInputs() {
-    preset.prefix = (document.getElementById("a8Prefix") || {}).value || "";
-    preset.maxLen = Math.max(4, Math.min(100, nz((document.getElementById("a8MaxLen") || {}).value, 40)));
-    preset.fx = Math.max(0.01, nz((document.getElementById("a8Fx") || {}).value, 1));
-    preset.margin = Math.max(0, nz((document.getElementById("a8Margin") || {}).value, 100));
-    preset.round = nz((document.getElementById("a8Round") || {}).value, 100);
-    return preset;
+    return {
+      prefix: (document.getElementById("a8Prefix") || {}).value || "",
+      maxLen: Math.max(4, Math.min(100, nz((document.getElementById("a8MaxLen") || {}).value, 40))),
+      fx: Math.max(0.01, nz((document.getElementById("a8Fx") || {}).value, 1)),
+      margin: Math.max(0, nz((document.getElementById("a8Margin") || {}).value, 100)),
+      round: nz((document.getElementById("a8Round") || {}).value, 100)
+    };
+  }
+  function draftDirty() {
+    const d = readPresetInputs();
+    return d.prefix !== preset.prefix || d.maxLen !== preset.maxLen || d.fx !== preset.fx || d.margin !== preset.margin || d.round !== preset.round;
   }
   function updateFormulaDemo() {
     const el = document.getElementById("a8FormulaDemo");
     if (!el) return;
+    const d = readPresetInputs();
     const base = queue[0] || { cost: 5940, ship: 100, margin: 132.32 };
-    const demo = Math.round(nz(base.cost, 0) * nz(preset.fx, 1) * (1 + nz(base.margin, 0) / 100) + nz(base.ship, 0));
-    el.textContent = won(roundTo(demo, nz(preset.round, 100))) + " (" + nz(preset.maxLen, 40) + "자 컷)";
+    const demo = Math.round(nz(base.cost, 0) * d.fx * (1 + nz(base.margin, 0) / 100) + nz(base.ship, 0));
+    el.textContent = won(roundTo(demo, d.round)) + " (" + d.maxLen + "자 컷)";
   }
 
   function renderQueue() {
@@ -301,8 +311,9 @@
 
   function applyPreset() {
     const prev = queue.map((it) => ({ id: it.id, name: finalName(it), price: priceOf(it) }));
-    readPresetInputs();
+    preset = readPresetInputs();
     savePreset();
+    const before = prev;
     // 프리셋이 반영된 뒤 값을 다시 계산한다
     queue.forEach((it) => { it.updatedAt = new Date().toISOString(); });
     saveQueue();
@@ -328,8 +339,9 @@
   }
 
   function marginAll() {
-    readPresetInputs();
-    const m = nz(preset.margin, 100);
+    const d = readPresetInputs();
+    const m = d.margin;
+    preset.margin = m;
     queue.forEach((it) => { it.margin = m; });
     savePreset();
     saveQueue();
@@ -739,8 +751,9 @@
     const el = document.getElementById("a8Status");
     if (!el) return;
     const pre = preset.prefix ? "‘" + preset.prefix + "’ " : "없음";
-    el.textContent = "큐 " + queue.length + "개 · 접두어 " + pre + " · " + preset.maxLen + "자 컷 · 환율 ×" + preset.fx +
-      " · " + preset.round + "원 반올림 · 마켓 8곳 · 대표이미지 " + (imgOk ? "1000×1000 내보냄" : "미완") + " · 저장 위치 이 기기(localStorage)";
+    const dirty = draftDirty() ? " · <b style=\"color:#b45309\">미적용 변경 있음 — [일괄 적용]을 누르세요</b>" : "";
+    el.innerHTML = "큐 " + queue.length + "개 · 접두어 " + esc(pre) + " · " + preset.maxLen + "자 컷 · 환율 ×" + preset.fx +
+      " · " + preset.round + "원 반올림 · 마켓 8곳 · 대표이미지 " + (imgOk ? "1000×1000 내보냄" : "미완") + " · 이 기기(localStorage)에만 저장" + dirty;
   }
 
   function renderAll() {
@@ -917,14 +930,17 @@
     renderStudio();
 
     $$("#a8Tabs [data-a8tab]").forEach((b) => b.addEventListener("click", () => showPane(b.dataset.a8tab)));
-    $$("#a8Prefix ~ .preset-row .chip, .preset-row .chip[data-prefix]").forEach((b) => b.addEventListener("click", () => {
+    $$(".preset-row .chip[data-prefix]").forEach((b) => b.addEventListener("click", () => {
       const el = document.getElementById("a8Prefix");
       el.value = b.dataset.prefix || "";
-      readPresetInputs(); savePreset(); writePresetInputs(); renderAll();
+      syncChips();
+      updateFormulaDemo();
+      renderStatus();
     }));
     ["a8Prefix", "a8MaxLen", "a8Fx", "a8Margin", "a8Round"].forEach((id) => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener("change", () => { readPresetInputs(); savePreset(); updateFormulaDemo(); renderQueue(); renderStatus(); });
+      if (el) el.addEventListener("input", () => { syncChips(); updateFormulaDemo(); renderStatus(); });
+      if (el) el.addEventListener("change", () => { syncChips(); updateFormulaDemo(); renderStatus(); });
     });
     document.getElementById("a8Apply").addEventListener("click", applyPreset);
     document.getElementById("a8MarginAll").addEventListener("click", marginAll);
