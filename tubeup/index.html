@@ -1098,14 +1098,14 @@ function autoStyle(text, i){
   else if (has(['공장','작업장','구두','장인','노동','40년'])) asset = 'workshop';
   else if (has(['분노','결혼식','부르지','절연','야단','꾸중'])) asset = 'anger';
   else if (has(['제사','추모','영정','장례'])) asset = 'memorial';
-  else if (has(['따뜻','노을','포옹','화해','미소','엄마'])) asset = 'warm';
+  else if (has(['따뜻','노을','포옹','화해','미소','엄마','껴안','안았','미안'])) asset = 'warm';
   else if (has(['밤','빗속','비 오','새벽'])) asset = 'rainnight';
-  else asset = ['father','workshop','hospital','passbook','warm','memorial'][i % 6];
+  else asset = ['father','workshop','hospital','passbook','warm','bedside'][i % 6];
 
   const A = ASSETS[asset];
   grade = A.grade || 'none';
   rain = !!A.rain;
-  if (has(['빗속','비','밤'])) { grade = 'night'; rain = true; }
+  if (asset === 'rainnight') { grade = 'night'; rain = true; }
   return { asset, grade, motion, rain };
 }
 
