@@ -425,6 +425,11 @@
   function renderPredict() {
     const r = computePredict();
     $("#rFloor").textContent = fmt(r.floor0) + "원";
+    const loR = r.range ? Math.round((r.base * (1 - r.range / 100) * r.floorPct) / 100) : r.floor0;
+    const hiR = r.range ? Math.round((r.base * (1 + r.range / 100) * r.floorPct) / 100) : r.floor0;
+    $("#rRange").textContent = r.range
+      ? `사정률 ±${r.range}% 구간 실투찰 범위 ${fmt(loR)} ~ ${fmt(hiR)}원`
+      : "사정률 미적용 — 하한선이 단일 값입니다";
     $("#rRec").textContent = fmt(r.rec) + "원";
     $("#rCost").textContent = fmt(r.cost + r.ship) + "원";
     $("#rFee").textContent = fmt(r.fee) + "원";
