@@ -19,6 +19,7 @@
   const byteLen = (s) => { let n = 0; for (const ch of s) n += ch.charCodeAt(0) > 127 ? 2 : 1; return n; };
   const chars = (s) => Array.from(s).length;
   const roundTo = (v, u) => { const u2 = u > 0 ? u : 1; return Math.round(v / u2) * u2; };
+  const short = (s, n) => { const a = String(s === null || s === undefined ? "" : s); return a.length > n ? a.slice(0, n) + "…" : a; };
 
   /* ── 실측 시드: materials/rocketgrowth_private_candidates_2026-11-14.md ──
      마진율은 자료의 '제안 판매가'를 이 화면의 공식(원가×환율×(1+마진율)+배송비)으로 역산한 값이다. */
@@ -201,12 +202,12 @@
       const v = verdictOf(it);
       const sub = [];
       if (it.vendor) sub.push(esc(it.vendor));
-      if (it.refName) sub.push("쿠팡 " + esc(it.refName) + " " + won(it.refPrice));
+      if (it.refName) sub.push("쿠팡 " + esc(short(it.refName, 26)) + " " + won(it.refPrice));
       return '<tr>' +
         '<td><b>' + esc(it.name) + "</b>" +
           (it.url ? '<br><a href="' + esc(it.url) + '" target="_blank" rel="noopener" class="small">상품 페이지</a>' : "") +
           (sub.length ? '<br><span class="small">' + sub.join(" · ") + "</span>" : "") +
-          (it.memo ? '<br><span class="small">' + esc(it.memo) + "</span>" : "") +
+          (it.memo ? '<br><span class="small" title="' + esc(it.memo) + '">' + esc(short(it.memo, 84)) + "</span>" : "") +
         "</td>" +
         '<td class="num">' + won(it.cost) + "</td>" +
         '<td class="num">' + won(it.ship) + "</td>" +
