@@ -786,25 +786,25 @@
     const grade = $("#nGrade").value, origin = $("#nOrigin").value;
     const now = new Date(); now.setHours(0, 0, 0, 0);
     const giftNames = ["크리스마스", "설날", "어린이날·가정의 달", "추석", "빼빼로데이", "신학기"];
+    const fruitSeasons = ["설날", "추석", "크리스마스", "블랙프라이데이", "어린이날·가정의 달"];
     const all = DB.seasons.map((s) => Object.assign({}, s, { d: parseDate(s.date) })).filter((s) => s.d >= now).sort((a, b) => a.d - b.d);
-    const season = fresh ? all[0] : (all.filter((s) => giftNames.indexOf(s.name) >= 0)[0] || null);
+    const season = fresh ? (all.filter((s) => fruitSeasons.indexOf(s.name) >= 0)[0] || null) : (all.filter((s) => giftNames.indexOf(s.name) >= 0)[0] || null);
     const list = [];
     const push = (kw, type, intent) => {
       const k = kw.replace(/\s+/g, " ").trim();
       if (!k || list.some((x) => x.kw === k)) return;
       list.push({ kw: k, type, intent });
     };
-    push(grade + " " + p.name, "등급·규격", grade + " 검색");
-    push(origin + " " + p.name, "유통·판매", origin + " 구매");
-    push(p.name + " " + grade, "등급·규격", "규격 비교");
-    push(p.name + " " + origin, "유통·판매", "구매 조건");
+    const has = (t) => p.name.indexOf(t) >= 0;
+    if (!has(grade)) { push(grade + " " + p.name, "등급·규격", grade + " 검색"); push(p.name + " " + grade, "등급·규격", "규격 비교"); }
+    if (!has(origin)) { push(origin + " " + p.name, "유통·판매", origin + " 구매"); push(p.name + " " + origin, "유통·판매", "구매 조건"); }
     if (p.searchTerm) push(p.searchTerm + " " + origin, "실제 검색어", p.searchTerm + " 구매");
     push(p.name + " 추천", "비교", "구매 전 비교");
     push(p.name + " 후기", "신뢰", "구매 전 확인");
     push(p.name + " 가격", "가격", "가격 민감");
     push(p.name + " 선물 세트", "선물", "선물 수요");
     if (fresh) {
-      push(p.name + " 5kg", "규격", "중량 검색");
+      if (!has("kg")) push(p.name + " 5kg", "규격", "중량 검색");
       push(p.name + " 가정용", "용도", "가정 소비");
       push(p.name + " 산지직송", "유통·판매", "직송 선호");
       push(p.name + " 벌크", "용량", "업소·대량");
@@ -846,7 +846,7 @@
     try { initGeo(); } catch (e) { console.error("geo", e); }
     try { initNiche(); } catch (e) { console.error("niche", e); }
     const fs = $("#footSources");
-    if (fs) fs.textContent = DB.meta.sourceNote;
+    if (fs) fs.textContent = DB.meta.sourceNote + " (materials/miracle/transcript.xml은 0바이트 — 담을 실측 단가 없음)";
     const dc = $("#dbCount");
     if (dc) dc.textContent = DB.products.length;
   });
