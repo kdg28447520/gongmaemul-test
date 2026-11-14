@@ -263,21 +263,23 @@
     }
 
     /* ---- 최근 공고 ---- */
-    $("#cntActive").textContent = ac.length + "건";
+    const liveOpen = ac.filter((a) => a.deadline && ddays(a.deadline) >= 0).length;
+    const liveThisMonth = D.active.filter((a) => a.date.slice(0, 7) === todayStr.slice(0, 7)).length;
+    $("#cntActive").textContent = ac.length ? `${ac.length}건 · 접수 중 ${liveOpen}건` : "0건";
     const boxA = $("#listActive");
     if (!ac.length) {
       boxA.innerHTML = emptyBox(
         "최근 공고에 걸리는 물품 건이 없습니다",
-        "수집된 안산시 공고 20건은 모두 공사·용역·매각입니다. 지금은 물품 소액수의 공고가 없는 구간이라, 발주예정 목록으로 준비하는 편이 빠릅니다.",
-        []
+        `수집된 안산시 공고 ${D.active.length}건과 지난 물품 공고 ${D.recentGoods.length}건 어디에도 등록 키워드가 걸리지 않았습니다. 발주예정 목록으로 준비하면서 키워드를 넓혀 두세요.`,
+        ["제설", "화장지", "도서", "인쇄", "가구", "냉난방"]
       );
     } else {
       boxA.innerHTML = ac.slice(0, 30).map((a) => activeCard(a)).join("");
     }
     const liveGoods = D.active.filter((a) => a.kind === "물품").length;
     $("#boardNote").innerHTML =
-      `게시판 확인 2026-11-14 기준 · 전체 공고 ${D.meta.boardTotal || 3092}건 중 최신 5건(3088~3092)은 <b>공사·용역·사용수익허가</b>로, 늘봄상회가 참여할 수 있는 <b>물품 공고는 0건</b>입니다. ` +
-      `수집분 ${D.active.length}건 중 물품 표시 ${liveGoods}건. 신규 공고는 게시판 원문에서 실시간으로 확인하세요.`;
+      `게시판 확인 ${D.meta.liveChecked} · 전체 공고 ${fmt(D.meta.boardTotal)}건 중 이번 달(${todayStr.slice(0, 7)}) 신규 ${liveThisMonth}건, 물품 <b>${liveGoods}건</b>. ` +
+      `지난 물품 공고 ${D.recentGoods.length}건은 마감 표시로 함께 보여 주며, 마감일은 공고문 본문에서 추출한 값입니다.`;
 
     /* ---- 과거 ---- */
     $("#cntPast").textContent = ct.length + "건";
@@ -352,12 +354,13 @@
       <div class="bid-meta">
         <span class="tag ${kindCls}">${esc(a.kind)}</span>
         ${a.cat ? `<span class="tag">${esc(a.cat)}</span>` : ""}
+        ${a.past ? '<span class="tag">지난 공고</span>' : ""}
         <span class="tag">${esc(a.dept)}</span>
       </div>
       <div class="bid-sub"><b>공고일</b> ${esc(a.date)}${a.gosi ? ` · ${esc(a.gosi)}` : ""}${a.no ? ` · No.${esc(a.no)}` : ""}</div>
       <div class="bid-actions">
         <a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">공고문 원문 ↗</a>
-        ${a.kind === "물품" ? `<button class="btn ghost" data-supplier="${esc(a.title.slice(0, 30))}">도매가 검색</button>` : ""}
+        <button class="btn ghost" data-supplier="${esc(a.title.slice(0, 30))}">도매가 검색</button>
       </div>
     </article>`;
   }
