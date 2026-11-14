@@ -9,7 +9,7 @@
 <meta property="og:title" content="동곤 헬프스토어 PRO">
 <meta property="og:description" content="실측 단가 DB 기반 소싱 판정·광고 분석·마진 누수·상세페이지·GEO·셀러 캘린더.">
 <meta property="og:type" content="website">
-<link rel="stylesheet" href="./styles.css?v=5">
+<link rel="stylesheet" href="./styles.css?v=6">
 <script>
 /* 오류 계측: 브라우저 콘솔 오류를 이 배열에 모아 검수할 수 있게 한다 */
 window.__hsErrors = [];
@@ -40,6 +40,11 @@ window.addEventListener("unhandledrejection", function (e) { window.__hsErrors.p
     <button class="nav-item" data-view="margin-leak" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M5 9h14l-1.5 11a2 2 0 0 1-2 1.8h-7A2 2 0 0 1 6.5 20L5 9Z"/><path d="M9.5 14.5c1.5 1 3.5 1 5 0"/></svg>
       <span>매출/마진 누수</span>
+    </button>
+    <div class="nav-label">올에잇</div>
+    <button class="nav-item" data-view="all8" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M12 12v9"/></svg>
+      <span>소싱·가공·8대마켓</span><span class="nav-tag">all8</span>
     </button>
     <div class="nav-label">AI · 검색</div>
     <button class="nav-item" data-view="studio" type="button">
@@ -698,7 +703,257 @@ window.addEventListener("unhandledrejection", function (e) { window.__hsErrors.p
     </div>
   </section>
 
-  <!-- ═══════════ 7. 내 저장소 ═══════════ -->
+  <!-- ═══════════ 7. 올에잇 (소싱 큐 · 프리셋 일괄가공 · 이미지 스튜디오 · 8대 마켓) ═══════════ -->
+  <section class="view" id="view-all8" data-title="올에잇 소싱·가공·8대마켓" data-sub="실측 소싱 큐에 프리셋을 일괄 적용하고, 대표이미지를 1000×1000으로 가공해 8개 마켓 업로드 CSV로 내보냅니다.">
+    <div class="card">
+      <div class="tabs" id="a8Tabs">
+        <button class="active" data-a8tab="queue" type="button">① 소싱 큐 · 프리셋 일괄가공</button>
+        <button data-a8tab="studio" type="button">② 이미지 스튜디오</button>
+        <button data-a8tab="markets" type="button">③ 8대 마켓 워크벤치 · CSV</button>
+      </div>
+      <div class="card-b" style="padding:10px 16px"><p class="note" id="a8Status">불러오는 중…</p></div>
+    </div>
+
+    <!-- ── ① 소싱 큐 ── -->
+    <div id="a8PaneQueue">
+      <div class="grid-2">
+        <div class="stack">
+          <div class="card">
+            <div class="card-h"><h2>프리셋 규칙</h2><span class="hint">[일괄 적용] 대상</span></div>
+            <div class="card-b">
+              <div class="field"><label for="a8Prefix">상품명 접두어</label><input id="a8Prefix" type="text" autocomplete="off" placeholder="비우면 접두어 없음"></div>
+              <div class="preset-row" style="margin:8px 0 0">
+                <span class="preset-label">빠른 선택</span>
+                <button class="chip" data-prefix="" type="button">없음</button>
+                <button class="chip" data-prefix="[무료배송]" type="button">[무료배송]</button>
+                <button class="chip" data-prefix="[당일출고]" type="button">[당일출고]</button>
+                <button class="chip" data-prefix="[특가]" type="button">[특가]</button>
+              </div>
+              <div class="row-2" style="margin-top:10px">
+                <div class="field"><label for="a8MaxLen">상품명 최대 길이 <span class="q">자동 컷</span></label><div class="unit"><input id="a8MaxLen" type="number" min="10" max="100" step="1"><i>자</i></div></div>
+                <div class="field"><label for="a8Fx">환율 <span class="q">원가 통화 → 원</span></label><div class="unit"><input id="a8Fx" type="number" min="0.01" step="0.01"><i>×</i></div></div>
+              </div>
+              <div class="row-2" style="margin-top:10px">
+                <div class="field"><label for="a8Margin">신규 상품 기본 마진율 <span class="q">원가 대비</span></label><div class="unit"><input id="a8Margin" type="number" min="0" step="1"><i>%</i></div></div>
+                <div class="field"><label for="a8Round">반올림 단위</label>
+                  <select id="a8Round"><option value="10">10원</option><option value="100">100원</option><option value="1000">1,000원</option></select>
+                </div>
+              </div>
+              <div class="strip" style="margin-top:12px">
+                <button class="btn primary" id="a8Apply" type="button">일괄 적용</button>
+                <button class="btn" id="a8MarginAll" type="button">마진율 일괄 적용</button>
+                <button class="btn ghost" id="a8PresetReset" type="button">기본값</button>
+              </div>
+              <p class="note" style="margin-top:8px">판매가 = <b>(도매원가 × 환율 × (1 + 마진율) + 배송비)</b> → 반올림 단위로 자동 반올림. 예: 5,940원 · 환율 1 · 마진 132.3% · 배송 100원 → <b id="a8FormulaDemo">—</b></p>
+            </div>
+          </div>
+
+          <div class="card" id="a8FormCard">
+            <div class="card-h"><h2 id="a8FormTitle">상품 추가</h2><span class="hint" id="a8FormMode">새 항목</span></div>
+            <div class="card-b">
+              <div class="field"><label for="a8Name">상품명 <span class="q">중복 자동 차단</span></label><input id="a8Name" type="text" autocomplete="off" placeholder="예: 원터치 원형 쓰레기통 우드 7L"></div>
+              <div class="field" style="margin-top:10px"><label for="a8Url">상품 URL</label><input id="a8Url" type="url" autocomplete="off" placeholder="https://"></div>
+              <div class="row-3" style="margin-top:10px">
+                <div class="field"><label for="a8Cost">도매원가</label><div class="unit"><input id="a8Cost" type="number" min="0" step="10"><i>원</i></div></div>
+                <div class="field"><label for="a8Ship">배송비 <span class="q">개당</span></label><div class="unit"><input id="a8Ship" type="number" min="0" step="10"><i>원</i></div></div>
+                <div class="field"><label for="a8ItemMargin">마진율</label><div class="unit"><input id="a8ItemMargin" type="number" min="0" step="0.1"><i>%</i></div></div>
+              </div>
+              <div class="field" style="margin-top:10px"><label for="a8Memo">메모 · 출처 <span class="q">쿠팡 대조가·주의사항</span></label><textarea id="a8Memo" rows="2"></textarea></div>
+              <div class="strip" style="margin-top:10px">
+                <button class="btn primary" id="a8Add" type="button">큐에 추가</button>
+                <button class="btn" id="a8EditSave" type="button" disabled>수정 저장</button>
+                <button class="btn ghost" id="a8EditCancel" type="button" disabled>수정 취소</button>
+                <button class="btn ghost" id="a8SeedRestore" type="button">실측 5선 복원</button>
+              </div>
+              <p class="note" id="a8FormNote" style="margin-top:8px">실측 5선은 바나나B2B 실단가와 쿠팡 1:1 대조값입니다. 새 상품은 이 기기에만 저장됩니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-h"><h2>소싱 큐 <span class="mini" id="a8QueueCount">0개</span></h2>
+              <span class="right"><button class="btn sm" id="a8QueueCsv" type="button">큐 CSV</button><button class="btn sm" id="a8QueueCopy" type="button">상품명 복사</button></span>
+            </div>
+            <div class="card-b">
+              <div class="tbl-wrap">
+                <table class="tbl">
+                  <thead><tr><th>상품</th><th class="num">도매원가</th><th class="num">배송비</th><th class="num">마진율</th><th class="num">계산 판매가</th><th>최종 상품명</th><th>판정</th><th>관리</th></tr></thead>
+                  <tbody id="a8QueueBody"></tbody>
+                </table>
+              </div>
+              <p class="note" style="margin-top:10px">‘최종 상품명’은 프리셋 접두어 + 최대 길이 컷이 적용된 값입니다. 판정은 실측 소싱 규칙(판매가 12,000원 미만이면 로켓그로스 소형 고정비 2,585원 때문에 실마진 없음)을 그대로 계산합니다. 실측 5선의 마진율은 자료의 제안 판매가를 이 공식으로 역산한 값입니다.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>일괄 적용 결과</h2><span class="right badge gray" id="a8ApplyBadge">대기</span></div>
+            <div class="card-b">
+              <div class="tbl-wrap">
+                <table class="tbl"><thead><tr><th>상품</th><th>프리셋 상품명</th><th class="num">글자</th><th class="num">판매가</th><th>변경</th></tr></thead>
+                <tbody id="a8ApplyBody"><tr><td colspan="5" class="note">[일괄 적용]을 누르면 상품별로 바뀐 값이 여기에 남습니다.</td></tr></tbody></table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ② 이미지 스튜디오 ── -->
+    <div id="a8PaneStudio" class="hidden">
+      <div class="grid-2">
+        <div class="stack">
+          <div class="card">
+            <div class="card-h"><h2>이미지 불러오기</h2><span class="hint">브라우저 안에서만 처리</span></div>
+            <div class="card-b">
+              <div class="drop" id="a8Drop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="15" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="M21 15l-4.5-4.5L9 19"/></svg>
+                <b>이미지를 끌어다 놓거나 클릭</b>
+                <span>JPG · PNG · WebP · 서버 전송 없음</span>
+                <input type="file" id="a8File" accept="image/*" class="hidden">
+              </div>
+              <p class="note" style="margin-top:8px" id="a8ImgNote">아직 이미지가 없습니다. 아래 실측 이미지로 바로 확인할 수 있습니다.</p>
+              <div class="a8-samples" id="a8Samples" style="margin-top:10px"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h"><h2>가공 설정</h2><span class="hint">원클릭 변환</span></div>
+            <div class="card-b">
+              <label class="check-item" style="padding:0 0 4px"><input type="checkbox" id="a8White" checked><span><b>쿠팡 대표이미지 규격으로 변환</b><small>1000×1000 흰 배경 · 상품을 화면 중앙 80% 안에 배치</small></span></label>
+              <div class="form-block">
+                <h3>외국어 문구 가림</h3>
+                <label class="check-item" style="padding:0"><input type="checkbox" id="a8MaskOn"><span><b>가림 박스 켜기</b><small>원본의 외국어 문구 위를 단색으로 덮습니다</small></span></label>
+                <div class="row-2" style="margin-top:8px">
+                  <div class="field"><label for="a8MaskX">가로 시작</label><div class="unit"><input id="a8MaskX" type="number" min="0" max="100" step="1"><i>%</i></div></div>
+                  <div class="field"><label for="a8MaskY">세로 시작</label><div class="unit"><input id="a8MaskY" type="number" min="0" max="100" step="1"><i>%</i></div></div>
+                </div>
+                <div class="row-2" style="margin-top:10px">
+                  <div class="field"><label for="a8MaskW">가로 크기</label><div class="unit"><input id="a8MaskW" type="number" min="0" max="100" step="1"><i>%</i></div></div>
+                  <div class="field"><label for="a8MaskH">세로 크기</label><div class="unit"><input id="a8MaskH" type="number" min="0" max="100" step="1"><i>%</i></div></div>
+                </div>
+                <div class="field" style="margin-top:10px"><label for="a8MaskColor">가림 색</label><input id="a8MaskColor" type="color"></div>
+              </div>
+              <div class="form-block">
+                <h3>한국어 번역 배지 · 카피</h3>
+                <div class="field"><label for="a8BadgeText">배지 문구</label><input id="a8BadgeText" type="text" autocomplete="off" placeholder="예: 메모리폼 꼬리뼈 쿠션"></div>
+                <div class="row-2" style="margin-top:10px">
+                  <div class="field"><label for="a8BadgePos">위치</label>
+                    <select id="a8BadgePos">
+                      <option value="tl">왼쪽 위</option><option value="tc">가운데 위</option><option value="tr">오른쪽 위</option>
+                      <option value="ml">왼쪽 중간</option><option value="mc">정중앙</option><option value="mr">오른쪽 중간</option>
+                      <option value="bl">왼쪽 아래</option><option value="bc" selected>가운데 아래</option><option value="br">오른쪽 아래</option>
+                    </select>
+                  </div>
+                  <div class="field"><label for="a8BadgeSize">글자 크기</label><div class="unit"><input id="a8BadgeSize" type="number" min="16" max="120" step="2"><i>px</i></div></div>
+                </div>
+                <div class="row-2" style="margin-top:10px">
+                  <div class="field"><label for="a8BadgeBg">배경색</label><input id="a8BadgeBg" type="color"></div>
+                  <div class="field"><label for="a8BadgeFg">글자색</label><input id="a8BadgeFg" type="color"></div>
+                </div>
+              </div>
+              <div class="strip" style="margin-top:12px">
+                <button class="btn primary" id="a8Dl" type="button">PNG 다운로드 (1000×1000)</button>
+                <button class="btn" id="a8Reset" type="button">설정 초기화</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-h"><h2>가공 결과</h2><span class="right badge brand" id="a8CanvasSize">1000×1000</span></div>
+            <div class="card-b"><div class="canvas-wrap"><canvas id="a8Canvas" width="1000" height="1000"></canvas></div></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h2>번역 전 / 후 비교</h2><span class="right badge gray" id="a8CmpHint">슬라이더를 움직이세요</span></div>
+            <div class="card-b">
+              <div class="a8-cmp" id="a8Cmp">
+                <canvas id="a8CmpBefore" width="1000" height="1000"></canvas>
+                <canvas id="a8CmpAfter" width="1000" height="1000"></canvas>
+                <div class="a8-cmp-line" id="a8CmpLine"></div>
+              </div>
+              <input type="range" id="a8CmpRange" min="0" max="100" step="1" value="50" style="margin-top:12px">
+              <div class="a8-cmp-label"><span>← 번역 전(원본)</span><span>번역 후(가공) →</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ③ 8대 마켓 ── -->
+    <div id="a8PaneMarkets" class="hidden">
+      <div class="card">
+        <div class="card-h"><h2>8대 마켓 검증 매트릭스</h2><span class="hint">셀을 누르면 그 마켓 점검으로 이동</span>
+          <span class="right"><span class="pill-mini ok" id="a8CntOk">정상 0</span><span class="pill-mini warn" id="a8CntWarn">보완 0</span><span class="pill-mini bad" id="a8CntBad">수정 0</span></span>
+        </div>
+        <div class="card-b">
+          <div class="tbl-wrap">
+            <table class="tbl a8-matrix" id="a8Matrix"><thead id="a8MatrixHead"></thead><tbody id="a8MatrixBody"></tbody></table>
+          </div>
+          <p class="note" style="margin-top:10px">정상 = 등록 가능 · 보완 권장 = 등록은 되지만 손실 위험 · 수정 필요 = 반려/차단 사유. 셀에 마우스를 올리면 사유가 보입니다.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h2>마켓별 필수값 점검</h2>
+          <span class="right"><select id="a8MarketSel" style="padding:6px 10px;border:1px solid var(--line);border-radius:8px;font-size:12px;font-weight:700"></select><span class="badge gray" id="a8MarketBadge">—</span></span>
+        </div>
+        <div class="card-b">
+          <div class="callout info" id="a8MarketRule" style="margin-bottom:12px">마켓을 고르면 규칙이 표시됩니다.</div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>상품</th><th>최종 상품명</th><th class="num">길이</th><th>카테고리 입력 <span class="q">이 마켓 전용</span></th><th>판정</th><th>사유</th><th>CSV</th></tr></thead>
+              <tbody id="a8MarketBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-h"><h2>공통 고시정보 · 원산지</h2><span class="hint">8개 마켓 CSV에 함께 들어감</span></div>
+          <div class="card-b">
+            <div class="field"><label for="a8Notice">고시정보 문구 <span class="q">전자상거래법</span></label><textarea id="a8Notice" rows="4"></textarea></div>
+            <div class="row-2" style="margin-top:10px">
+              <div class="field"><label for="a8Origin">원산지</label><input id="a8Origin" type="text" autocomplete="off" placeholder="예: 중국"></div>
+              <div class="field"><label for="a8Hs">HS코드 <span class="q">11번가 글로벌</span></label><input id="a8Hs" type="text" autocomplete="off" placeholder="예: 3924.90-9000"></div>
+            </div>
+            <div class="field" style="margin-top:10px"><label for="a8Brand">브랜드 · 스토어명</label><input id="a8Brand" type="text" autocomplete="off"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>대량등록 CSV 내보내기</h2><span class="hint">UTF-8 BOM</span></div>
+          <div class="card-b">
+            <div id="a8ChkList" class="checklist"></div>
+            <div class="strip" style="margin-top:12px">
+              <button class="btn primary" id="a8ExportSel" type="button">선택 마켓 CSV</button>
+              <button class="btn" id="a8ExportZip" type="button">전체 8개 마켓 ZIP</button>
+            </div>
+            <p class="note" style="margin-top:8px">엑셀에서 바로 열리도록 UTF-8 BOM을 붙여 내보냅니다. 여러 마켓을 고르면 ZIP 하나로 묶입니다. 실제 업로드 전 각 마켓 양식 파일에 값이 맞는지 한 번 더 확인하세요.</p>
+            <p class="note" id="a8ExportNote" style="margin-top:6px"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h2>마켓 규칙 <span class="mini">상품명 최대 길이는 직접 고칠 수 있습니다</span></h2>
+          <span class="right"><button class="btn sm ghost" id="a8RuleReset" type="button">규칙 기본값</button></span>
+        </div>
+        <div class="card-b">
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>마켓</th><th class="num">상품명 최대</th><th>고시정보</th><th>카테고리</th><th>금지 문구</th><th>근거</th></tr></thead>
+              <tbody id="a8RuleBody"></tbody>
+            </table>
+          </div>
+          <p class="note" style="margin-top:10px">기본값은 2026-11-14에 확인한 판매자 가이드·API 문서 기준입니다(쿠팡 100자 · 네이버 100자 · ESM+ 100byte · 토스 100자·허용 특수문자). 마켓 정책은 바뀌므로 등록 직전 판매자센터 화면을 함께 확인하세요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 8. 내 저장소 ═══════════ -->
   <section class="view" id="view-store" data-title="내 저장소" data-sub="저장한 판정·광고 분석·진단을 이 기기에서 불러오고 JSON/CSV로 내보냅니다.">
     <div class="card">
       <div class="card-h"><h2>저장된 기록 <span class="mini" id="stCount">0건</span></h2>
@@ -738,5 +993,6 @@ window.addEventListener("unhandledrejection", function (e) { window.__hsErrors.p
 <script src="./store.js?v=5"></script>
 <script src="./app.js?v=5"></script>
 <script src="./tools.js?v=7"></script>
+<script src="./all8.js?v=1"></script>
 </body>
 </html>
