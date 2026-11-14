@@ -679,11 +679,18 @@ window.addEventListener("unhandledrejection", function (e) { window.__hsErrors.p
     </div>
 
     <div class="card">
-      <div class="card-h"><h2>B2G 조달 키워드 <span class="mini">도매 9선 연계</span></h2></div>
+      <div class="card-h"><h2>국내 도매몰 통합 DB <span class="mini" id="supCount">54곳</span></h2>
+        <span class="right"><button class="btn sm" id="supCopy" type="button">목록 복사</button></span>
+      </div>
       <div class="card-b">
-        <div class="tbl-wrap">
+        <p class="note" style="margin-bottom:10px">로켓그로스 챌린지 배포 자료 38곳 + 기존 도매 9선을 합치고 중복을 걸렀습니다. 2026-11-14 기준 URL 접속 확인. <b>가격 '공개'</b>는 사업자 승인 없이 단가를 볼 수 있는 몰이라 첫 후보 검증에 바로 쓸 수 있습니다.</p>
+        <div class="row-3">
+          <div class="field"><label for="supGroup">분류</label><select id="supGroup"></select></div>
+          <div class="field"><label for="supQ">검색</label><input id="supQ" type="text" placeholder="도매몰·품목·요건 (예: 문구, 위탁, 공개)"></div>
+        </div>
+        <div class="tbl-wrap" style="margin-top:12px">
           <table class="tbl">
-            <thead><tr><th>도매처</th><th>주력</th><th>조달 연계</th><th>URL</th></tr></thead>
+            <thead><tr><th>도매몰</th><th>주력</th><th>거래형태</th><th>가격</th><th>자격·요건</th><th>URL</th><th>특징·주의</th></tr></thead>
             <tbody id="nB2G"></tbody>
           </table>
         </div>

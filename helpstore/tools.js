@@ -774,10 +774,40 @@
   function fillNiche() {
     $("#nProduct").innerHTML = DB.products.map((p) => '<option value="' + p.id + '">' + esc(p.name) + "</option>").join("");
     fillNicheVocab(DB.products[0].feeCat);
-    $("#nB2G").innerHTML = DB.suppliers.map((s) =>
-      "<tr><td><b>" + esc(s.name) + "</b></td><td class='small'>" + esc(s.cat) + "</td><td class='small'>" + esc(s.b2g) + "</td><td class='small'><a href='" + esc(s.url) + "' target='_blank' rel='noopener'>" + esc(s.url.replace(/^https?:\/\//, "")) + "</a></td></tr>"
-    ).join("");
+    renderSuppliers();
     genNiche();
+  }
+
+  /* 국내 도매몰 통합 DB 54곳 — 분류·가격공개·자격으로 거른다 */
+  function supplierRow(s) {
+    const url = s.url
+      ? "<a href='" + esc(s.url) + "' target='_blank' rel='noopener'>" + esc(s.url.replace(/^https?:\/\//, "").replace(/\/$/, "")) + "</a>"
+      : "<span class='pill-mini'>미확인</span>";
+    const priceCls = s.price === "공개" ? "ok" : s.price === "인증후" ? "warn" : "";
+    const lic = s.group === "licensed" ? " <span class='pill-mini bad'>자격</span>" : "";
+    return "<tr><td><b>" + esc(s.name) + "</b>" + lic + "</td>" +
+      "<td class='small'>" + esc(s.cat) + "</td>" +
+      "<td class='small'>" + esc(s.kind) + "</td>" +
+      "<td class='small'><span class='pill-mini " + priceCls + "'>" + esc(s.price) + "</span></td>" +
+      "<td class='small'>" + esc(s.req) + "</td>" +
+      "<td class='small'>" + url + "</td>" +
+      "<td class='small'>" + esc(s.tip) + "</td></tr>";
+  }
+  function renderSuppliers() {
+    const list = $("#nB2G");
+    if (!list) return;
+    const g = $("#supGroup") ? $("#supGroup").value : "all";
+    const q = $("#supQ") ? String($("#supQ").value || "").trim().toLowerCase() : "";
+    const rows = DB.suppliersMaster.filter((s) => {
+      if (g !== "all" && s.group !== g) return false;
+      if (!q) return true;
+      return (s.name + " " + s.cat + " " + s.tip + " " + s.kind + " " + s.price + " " + s.req).toLowerCase().indexOf(q) >= 0;
+    });
+    list.innerHTML = rows.length
+      ? rows.map(supplierRow).join("")
+      : "<tr><td colspan='7' class='small'>조건에 맞는 도매몰이 없습니다.</td></tr>";
+    if ($("#supCount")) $("#supCount").textContent = rows.length + " / " + DB.suppliersMaster.length + "곳";
+    window.__supCopy = rows.map((s) => [s.name, s.cat, s.kind, s.price, s.req, s.url || "URL 미확인"].join(" | ")).join("\n");
   }
 
   function genNiche() {
@@ -838,6 +868,12 @@
     $("#nGrade").addEventListener("change", genNiche);
     $("#nOrigin").addEventListener("change", genNiche);
     $("#nCopy").addEventListener("click", () => copyText(window.__nicheCopy || "", "키워드 목록을 복사했습니다"));
+    if ($("#supGroup")) {
+      $("#supGroup").innerHTML = DB.supplierGroups.map((g) => '<option value="' + g.id + '">' + esc(g.label) + "</option>").join("");
+      $("#supGroup").addEventListener("change", renderSuppliers);
+    }
+    if ($("#supQ")) $("#supQ").addEventListener("input", renderSuppliers);
+    if ($("#supCopy")) $("#supCopy").addEventListener("click", () => copyText(window.__supCopy || "", "도매몰 목록을 복사했습니다"));
   }
 
   document.addEventListener("DOMContentLoaded", () => {
