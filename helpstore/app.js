@@ -510,7 +510,7 @@
     const zeroSpend = drops.filter((r) => r.rev <= 0).reduce((a, r) => a + r.cost, 0);
     let diag;
     if (roas >= cut) diag = "ROAS " + pct(roas, 1) + "로 커트라인(" + Math.round(cut) + "%)을 넘겼습니다. 다만 " + drops.length + "개 키워드가 " + won(drops.reduce((a, r) => a + r.cost, 0)) + "을 쓰며 손실을 만들고 있습니다. 그 예산을 수익 키워드로 옮기면 같은 돈에서 매출이 더 나옵니다.";
-    else if (roas >= 100) diag = "ROAS " + pct(roas, 1) + "로 광고비는 회수하지만 커트라인(" + Math.round(cut) + "%)에는 못 미칩니다. 주문 0원 키워드에 " + won(zeroSpend) + "이 나갔고 CTR " + pct(ctr, 2) + " · CVR " + pct(cvr, 2) + "입니다. 클릭은 들어오는데 구매가 약하니 상세 첫 화면과 가격을 먼저 점검하세요.";
+    else if (roas >= 100) diag = "ROAS " + pct(roas, 1) + "로 광고비는 회수하지만 커트라인(" + Math.round(cut) + "%)에는 못 미칩니다. 주문 0원 키워드에 " + won(zeroSpend) + "이 나갔고 CTR " + pct(ctr, 2) + " · CVR " + pct(cvr, 2) + "입니다. " + (cvr < 2 ? "클릭은 들어오는데 구매 전환이 약하니 상세 첫 화면과 가격을 먼저 점검하세요." : "전환은 나오지만 광고비를 못 버티고 있으니, ROAS가 높은 키워드로 예산을 모아 커트라인까지 끌어올리세요.");
     else diag = "ROAS " + pct(roas, 1) + "로 광고비조차 회수하지 못합니다. 주문 0원 키워드에 " + won(zeroSpend) + "이 소진됐습니다. 오늘 안에 손실 키워드를 끄고, 남은 예산을 주문이 나온 키워드에만 몰아야 합니다.";
     const note = $("#aDiagNote");
     note.textContent = diag;
@@ -519,7 +519,7 @@
     const acts = [];
     if (drops.length) {
       const top = drops.slice().sort((a, b) => b.cost - a.cost)[0];
-      acts.push("<b>" + esc(top.kw) + "</b> 외 " + drops.length + "개 키워드 즉시 제외 — " + won(drops.reduce((a, r) => a + r.cost, 0)) + "이 적자로 나가고 있습니다. 부정키워드에 먼저 등록하세요.");
+      acts.push("<b>" + esc(top.kw) + "</b>" + (drops.length > 1 ? " 외 " + (drops.length - 1) + "개 키워드" : " 키워드") + " 즉시 제외 — " + won(drops.reduce((a, r) => a + r.cost, 0)) + "이 적자로 나가고 있습니다. 부정키워드에 먼저 등록하세요.");
     }
     if (boosts.length) {
       const b = boosts.slice().sort((a, c) => c.roas - a.roas)[0];
