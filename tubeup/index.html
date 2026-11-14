@@ -387,7 +387,7 @@ const ASSETS = {
   father:    { name:'아버지 눈물',  file:'assets/father.jpg',    fit:'cover', focus:[0.5,0.42],
                tags:['아버지','아빠','얼굴','눈물','클로즈업','노인'],
                grade:'none', motion:'zoomIn' },
-  rainnight: { name:'빗속 밤',      file:'assets/rainnight.jpg', fit:'cover', focus:[0.58,0.45],
+  rainnight: { name:'빗속 밤',      file:'assets/rainnight.jpg', fit:'cover', focus:[0.42,0.42],
                tags:['밤','빗속','비','새벽','어두','심야','혼자'],
                grade:'night', rain:true, motion:'panLeft' },
   memorial:  { name:'추모·제사',    file:'assets/memorial.jpg',  fit:'frame', focus:[0.5,0.5],
@@ -490,18 +490,18 @@ function loadPreset(name){
 /* ---------- 이미지/필터 ---------- */
 const FILTERS = {
   none:'none',
-  night:'brightness(.62) contrast(1.14) saturate(.72) hue-rotate(8deg)',
+  night:'brightness(.74) contrast(1.12) saturate(.78) hue-rotate(6deg)',
   cold:'brightness(.92) contrast(1.08) saturate(.62) hue-rotate(-14deg)',
   warm:'brightness(1.06) contrast(1.02) saturate(1.22) sepia(.16)',
   bw:'grayscale(1) contrast(1.18) brightness(.95)',
   sepia:'sepia(.82) contrast(1.06) saturate(1.05) brightness(1.02)'
 };
 const TINT = {
-  night:'rgba(10,26,64,.30)', cold:'rgba(16,52,72,.16)',
+  night:'rgba(10,26,64,.26)', cold:'rgba(16,52,72,.16)',
   warm:'rgba(255,150,60,.10)', sepia:'rgba(122,84,34,.10)', bw:'rgba(0,0,0,.04)', none:null
 };
 const CSSGRADE = {
-  none:'', night:'brightness(.62) saturate(.72) hue-rotate(8deg)',
+  none:'', night:'brightness(.74) saturate(.78) hue-rotate(6deg)',
   cold:'saturate(.62) hue-rotate(-14deg) brightness(.94)',
   warm:'sepia(.18) saturate(1.2) brightness(1.06)',
   bw:'grayscale(1) contrast(1.15)', sepia:'sepia(.82) brightness(1.02)'
