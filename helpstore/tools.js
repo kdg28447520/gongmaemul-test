@@ -796,7 +796,7 @@
   function renderSuppliers() {
     const list = $("#nB2G");
     if (!list) return;
-    const g = $("#supGroup") ? $("#supGroup").value : "all";
+    const g = $("#supGroup") && $("#supGroup").value ? $("#supGroup").value : "all";
     const q = $("#supQ") ? String($("#supQ").value || "").trim().toLowerCase() : "";
     const rows = DB.suppliersMaster.filter((s) => {
       if (g !== "all" && s.group !== g) return false;
@@ -858,6 +858,11 @@
 
   function initNiche() {
     renderCalendar();
+    if ($("#supGroup")) {
+      $("#supGroup").innerHTML = DB.supplierGroups.map((g) => '<option value="' + g.id + '">' + esc(g.label) + "</option>").join("");
+      $("#supGroup").value = "all";
+      $("#supGroup").addEventListener("change", renderSuppliers);
+    }
     fillNiche();
     $("#nGen").addEventListener("click", genNiche);
     $("#nProduct").addEventListener("change", () => {
@@ -869,8 +874,7 @@
     $("#nOrigin").addEventListener("change", genNiche);
     $("#nCopy").addEventListener("click", () => copyText(window.__nicheCopy || "", "키워드 목록을 복사했습니다"));
     if ($("#supGroup")) {
-      $("#supGroup").innerHTML = DB.supplierGroups.map((g) => '<option value="' + g.id + '">' + esc(g.label) + "</option>").join("");
-      $("#supGroup").addEventListener("change", renderSuppliers);
+      $("#supGroup").value = $("#supGroup").value || "all";
     }
     if ($("#supQ")) $("#supQ").addEventListener("input", renderSuppliers);
     if ($("#supCopy")) $("#supCopy").addEventListener("click", () => copyText(window.__supCopy || "", "도매몰 목록을 복사했습니다"));
