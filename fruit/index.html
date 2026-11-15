@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>과일 소싱 관제탑 — 도매 최저가·로스 마진</title>
+<meta name="description" content="과일 위탁판매 셀러용 도매 관제탑. 도매처 53곳의 공급가를 kg당으로 비교하고, 로스율과 쿠팡 수수료를 반영한 실제 마진을 계산합니다.">
+<link rel="canonical" href="https://gongmaemul.co.kr/fruit/">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="과일 소싱 관제탑 — 도매 최저가·로스 마진">
+<meta property="og:description" content="도매처 53곳·규격 1,676개의 kg당 최저가와 로스 반영 마진 계산.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface-2: #efeee9;
+    --line: rgba(27, 27, 24, 0.11);
+    --line-strong: rgba(27, 27, 24, 0.2);
+    --ink: #1b1b18;
+    --ink-soft: #57564f;
+    --ink-muted: #8a897f;
+    --accent: #1f5c3a;
+    --accent-soft: #e7efe8;
+    --minus: #9a3a24;
+    --radius: 10px;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    letter-spacing: -0.01em;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  a { color: inherit; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px 72px; }
+
+  /* ── header ─────────────────────────────── */
+  header.top {
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 20;
+  }
+  .top-in {
+    max-width: 1120px; margin: 0 auto; padding: 14px 20px 0;
+  }
+  .brand-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .brand { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+  .brand span { color: var(--ink-muted); font-weight: 400; }
+  .brand-row .back { margin-left: auto; font-size: 13px; color: var(--ink-muted); text-decoration: none; }
+  .brand-row .back:hover { color: var(--ink); }
+  .synced { font-size: 12.5px; color: var(--ink-muted); margin-top: 2px; }
+  .synced b { font-weight: 500; color: var(--ink-soft); }
+
+  nav.tabs { display: flex; gap: 22px; margin-top: 12px; }
+  nav.tabs button {
+    appearance: none; background: none; border: 0; padding: 9px 0 11px;
+    font: inherit; font-size: 14.5px; color: var(--ink-muted); cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  nav.tabs button:hover { color: var(--ink-soft); }
+  nav.tabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
+  nav.tabs .cnt { color: var(--ink-muted); font-size: 12.5px; margin-left: 4px; font-weight: 400; }
+
+  /* ── shared ─────────────────────────────── */
+  main { padding-top: 24px; }
+  panel { display: block; }
+  panel[hidden] { display: none; }
+  .lede { font-size: 14px; color: var(--ink-soft); margin: 0 0 18px; max-width: 68ch; }
+  .lede b { font-weight: 500; }
+
+  .statline {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); overflow: hidden; margin-bottom: 20px;
+  }
+  .statline div { padding: 13px 16px; border-right: 1px solid var(--line); }
+  .statline div:last-child { border-right: 0; }
+  .statline .k { font-size: 12px; color: var(--ink-muted); }
+  .statline .v { font-size: 19px; font-weight: 600; margin-top: 2px; letter-spacing: -0.02em; }
+  .statline .v small { font-size: 12.5px; font-weight: 400; color: var(--ink-muted); margin-left: 2px; }
+
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  input[type="search"], input[type="number"], select {
+    font: inherit; color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line-strong); border-radius: 8px;
+    padding: 9px 11px; min-width: 0;
+  }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  input[type="search"] { flex: 1 1 240px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chips button {
+    font: inherit; font-size: 13.5px; padding: 6px 11px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-soft); cursor: pointer;
+  }
+  .chips button:hover { border-color: var(--ink-muted); }
+  .chips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .sortsel { font-size: 13.5px; padding: 8px 10px; }
+
+  .board { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .thead, .brow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 96px 104px minmax(0, 1fr) 62px 74px;
+    align-items: center; gap: 10px; padding: 10px 14px;
+  }
+  .thead {
+    font-size: 12px; color: var(--ink-muted); border-bottom: 1px solid var(--line);
+    background: var(--surface-2); position: sticky; top: 97px; z-index: 5;
+  }
+  .thead .r, .brow .r { text-align: right; }
+  .brow { border-bottom: 1px solid var(--line); cursor: pointer; }
+  .brow:last-child { border-bottom: 0; }
+  .brow:hover { background: #fbfbf8; }
+  .brow .name { min-width: 0; }
+  .brow .name b { font-weight: 500; }
+  .brow .name em { font-style: normal; color: var(--ink-muted); font-size: 13px; margin-left: 6px; }
+  .brow .spec { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); text-align: right; }
+  .brow .kg { font-family: var(--mono); font-size: 15px; text-align: right; letter-spacing: -0.02em; }
+  .brow .kg small { font-family: Pretendard, sans-serif; font-size: 11.5px; color: var(--ink-muted); margin-left: 2px; }
+  .brow .sup { font-size: 13.5px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .brow .cnt, .brow .gap { font-family: var(--mono); font-size: 13px; color: var(--ink-muted); text-align: right; }
+  .brow .gap.wide { color: var(--minus); }
+  .brow .act { text-align: right; }
+  .brow .act button {
+    font: inherit; font-size: 12.5px; padding: 5px 9px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-soft);
+  }
+  .brow .act button:hover { border-color: var(--accent); color: var(--accent); }
+  .offers { background: #fafaf7; border-bottom: 1px solid var(--line); padding: 4px 14px 10px 14px; }
+  .offers table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .offers th { text-align: left; font-weight: 400; color: var(--ink-muted); font-size: 11.5px; padding: 4px 0; }
+  .offers td { padding: 5px 0; border-top: 1px solid var(--line); }
+  .offers td.n { font-family: var(--mono); text-align: right; }
+  .offers .cut { color: var(--ink-muted); font-size: 12px; }
+  .empty { padding: 36px 16px; text-align: center; color: var(--ink-muted); font-size: 14px; }
+  .more { display: block; width: 100%; padding: 12px; font: inherit; font-size: 14px; border: 0; border-top: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); cursor: pointer; }
+  .more:hover { color: var(--ink); background: #fbfbf8; }
+
+  /* ── calculator ─────────────────────────── */
+  .calc { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 20px; align-items: start; }
+  .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 18px; }
+  .card h3 { margin: 0 0 3px; font-size: 15px; font-weight: 600; }
+  .card .hint { margin: 0 0 16px; font-size: 12.5px; color: var(--ink-muted); line-height: 1.5; }
+  .field { margin-bottom: 13px; }
+  .field label { display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 5px; }
+  .field input, .field select { width: 100%; }
+  .field .unit { font-size: 11.5px; color: var(--ink-muted); margin-top: 4px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .seg { display: flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
+  .seg button { flex: 1; font: inherit; font-size: 13px; padding: 8px 6px; border: 0; background: var(--surface); color: var(--ink-soft); cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line-strong); }
+  .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+  .result-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .result-head .big { font-size: 32px; font-weight: 600; letter-spacing: -0.03em; font-family: var(--mono); line-height: 1.1; }
+  .result-head .big.neg { color: var(--minus); }
+  .result-head .cap { font-size: 12.5px; color: var(--ink-muted); margin-bottom: 3px; }
+  .rate { text-align: right; }
+  .rate b { display: block; font-size: 20px; font-weight: 600; font-family: var(--mono); }
+  .rate span { font-size: 12.5px; color: var(--ink-muted); }
+  .rate.good b { color: var(--accent); }
+  .rate.bad b { color: var(--minus); }
+
+  table.ledger { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 14px; }
+  table.ledger th { font-size: 12px; font-weight: 400; color: var(--ink-muted); text-align: left; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  table.ledger td { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  table.ledger td.n { text-align: right; font-family: var(--mono); letter-spacing: -0.02em; }
+  table.ledger td.n.m { color: var(--minus); }
+  table.ledger tr.sum td { font-weight: 600; border-bottom: 0; padding-top: 12px; }
+  table.ledger tr.goal td { color: var(--ink-soft); font-size: 13.5px; }
+  table.ledger tr.goal td.n { font-family: var(--mono); }
+
+  .sens { margin-top: 16px; }
+  .sens h4 { margin: 0 0 8px; font-size: 13px; font-weight: 500; color: var(--ink-soft); }
+  .sens table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sens th, .sens td { padding: 6px 0; border-bottom: 1px solid var(--line); text-align: right; font-family: var(--mono); }
+  .sens th { font-weight: 400; font-size: 11.5px; color: var(--ink-muted); border-bottom: 1px solid var(--line-strong); }
+  .sens th:first-child, .sens td:first-child { text-align: left; }
+  .sens td.neg { color: var(--minus); }
+  .sens tr[data-on="1"] td { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+  .note { font-size: 12.5px; color: var(--ink-muted); line-height: 1.6; margin-top: 14px; }
+  .note b { color: var(--ink-soft); font-weight: 500; }
+
+  /* ── suppliers ──────────────────────────── */
+  .suprow {
+    display: grid; grid-template-columns: minmax(0, 1fr) 96px 74px 116px;
+    gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line);
+  }
+  .suprow:last-child { border-bottom: 0; }
+  .suprow .nm { min-width: 0; }
+  .suprow .nm b { font-weight: 500; }
+  .suprow .nm .tag { font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
+  .suprow .plat { font-size: 12px; color: var(--ink-muted); }
+  .suprow .items { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--ink-soft); }
+  .suprow .go { text-align: right; }
+  .suprow .go a { font-size: 13px; color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-strong); padding-bottom: 1px; }
+  .suprow .go a:hover { color: var(--accent); border-color: var(--accent); }
+  .suphead { font-size: 12px; color: var(--ink-muted); background: var(--surface-2); border-bottom: 1px solid var(--line); }
+  .suphead .items, .suphead .go { font-family: inherit; font-size: 12px; }
+
+  footer.foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-muted); line-height: 1.7; }
+  footer.foot a { color: var(--ink-soft); }
+
+  @media (max-width: 860px) {
+    .calc { grid-template-columns: 1fr; }
+    .statline { grid-template-columns: 1fr 1fr; }
+    .statline div { border-bottom: 1px solid var(--line); }
+    .statline div:nth-child(2n) { border-right: 0; }
+    .statline div:nth-child(n+3) { border-bottom: 0; }
+  }
+  @media (max-width: 700px) {
+    body { font-size: 14.5px; }
+    .wrap { padding: 0 14px 56px; }
+    .thead { display: none; }
+    .brow {
+      grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px;
+      padding: 12px 14px;
+    }
+    .brow .name { grid-column: 1; }
+    .brow .kg { grid-column: 2; grid-row: 1; font-size: 16px; }
+    .brow .spec { grid-column: 1; text-align: left; }
+    .brow .sup { grid-column: 1; }
+    .brow .sup::before { content: "최저 "; color: var(--ink-muted); font-size: 12px; }
+    .brow .cnt { grid-column: 2; grid-row: 3; }
+    .brow .cnt::after { content: "곳"; font-size: 11px; }
+    .brow .gap { grid-column: 2; grid-row: 2; }
+    .brow .gap::before { content: "최고 "; font-size: 11px; }
+    .brow .gap::after { content: "배"; font-size: 11px; }
+    .brow .act { grid-column: 2; grid-row: 4; }
+    .brow .act button { font-size: 12px; padding: 4px 8px; }
+    .suprow { grid-template-columns: minmax(0, 1fr) 74px 92px; }
+    .suprow .plat { display: none; }
+    .suphead .plat { display: none; }
+    .two { grid-template-columns: 1fr 1fr; }
+    nav.tabs { gap: 16px; }
+    nav.tabs button { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand-row">
+      <div class="brand">과일 소싱 관제탑 <span>도매 최저가 · 로스 마진</span></div>
+      <a class="back" href="https://gongmaemul.co.kr/">공매물 →</a>
+    </div>
+    <div class="synced">공급가 <b id="syncLine">불러오는 중</b></div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-board" aria-selected="true" data-panel="board">도매 최저가</button>
+      <button role="tab" id="tab-calc" aria-selected="false" data-panel="calc">로스 마진 계산</button>
+      <button role="tab" id="tab-sup" aria-selected="false" data-panel="sup">도매처 <span class="cnt" id="supCnt"></span></button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+
+  <!-- ── 도매 최저가 ───────────────────────────── -->
+  <panel id="panel-board">
+    <p class="lede">도매처가 공개한 공급가를 <b>kg당 단가</b>로 맞춰 정렬했습니다. 같은 규격을 여러 업체가 올리면 가장 싼 곳이 위에 옵니다. 행을 누르면 업체별 견적이 펼쳐집니다.</p>
+    <div class="statline" id="statline"></div>
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="품종·규격·업체 검색 (예: 부사 5kg, 대봉감, 에코앤팜)">
+      <select id="sort" class="sortsel">
+        <option value="kg">kg단가 낮은 순</option>
+        <option value="gap">업체 간 격차 큰 순</option>
+        <option value="many">비교 업체 많은 순</option>
+      </select>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="board">
+      <div class="thead">
+        <div>품목 · 품종</div>
+        <div class="r">규격</div>
+        <div class="r">최저 kg단가</div>
+        <div>최저 업체</div>
+        <div class="r">비교</div>
+        <div class="r">최고/최저</div>
+      </div>
+      <div id="rows"></div>
+    </div>
+    <p class="note">kg단가는 업체가 표기한 중량으로 나눈 값입니다. 박스·난좌 무게가 포함된 상품은 실제 원물 무게보다 가볍게 계산되니, 같은 품목이라도 규격 표기를 함께 보세요.</p>
+  </panel>
+
+  <!-- ── 마진 계산 ─────────────────────────────── -->
+  <panel id="panel-calc" hidden>
+    <p class="lede">공급가와 판매가를 넣으면 수수료와 <b>로스율</b>을 뺀 순이익이 나옵니다. 로스는 파손·무름으로 환불해 준 몫이라, 판매 한 건이 통째로 사라진 것으로 계산하는 <b>매출 기준</b>이 실제에 가깝습니다.</p>
+    <div class="calc">
+      <form class="card" id="calcForm" onsubmit="return false">
+        <h3>입력</h3>
+        <p class="hint">단가는 부가세 포함 총액으로 넣습니다.</p>
+        <div class="two">
+          <div class="field">
+            <label for="cost">공급가 (총액)</label>
+            <input type="number" id="cost" inputmode="numeric" placeholder="10000">
+          </div>
+          <div class="field">
+            <label for="price">판매가</label>
+            <input type="number" id="price" inputmode="numeric" placeholder="19900">
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="ship">배송비</label>
+            <input type="number" id="ship" inputmode="numeric" value="0">
+            <div class="unit">무료배송이면 0</div>
+          </div>
+          <div class="field">
+            <label for="fee">판매 수수료율 (%)</label>
+            <input type="number" id="fee" inputmode="decimal" step="0.01" value="11.66">
+            <div class="unit">쿠팡 식품 기준 · 윙에서 확인</div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="loss">로스율 (%)</label>
+          <input type="number" id="loss" inputmode="decimal" step="0.1" value="3">
+          <div class="unit">파손·무름으로 환불해 준 비율 (기본 3%)</div>
+        </div>
+        <div class="field">
+          <label>로스 계산 기준</label>
+          <div class="seg" id="lossBase">
+            <button type="button" data-v="revenue" aria-pressed="true">매출 기준</button>
+            <button type="button" data-v="cost" aria-pressed="false">원가 기준</button>
+          </div>
+          <div class="unit" id="lossBaseHint"></div>
+        </div>
+        <button type="button" id="resetBtn" style="font:inherit;font-size:13px;margin-top:4px;padding:7px 12px;border-radius:7px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);cursor:pointer">값 비우기</button>
+      </form>
+
+      <div class="card" id="calcOut">
+        <div class="result-head">
+          <div>
+            <div class="cap">한 건당 순이익</div>
+            <div class="big" id="mProfit">—</div>
+          </div>
+          <div class="rate" id="mRateWrap">
+            <b id="mRate">—</b>
+            <span id="mVerdict">값을 넣어주세요</span>
+          </div>
+        </div>
+        <table class="ledger">
+          <thead><tr><th>항목</th><th class="r" style="text-align:right">금액</th></tr></thead>
+          <tbody id="ledger"></tbody>
+        </table>
+        <div class="sens">
+          <h4>로스율이 오르면 (판매가·공급가 고정)</h4>
+          <table id="sensTable"></table>
+        </div>
+        <p class="note" id="calcNote"></p>
+      </div>
+    </div>
+  </panel>
+
+  <!-- ── 도매처 ────────────────────────────────── -->
+  <panel id="panel-sup" hidden>
+    <p class="lede">공급가를 받아본 과일 도매처 <b id="supLede"></b>입니다. 대부분 업체 승인을 받아야 단가가 보이는 B2B라, 가격은 위 최저가 보드에서 확인하고 여기서는 거래처를 고릅니다.</p>
+    <div class="toolbar">
+      <input type="search" id="sq" placeholder="도매처 이름 검색">
+      <select id="ssort" class="sortsel">
+        <option value="items">품목 많은 순</option>
+        <option value="name">이름 순</option>
+        <option value="recent">최근 수집 순</option>
+      </select>
+    </div>
+    <div class="board">
+      <div class="suprow suphead">
+        <div>도매처</div>
+        <div class="plat">유형</div>
+        <div class="items">품목</div>
+        <div class="go">바로가기</div>
+      </div>
+      <div id="supRows"></div>
+    </div>
+    <p class="note" id="supNote"></p>
+  </panel>
+
+</main>
+
+<footer class="foot">
+  <p>공급가 출처: <a href="https://xn--9t4b27ensi3ue.xn--2e0by6qn7bb2m79f84o.com/sourcing.html" target="_blank" rel="noopener">구멍이 스카우트</a> 공개 도매가 비교 · 도매처 목록: <a href="https://xn--2e0by6qn7bb2m79f84o.com/b2b.html" target="_blank" rel="noopener">구멍이 클래스 B2B 사이트모음</a> · 2026-11-15 15:07 수집분</p>
+  <p>표시된 공급가는 수집 시점 값입니다. 발주 전 해당 도매처의 당일 단가표를 다시 확인하세요. 마진 계산은 수수료·로스만 반영하며 부가세, 반품 배송비, 광고비는 넣지 않았습니다.</p>
+</footer>
+</div>
+
+<script>
+const won = n => (n == null ? '—' : Math.round(n).toLocaleString('ko-KR'));
+const KG = v => (v == null ? '' : (Math.round(v * 100) / 100).toLocaleString('ko-KR'));
+
+let DATA = null, SUPS = [], SPECS = [];
+const state = { group: '전체', q: '', sort: 'kg', shown: 60, open: -1 };
+
+/* ── 데이터 ─────────────────────────────── */
+fetch('data.json')
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(d => { DATA = d; SUPS = d.suppliers; SPECS = d.specs; init(); })
+  .catch(e => {
+    document.getElementById('rows').innerHTML =
+      '<div class="empty">공급가 자료를 불러오지 못했습니다. 잠시 후 새로고침해 주세요.<br><span style="font-size:12px">' + e.message + '</span></div>';
+  });
+
+function init() {
+  document.getElementById('syncLine').textContent = DATA.synced_at_kst + ' 기준 · 규격 ' + won(SPECS.length) + '개';
+  document.getElementById('supCnt').textContent = SUPS.length;
+  document.getElementById('supLede').textContent = SUPS.length + '곳';
+  renderStats();
+  renderChips();
+  renderBoard();
+  renderSup();
+  bindTabs();
+  bindCalc();
+}
+
+/* ── 탭 ─────────────────────────────────── */
+function bindTabs() {
+  document.querySelectorAll('nav.tabs button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('nav.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+      document.querySelectorAll('panel').forEach(p => { p.hidden = p.id !== 'panel-' + b.dataset.panel; });
+      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    });
+  });
+}
+function goCalc() {
+  document.getElementById('tab-calc').click();
+}
+
+/* ── 요약 ───────────────────────────────── */
+function renderStats() {
+  const sups = new Set();
+  let offers = 0;
+  SPECS.forEach(s => { s[10].forEach(o => { sups.add(o[0]); offers++; }); });
+  const rows = [
+    ['비교 규격', won(SPECS.length), '개'],
+    ['참여 도매처', sups.size, '곳'],
+    ['최저가 견적', won(offers), '건'],
+    ['집계', DATA.synced_at_kst.slice(5, 16), '']
+  ];
+  document.getElementById('statline').innerHTML = rows
+    .map(([k, v, u]) => `<div><div class="k">${k}</div><div class="v">${v}<small>${u}</small></div></div>`).join('');
+}
+
+/* ── 칩 ─────────────────────────────────── */
+function renderChips() {
+  const el = document.getElementById('chips');
+  const count = {};
+  SPECS.forEach(s => { const g = DATA.groups[s[0]]; count[g] = (count[g] || 0) + 1; });
+  const list = Object.entries(count).sort((a, b) => b[1] - a[1]);
+  el.innerHTML = ['전체'].concat(list.map(([g]) => g))
+    .map(g => `<button data-g="${g}" aria-pressed="${g === state.group}">${g}${g === '전체' ? '' : ' <span style="opacity:.6;font-size:12px">' + count[g] + '</span>'}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    state.group = b.dataset.g; state.shown = 60; state.open = -1;
+    el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderBoard();
+  }));
+}
+
+/* ── 보드 ───────────────────────────────── */
+function filtered() {
+  const q = state.q.trim().toLowerCase();
+  let list = SPECS.map((s, i) => ({ s, i }));
+  if (state.group !== '전체') list = list.filter(x => DATA.groups[x.s[0]] === state.group);
+  if (q) list = list.filter(x => (DATA.groups[x.s[0]] + ' ' + (x.s[1] || '') + ' ' + (x.s[2] || '') + ' ' + (x.s[3] || '') + ' ' + x.s[4] + 'kg ' + SUPS[x.s[7]].name).toLowerCase().includes(q));
+  if (state.sort === 'kg') list.sort((a, b) => a.s[5] - b.s[5]);
+  else if (state.sort === 'gap') list.sort((a, b) => (b.s[9] / b.s[5]) - (a.s[9] / a.s[5]));
+  else list.sort((a, b) => b.s[8] - a.s[8] || a.s[5] - b.s[5]);
+  return list;
+}
+
+function renderBoard() {
+  const list = filtered();
+  const el = document.getElementById('rows');
+  if (!list.length) { el.innerHTML = '<div class="empty">조건에 맞는 규격이 없습니다.</div>'; return; }
+  const show = list.slice(0, state.shown);
+  let html = show.map(({ s, i }) => {
+    const g = DATA.groups[s[0]];
+    const ratio = s[9] / s[5];
+    const open = state.open === i;
+    let h = `<div class="brow" data-i="${i}">
+      <div class="name"><b>${g}</b>${s[1] ? '<em>' + s[1] + '</em>' : ''}</div>
+      <div class="spec">${s[4] ? KG(s[4]) + 'kg' : '—'}${s[3] ? ' · ' + s[3] : ''}</div>
+      <div class="kg">${won(s[5])}<small>원/kg</small></div>
+      <div class="sup">${SUPS[s[7]].name}</div>
+      <div class="cnt">${s[8]}</div>
+      <div class="gap${ratio >= 1.3 ? ' wide' : ''}">${ratio.toFixed(2)}</div>
+      <div class="act"><button data-fill="${i}">마진</button></div>
+    </div>`;
+    if (open) {
+      h += `<div class="offers"><table><thead><tr><th>업체</th><th style="text-align:right">총액</th><th style="text-align:right">kg단가</th><th style="text-align:right">마감</th></tr></thead><tbody>` +
+        s[10].map(o => `<tr><td>${SUPS[o[0]].name}</td><td class="n">${won(o[1])}원</td><td class="n">${won(o[2])}원</td><td class="n cut">${o[3] || '—'}</td></tr>`).join('') +
+        `</tbody></table></div>`;
+    }
+    return h;
+  }).join('');
+  if (list.length > state.shown) {
+    html += `<button class="more" id="moreBtn">${won(list.length - state.shown)}개 더 보기</button>`;
+  }
+  el.innerHTML = html;
+
+  el.querySelectorAll('.brow').forEach(r => r.addEventListener('click', ev => {
+    if (ev.target.tagName === 'BUTTON') return;
+    const i = Number(r.dataset.i);
+    state.open = state.open === i ? -1 : i;
+    renderBoard();
+  }));
+  el.querySelectorAll('[data-fill]').forEach(b => b.addEventListener('click', ev => {
+    ev.stopPropagation();
+    const s = SPECS[Number(b.dataset.fill)];
+    fillCalc(s);
+  }));
+  const more = document.getElementById('moreBtn');
+  if (more) more.addEventListener('click', () => { state.shown += 60; renderBoard(); });
+}
+
+document.getElementById('q').addEventListener('input', e => { state.q = e.target.value; state.shown = 60; renderBoard(); });
+document.getElementById('sort').addEventListener('change', e => { state.sort = e.target.value; renderBoard(); });
+
+/* ── 계산기 ─────────────────────────────── */
+const C = { base: 'revenue' };
+
+function fillCalc(s) {
+  document.getElementById('cost').value = s[6];
+  const cfg = readInputs();
+  const target = targetPrice(cfg, 20);
+  document.getElementById('price').value = Number.isFinite(target) ? Math.round(target / 100) * 100 : '';
+  goCalc();
+  renderCalc();
+  document.getElementById('cost').focus({ preventScroll: true });
+}
+
+function readInputs() {
+  const g = id => Number(document.getElementById(id).value) || 0;
+  return { cost: g('cost'), price: g('price'), ship: g('ship'), fee: g('fee'), loss: g('loss') };
+}
+function coeffs(c) {
+  const rev = 1 - c.fee / 100 - (C.base === 'revenue' ? c.loss / 100 : 0);
+  const fixed = c.cost * (1 + (C.base === 'cost' ? c.loss / 100 : 0)) + c.ship;
+  return { rev, fixed };
+}
+function targetPrice(c, marginPct) {
+  const { rev, fixed } = coeffs(c);
+  const d = rev - marginPct / 100;
+  return d > 0 ? fixed / d : NaN;
+}
+function breakeven(c) {
+  const { rev, fixed } = coeffs(c);
+  return rev > 0 ? fixed / rev : NaN;
+}
+
+function calc(c) {
+  const fee = c.price * c.fee / 100;
+  const lossCost = C.base === 'revenue' ? c.price * c.loss / 100 : c.cost * c.loss / 100;
+  const profit = c.price - c.cost - c.ship - fee - lossCost;
+  const rate = c.price > 0 ? profit / c.price * 100 : 0;
+  return { fee, lossCost, profit, rate };
+}
+
+function bindCalc() {
+  ['cost', 'price', 'ship', 'fee', 'loss'].forEach(id =>
+    document.getElementById(id).addEventListener('input', renderCalc));
+  document.querySelectorAll('#lossBase button').forEach(b => b.addEventListener('click', () => {
+    C.base = b.dataset.v;
+    document.querySelectorAll('#lossBase button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderCalc();
+  }));
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    ['cost', 'price'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('ship').value = 0;
+    document.getElementById('fee').value = 11.66;
+    document.getElementById('loss').value = 3;
+    renderCalc();
+  });
+  renderCalc();
+}
+
+function renderCalc() {
+  const c = readInputs();
+  const hint = document.getElementById('lossBaseHint');
+  hint.textContent = C.base === 'revenue'
+    ? '파손 건은 판매가를 환불하므로 판매가 × 로스율을 손실로 봅니다.'
+    : '원가 × 로스율만 손실로 봅니다. 실제보다 마진이 좋게 나옵니다.';
+
+  const out = document.getElementById('mProfit');
+  const rateEl = document.getElementById('mRate');
+  const verdict = document.getElementById('mVerdict');
+  const wrap = document.getElementById('mRateWrap');
+  const ledger = document.getElementById('ledger');
+
+  if (!c.cost && !c.price) {
+    out.textContent = '—'; out.classList.remove('neg');
+    rateEl.textContent = '—'; verdict.textContent = '값을 넣어주세요';
+    wrap.className = 'rate';
+    ledger.innerHTML = '<tr><td colspan="2" style="color:var(--ink-muted);font-size:13.5px;padding:14px 0">공급가와 판매가를 넣으면 항목별로 나눠 보여드립니다.</td></tr>';
+    document.getElementById('sensTable').innerHTML = '';
+    document.getElementById('calcNote').textContent = '';
+    return;
+  }
+
+  const r = calc(c);
+  out.textContent = won(r.profit) + '원';
+  out.classList.toggle('neg', r.profit < 0);
+  rateEl.textContent = r.rate.toFixed(1) + '%';
+  wrap.className = 'rate ' + (r.rate >= 20 ? 'good' : r.rate < 10 ? 'bad' : '');
+  verdict.textContent = r.rate >= 20 ? '목표 20% 넘김' : r.rate >= 10 ? '10%대 · 여유 부족' : r.profit < 0 ? '적자' : '10% 미만';
+
+  const be = breakeven(c);
+  const goal = targetPrice(c, 20);
+  ledger.innerHTML = [
+    ['판매가', won(c.price), ''],
+    ['공급가', '−' + won(c.cost), 'm'],
+    ['배송비', '−' + won(c.ship), 'm'],
+    [`수수료 ${c.fee}%`, '−' + won(r.fee), 'm'],
+    [`로스 ${c.loss}% (${C.base === 'revenue' ? '매출' : '원가'} 기준)`, '−' + won(r.lossCost), 'm'],
+    ['순이익', won(r.profit), 'sum']
+  ].map(([k, v, cls]) => `<tr class="${cls === 'sum' ? 'sum' : ''}"><td>${k}</td><td class="n ${cls === 'm' ? 'm' : ''}">${v}원</td></tr>`).join('')
+    + `<tr class="goal"><td>손익분기 판매가</td><td class="n">${won(be)}원</td></tr>`
+    + `<tr class="goal"><td>마진 20% 목표 판매가</td><td class="n">${won(goal)}원</td></tr>`;
+
+  const steps = [0, 1, 3, 5, 7, 10];
+  document.getElementById('sensTable').innerHTML =
+    '<tr><th>로스율</th><th>순이익</th><th>마진율</th></tr>' +
+    steps.map(l => {
+      const rr = calc({ ...c, loss: l });
+      return `<tr data-on="${l === c.loss ? 1 : 0}"><td>${l}%</td><td class="${rr.profit < 0 ? 'neg' : ''}">${won(rr.profit)}원</td><td>${rr.rate.toFixed(1)}%</td></tr>`;
+    }).join('');
+
+  const costAtGoal = c.price ? ((c.price * coeffs(c).rev - c.ship) / (1 + (C.base === 'cost' ? c.loss / 100 : 0))) : 0;
+  document.getElementById('calcNote').innerHTML =
+    `판매가 ${won(c.price)}원에서 마진 20%를 지키려면 공급가는 <b>${won(costAtGoal)}원</b> 이하여야 합니다` +
+    (c.cost > costAtGoal ? ` — 지금 공급가는 ${won(c.cost - costAtGoal)}원 초과입니다.` : ' — 지금 공급가는 조건 안에 있습니다.');
+}
+
+/* ── 도매처 ─────────────────────────────── */
+function renderSup() {
+  const q = (document.getElementById('sq').value || '').trim().toLowerCase();
+  let list = SUPS.filter(s => !q || s.name.toLowerCase().includes(q));
+  const sort = document.getElementById('ssort').value;
+  if (sort === 'items') list.sort((a, b) => (b.items || 0) - (a.items || 0));
+  else if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  else list.sort((a, b) => String(b.last || '').localeCompare(String(a.last || '')));
+
+  const platLabel = p => ({ adminplus: 'partner 로그인', gsheet: '구글시트 단가표', baljuora: '발주오라', direct: '자체 몰', walldo: '자체 몰' }[p] || p);
+  document.getElementById('supRows').innerHTML = list.map(s => `
+    <div class="suprow">
+      <div class="nm"><b>${s.name}</b>${s.gum ? '<span class="tag">구멍이 수록</span>' : ''}</div>
+      <div class="plat">${platLabel(s.platform)}</div>
+      <div class="items">${s.items == null ? '—' : won(s.items)}</div>
+      <div class="go">${/^https?:/.test(s.url) ? `<a href="${s.url}" target="_blank" rel="noopener">열기 →</a>` : '—'}</div>
+    </div>`).join('') || '<div class="empty">해당 도매처가 없습니다.</div>';
+
+  document.getElementById('supNote').innerHTML =
+    `대부분 <b>partner 계정 승인</b>이 있어야 단가가 보입니다. 업체마다 영업 담당에게 사업자등록증을 보내고 계정을 받는 방식이라, 가입 폼이 아니라 문의로 진행됩니다. 구글시트 단가표로 운영하는 곳(웰그린푸드·다온)은 시트 링크를 받아 열람하고 발주는 발주오라에서 합니다.`;
+}
+
+document.getElementById('sq').addEventListener('input', renderSup);
+document.getElementById('ssort').addEventListener('change', renderSup);
+</script>
+</body>
+</html>
