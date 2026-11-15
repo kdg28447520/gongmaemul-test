@@ -68,7 +68,7 @@
   }
   nav.tabs button:hover { color: var(--ink-soft); }
   nav.tabs button[aria-selected="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
-  nav.tabs .cnt { color: var(--ink-muted); font-size: 12.5px; margin-left: 4px; font-weight: 400; }
+  nav.tabs .cnt { color: var(--ink-muted); font-size: 12.5px; margin-left: 6px; font-weight: 400; }
 
   /* ── shared ─────────────────────────────── */
   main { padding-top: 24px; }
@@ -199,6 +199,7 @@
   .suprow .nm { min-width: 0; }
   .suprow .nm b { font-weight: 500; }
   .suprow .nm .tag { font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
+  .suprow .nm .tag.off { color: var(--ink-muted); background: var(--surface-2); }
   .suprow .plat { font-size: 12px; color: var(--ink-muted); }
   .suprow .items { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--ink-soft); }
   .suprow .go { text-align: right; }
@@ -619,13 +620,13 @@ function renderCalc() {
   const be = breakeven(c);
   const goal = targetPrice(c, 20);
   ledger.innerHTML = [
-    ['판매가', won(c.price), ''],
-    ['공급가', '−' + won(c.cost), 'm'],
-    ['배송비', '−' + won(c.ship), 'm'],
-    [`수수료 ${c.fee}%`, '−' + won(r.fee), 'm'],
-    [`로스 ${c.loss}% (${C.base === 'revenue' ? '매출' : '원가'} 기준)`, '−' + won(r.lossCost), 'm'],
-    ['순이익', won(r.profit), 'sum']
-  ].map(([k, v, cls]) => `<tr class="${cls === 'sum' ? 'sum' : ''}"><td>${k}</td><td class="n ${cls === 'm' ? 'm' : ''}">${v}원</td></tr>`).join('')
+    ['판매가', won(c.price) + '원', ''],
+    ['공급가', (c.cost ? '−' : '') + won(c.cost) + '원', 'm'],
+    ['배송비', (c.ship ? '−' : '') + won(c.ship) + '원', 'm'],
+    [`수수료 ${c.fee}%`, '−' + won(r.fee) + '원', 'm'],
+    [`로스 ${c.loss}% (${C.base === 'revenue' ? '매출' : '원가'} 기준)`, '−' + won(r.lossCost) + '원', 'm'],
+    ['순이익', won(r.profit) + '원', 'sum']
+  ].map(([k, v, cls]) => `<tr class="${cls === 'sum' ? 'sum' : ''}"><td>${k}</td><td class="n ${cls === 'm' ? 'm' : ''}">${v}</td></tr>`).join('')
     + `<tr class="goal"><td>손익분기 판매가</td><td class="n">${won(be)}원</td></tr>`
     + `<tr class="goal"><td>마진 20% 목표 판매가</td><td class="n">${won(goal)}원</td></tr>`;
 
@@ -637,10 +638,18 @@ function renderCalc() {
       return `<tr data-on="${l === c.loss ? 1 : 0}"><td>${l}%</td><td class="${rr.profit < 0 ? 'neg' : ''}">${won(rr.profit)}원</td><td>${rr.rate.toFixed(1)}%</td></tr>`;
     }).join('');
 
-  const costAtGoal = c.price ? ((c.price * coeffs(c).rev - c.ship) / (1 + (C.base === 'cost' ? c.loss / 100 : 0))) : 0;
+  const costAtGoal = c.price ? maxCost(c, 20) : 0;
   document.getElementById('calcNote').innerHTML =
     `판매가 ${won(c.price)}원에서 마진 20%를 지키려면 공급가는 <b>${won(costAtGoal)}원</b> 이하여야 합니다` +
     (c.cost > costAtGoal ? ` — 지금 공급가는 ${won(c.cost - costAtGoal)}원 초과입니다.` : ' — 지금 공급가는 조건 안에 있습니다.');
+}
+
+/* 판매가·마진 목표가 주어졌을 때 넘지 말아야 할 공급가 */
+function maxCost(c, marginPct) {
+  const lossRev = C.base === 'revenue' ? c.loss / 100 : 0;
+  const lossCostFac = C.base === 'cost' ? c.loss / 100 : 0;
+  const num = c.price * (1 - c.fee / 100 - lossRev - marginPct / 100) - c.ship;
+  return num / (1 + lossCostFac);
 }
 
 /* ── 도매처 ─────────────────────────────── */
@@ -655,7 +664,7 @@ function renderSup() {
   const platLabel = p => ({ adminplus: 'partner 로그인', gsheet: '구글시트 단가표', baljuora: '발주오라', direct: '자체 몰', walldo: '자체 몰' }[p] || p);
   document.getElementById('supRows').innerHTML = list.map(s => `
     <div class="suprow">
-      <div class="nm"><b>${s.name}</b>${s.gum ? '<span class="tag">구멍이 수록</span>' : ''}</div>
+      <div class="nm"><b>${s.name}</b>${s.active === false ? '<span class="tag off">수집 중단</span>' : ''}${s.gum ? '<span class="tag">구멍이 수록</span>' : ''}</div>
       <div class="plat">${platLabel(s.platform)}</div>
       <div class="items">${s.items == null ? '—' : won(s.items)}</div>
       <div class="go">${/^https?:/.test(s.url) ? `<a href="${s.url}" target="_blank" rel="noopener">열기 →</a>` : '—'}</div>
