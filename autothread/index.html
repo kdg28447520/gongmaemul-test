@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>동곤 오토스레드 PRO — 성과·농장·재발행 관제탑</title>
+<meta name="description" content="@spring_2844 스레드 계정의 실측 성과, 1~14일 농장 스케줄, 보석함·재발행 큐, 두괄식·공정위 생성기를 한 화면에서 관리하는 관제탑.">
+<link rel="canonical" href="https://gongmaemul.co.kr/autothread/">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="동곤 오토스레드 PRO — 성과·농장·재발행 관제탑">
+<meta property="og:description" content="Meta 공식 Threads API 실측 성과 + 14일 농장 스케줄 + 보석함·재발행 + 두괄식 생성기.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<style>
+  :root{
+    --bg:#f6f5f1; --surface:#ffffff; --surface-2:#efeee8; --surface-3:#faf9f5;
+    --line:rgba(26,26,22,.12); --line-strong:rgba(26,26,22,.22);
+    --ink:#1a1a17; --ink-soft:#54534c; --ink-muted:#8b8a80;
+    --accent:#3e6b57; --accent-soft:#e8efe9;
+    --warm:#8a5a20; --warm-soft:#f4ece1;
+    --cool:#3c5a78; --cool-soft:#e8edf2;
+    --minus:#9a3a24;
+    --radius:10px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); line-height:1.55; letter-spacing:-.01em;
+    font-family:Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    font-size:15px; -webkit-text-size-adjust:100%;
+  }
+  .num{font-variant-numeric:tabular-nums;}
+  a{color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px 72px;}
+
+  header.top{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30;}
+  .top-in{max-width:1120px;margin:0 auto;padding:14px 20px 0;}
+  .brand-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .brand{font-size:17px;font-weight:600;letter-spacing:-.02em;}
+  .brand b{font-weight:700;color:var(--accent);}
+  .handle{font-size:12.5px;color:var(--ink-muted);}
+  .brand-row .back{margin-left:auto;font-size:13px;color:var(--ink-muted);text-decoration:none;}
+  .brand-row .back:hover{color:var(--ink);}
+  .synced{font-size:12.5px;color:var(--ink-muted);margin-top:2px;}
+  .synced b{font-weight:500;color:var(--ink-soft);}
+  nav.tabs{display:flex;gap:22px;margin-top:12px;overflow-x:auto;}
+  nav.tabs button{
+    appearance:none;background:none;border:0;padding:9px 0 11px;font:inherit;font-size:14.5px;
+    color:var(--ink-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;
+  }
+  nav.tabs button:hover{color:var(--ink-soft);}
+  nav.tabs button[aria-selected="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--accent);}
+  nav.tabs .cnt{color:var(--ink-muted);font-size:12.5px;margin-left:5px;font-weight:400;}
+
+  main{padding-top:24px;}
+  panel{display:block;}
+  panel[hidden]{display:none;}
+  .lede{font-size:14px;color:var(--ink-soft);margin:0 0 18px;max-width:70ch;}
+  .lede b{font-weight:500;color:var(--ink);}
+
+  h2.sec{font-size:13px;font-weight:600;color:var(--ink-soft);letter-spacing:.02em;margin:26px 0 10px;display:flex;align-items:center;gap:7px;}
+  h2.sec svg{width:17px;height:17px;stroke:var(--ink-muted);fill:none;stroke-width:1.6;flex:none;}
+  h2.sec .tail{margin-left:auto;font-weight:400;font-size:12.5px;color:var(--ink-muted);letter-spacing:0;}
+
+  .statline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden;}
+  .statline div{padding:13px 15px;border-right:1px solid var(--line);}
+  .statline div:last-child{border-right:0;}
+  .statline .k{font-size:11.5px;color:var(--ink-muted);white-space:nowrap;}
+  .statline .v{font-size:19px;font-weight:600;margin-top:2px;letter-spacing:-.02em;font-family:var(--mono);}
+  .statline .v small{font-family:Pretendard,sans-serif;font-size:11.5px;font-weight:400;color:var(--ink-muted);margin-left:3px;letter-spacing:0;}
+
+  .grid2{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px;}
+  .card{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:16px 18px;}
+  .card h3{margin:0 0 2px;font-size:14px;font-weight:600;}
+  .card .hint{margin:0 0 14px;font-size:12.5px;color:var(--ink-muted);line-height:1.5;}
+
+  /* daily bars */
+  .chart{display:flex;align-items:flex-end;gap:3px;height:118px;margin-top:6px;}
+  .chart .bar{flex:1;min-width:2px;background:var(--accent-soft);border-radius:2px 2px 0 0;position:relative;transition:background .15s;}
+  .chart .bar.has:hover{background:var(--accent);}
+  .chart .bar.peak{background:var(--accent);}
+  .chart .bar span{position:absolute;inset:auto 0 -18px 0;text-align:center;font-size:10px;color:var(--ink-muted);font-family:var(--mono);}
+  .chart-x{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-muted);margin-top:20px;font-family:var(--mono);}
+
+  /* kind mix */
+  .mix{margin-top:4px;}
+  .mix-bar{display:flex;height:12px;border-radius:3px;overflow:hidden;border:1px solid var(--line);}
+  .mix-bar i{display:block;height:100%;}
+  .mix-legend{margin-top:10px;display:grid;gap:6px;}
+  .mix-legend div{display:flex;align-items:center;font-size:12.5px;color:var(--ink-soft);}
+  .mix-legend i{width:9px;height:9px;border-radius:2px;margin-right:8px;flex:none;}
+  .mix-legend b{margin-left:auto;font-family:var(--mono);font-weight:500;color:var(--ink);}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{font-size:11.5px;font-weight:400;color:var(--ink-muted);text-align:left;padding:8px 8px 8px 0;border-bottom:1px solid var(--line);white-space:nowrap;}
+  td{padding:9px 8px 9px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:0;}
+  td.n,th.n{text-align:right;font-family:var(--mono);}
+  td .first{display:block;max-width:48ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);}
+  td .sub{font-size:12px;color:var(--ink-muted);}
+  .tbl-scroll{overflow-x:auto;}
+
+  .chip{display:inline-block;font-size:11.5px;padding:2px 7px;border-radius:4px;border:1px solid var(--line-strong);color:var(--ink-soft);white-space:nowrap;background:var(--surface);}
+  .chip.daily{background:var(--surface-2);border-color:transparent;}
+  .chip.empathy{background:var(--accent-soft);border-color:transparent;color:#2e5542;}
+  .chip.affiliate{background:var(--warm-soft);border-color:transparent;color:var(--warm);}
+  .chip.repost{background:var(--cool-soft);border-color:transparent;color:var(--cool);}
+  .chip.live{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .chip.muted{color:var(--ink-muted);}
+
+  .statuslist{display:grid;gap:0;}
+  .statusrow{display:grid;grid-template-columns:104px 1fr auto;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .statusrow:last-child{border-bottom:0;}
+  .statusrow .ch{font-weight:600;}
+  .statusrow .dt{color:var(--ink-soft);font-size:12.5px;}
+  .statusrow .st{font-size:12px;color:var(--accent);white-space:nowrap;}
+  .statusrow .st.off{color:var(--ink-muted);}
+
+  /* farm calendar */
+  .farmtop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden;margin-bottom:16px;}
+  .farmtop div{padding:12px 15px;border-right:1px solid var(--line);}
+  .farmtop div:last-child{border-right:0;}
+  .farmtop .k{font-size:11.5px;color:var(--ink-muted);}
+  .farmtop .v{font-size:16px;font-weight:600;margin-top:2px;letter-spacing:-.02em;}
+  .farmtop .v small{font-size:11.5px;font-weight:400;color:var(--ink-muted);margin-left:4px;}
+
+  .calendar{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden;}
+  .calhead,.calrow{display:grid;grid-template-columns:96px repeat(3,minmax(0,1fr));gap:0;}
+  .calhead{font-size:11.5px;color:var(--ink-muted);background:var(--surface-2);border-bottom:1px solid var(--line);}
+  .calhead div{padding:9px 12px;border-right:1px solid var(--line);}
+  .calhead div:last-child{border-right:0;}
+  .calrow{border-bottom:1px solid var(--line);}
+  .calrow:last-child{border-bottom:0;}
+  .calrow .day{padding:10px 12px;border-right:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);}
+  .calrow .day b{display:block;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink);}
+  .calrow .day em{font-style:normal;font-size:11px;color:var(--ink-muted);}
+  .slot{appearance:none;text-align:left;font:inherit;background:none;border:0;border-right:1px solid var(--line);padding:9px 12px;cursor:pointer;display:block;width:100%;}
+  .slot:last-child{border-right:0;}
+  .slot:hover{background:var(--surface-3);}
+  .slot[aria-current="true"]{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent);}
+  .slot .t{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);font-family:var(--mono);}
+  .slot .tp{margin-top:4px;font-size:13px;color:var(--ink);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .slot .done{font-size:11px;color:var(--accent);}
+
+  .detail{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);}
+  .detail .dh{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .detail .dh b{font-size:14px;font-weight:600;}
+  .detail .dh .meta{font-size:12.5px;color:var(--ink-muted);}
+  .detail .dh .acts{margin-left:auto;display:flex;gap:6px;}
+  .detail .body{padding:16px 18px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;}
+  pre.text{margin:0;font:inherit;font-size:14px;line-height:1.72;white-space:pre-wrap;word-break:keep-all;}
+  .comment{border-left:2px solid var(--line-strong);padding-left:12px;}
+  .comment .cl{font-size:11.5px;color:var(--ink-muted);margin-bottom:6px;letter-spacing:.02em;}
+  .comment pre{font-size:13.5px;color:var(--ink-soft);}
+  .comment .none{font-size:13px;color:var(--ink-muted);}
+
+  button.btn{appearance:none;font:inherit;font-size:12.5px;padding:6px 11px;border-radius:6px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);cursor:pointer;}
+  button.btn:hover{border-color:var(--accent);color:var(--accent);}
+  button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  button.btn.primary:hover{opacity:.92;color:#fff;}
+  button.btn.copied{border-color:var(--accent);color:var(--accent);}
+
+  .guard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 16px;}
+  .guard div{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 12px;font-size:12.5px;color:var(--ink-soft);}
+  .guard b{display:block;font-size:11.5px;color:var(--ink-muted);font-weight:500;margin-bottom:3px;}
+
+  /* gems */
+  .gems{display:grid;gap:10px;}
+  .gem{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:12px 14px;}
+  .gem .gh{display:flex;align-items:baseline;gap:10px;font-size:12px;color:var(--ink-muted);}
+  .gem .rank{font-family:var(--mono);color:var(--ink-soft);}
+  .gem .score{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--ink);}
+  .gem .score small{font-size:10.5px;color:var(--ink-muted);margin-left:2px;}
+  .gem p{margin:6px 0 8px;font-size:13.5px;color:var(--ink);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .gem .gf{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+  .gem .gf .sp{font-family:var(--mono);font-size:11.5px;color:var(--ink-muted);}
+  .gem .gf .acts{margin-left:auto;display:flex;gap:6px;}
+
+  /* studio */
+  .studio{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:18px;align-items:start;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:5px;}
+  input[type=text],select,textarea{
+    font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);
+    border-radius:8px;padding:9px 11px;width:100%;min-width:0;
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .out .oh{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .out .oh h4{margin:0;font-size:13px;font-weight:600;}
+  .out .oh .acts{margin-left:auto;display:flex;gap:6px;}
+  .out textarea{font-size:14px;line-height:1.72;resize:vertical;}
+  .checks{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 0;}
+  .chk{font-size:11.5px;padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--ink-muted);}
+  .chk.ok{color:var(--accent);border-color:rgba(62,107,87,.35);background:var(--accent-soft);}
+  .chk.bad{color:var(--minus);border-color:rgba(154,58,36,.3);background:#f8ebe7;}
+
+  .mock{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:14px 16px;margin-top:14px;}
+  .mock .mh{display:flex;gap:9px;align-items:center;}
+  .mock .av{width:30px;height:30px;border-radius:50%;background:var(--surface-2);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;}
+  .mock .who{font-size:13px;font-weight:600;}
+  .mock .who span{font-weight:400;color:var(--ink-muted);margin-left:5px;}
+  .mock .mb{margin-top:9px;font-size:14px;line-height:1.72;white-space:pre-wrap;word-break:keep-all;}
+  .mock .mf{margin-top:10px;font-size:11.5px;color:var(--ink-muted);display:flex;gap:14px;}
+  .mock .mc{margin-top:12px;border-left:2px solid var(--line-strong);padding-left:10px;font-size:13px;color:var(--ink-soft);white-space:pre-wrap;}
+
+  .note{font-size:12px;color:var(--ink-muted);line-height:1.6;margin-top:12px;}
+  .note b{color:var(--ink-soft);font-weight:500;}
+  .empty{padding:26px 8px;text-align:center;color:var(--ink-muted);font-size:13.5px;}
+
+  footer.foot{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;font-size:12px;color:var(--ink-muted);line-height:1.7;}
+  footer.foot b{color:var(--ink-soft);font-weight:500;}
+
+  @media (max-width:960px){
+    .statline{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .statline div:nth-child(3n){border-right:0;}
+    .statline div:nth-child(-n+3){border-bottom:1px solid var(--line);}
+    .grid2,.studio,.detail .body{grid-template-columns:1fr;}
+    .farmtop{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .farmtop div:nth-child(2){border-right:0;}
+    .farmtop div:nth-child(-n+2){border-bottom:1px solid var(--line);}
+    .guard{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:640px){
+    body{font-size:14.5px;}
+    .wrap{padding:0 14px 56px;}
+    .top-in{padding:12px 14px 0;}
+    nav.tabs{gap:16px;}
+    .statline{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .statline div:nth-child(3n){border-right:1px solid var(--line);}
+    .statline div:nth-child(2n){border-right:0;}
+    .statline div:nth-child(-n+4){border-bottom:1px solid var(--line);}
+    .guard{grid-template-columns:1fr;}
+    .calhead{display:none;}
+    .calrow{grid-template-columns:1fr;border-bottom:1px solid var(--line-strong);}
+    .calrow .day{border-right:0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px;}
+    .calrow .day b{display:inline;}
+    .slot{border-right:0;border-bottom:1px solid var(--line);}
+    .slot:last-child{border-bottom:0;}
+    .row2{grid-template-columns:1fr;}
+    td .first{max-width:32ch;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand-row">
+      <div class="brand">동곤 오토스레드 <b>PRO</b></div>
+      <div class="handle">@spring_2844 · Meta 공식 Threads API 실측</div>
+      <a class="back" href="https://gongmaemul.co.kr/">← 관제탑 홈</a>
+    </div>
+    <div class="synced" id="synced">동기화 정보를 불러오는 중…</div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="dash">대시보드</button>
+      <button role="tab" aria-selected="false" data-tab="farm">농장 스케줄러<span class="cnt" id="cnt-farm"></span></button>
+      <button role="tab" aria-selected="false" data-tab="gems">보석함 · 재발행<span class="cnt" id="cnt-gems"></span></button>
+      <button role="tab" aria-selected="false" data-tab="studio">생성 스튜디오</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ── 대시보드 ─────────────────────────────────────────── -->
+  <panel id="tab-dash">
+    <p class="lede">계정 하나를 <b>실측 → 분류 → 재배치</b> 순서로 돌립니다. 숫자는 Meta Threads Graph API가 돌려준 값만 씁니다. 측정되지 않은 항목은 비워둡니다.</p>
+
+    <div class="statline" id="stats"></div>
+
+    <h2 class="sec">
+      <svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3.5-4 3 2.5L20 7"/></svg>
+      일별 조회수 <span class="tail" id="chart-tail"></span>
+    </h2>
+    <div class="card">
+      <h3>계정 인사이트 · 최근 30일</h3>
+      <p class="hint">Threads 계정 단위 일별 조회수(실측). 게시물 단위 조회수는 Meta가 아직 ‘in development’로 표기해 값이 작게 내려옵니다.</p>
+      <div class="chart" id="chart"></div>
+      <div class="chart-x"><span id="chart-from"></span><span id="chart-to"></span></div>
+    </div>
+
+    <h2 class="sec">
+      <svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 4 12 2.5-6h5"/></svg>
+      글 유형 비중 <span class="tail" id="mix-tail"></span>
+    </h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>전체 게시물 구성</h3>
+        <p class="hint">본문 텍스트 기준 자동 분류. 자동 발행 이력에 기록된 글은 실제 모드(일상·제휴)로 보정합니다.</p>
+        <div class="mix"><div class="mix-bar" id="mix-bar"></div><div class="mix-legend" id="mix-legend"></div></div>
+      </div>
+      <div class="card">
+        <h3>계정 전환 준비 상태</h3>
+        <p class="hint">발행 경로가 실제로 열려 있는지 확인한 값입니다.</p>
+        <div class="statuslist" id="channels"></div>
+      </div>
+    </div>
+
+    <h2 class="sec">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      최근 게시물 <span class="tail">조회 · 좋아요 · 댓글 · 포텐셜 점수</span>
+    </h2>
+    <div class="card">
+      <div class="tbl-scroll">
+        <table id="recent">
+          <thead><tr>
+            <th style="width:88px">시각</th><th style="width:72px">유형</th><th>첫 줄</th>
+            <th class="n" style="width:64px">조회</th><th class="n" style="width:52px">좋아요</th>
+            <th class="n" style="width:48px">댓글</th><th class="n" style="width:64px">점수</th><th style="width:44px"></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="note" id="warnings"></p>
+  </panel>
+
+  <!-- ── 농장 스케줄러 ────────────────────────────────────── -->
+  <panel id="tab-farm" hidden>
+    <p class="lede">하루 3슬롯(07:45 · 18:00 · 21:30)에 <b>일상 / 쓰아리 / 수익화 / 재발행</b>을 배분한 14일 큐입니다. 수익화 글은 하루 1건, 최소 하루 간격을 두고 들어갑니다.</p>
+
+    <div class="farmtop" id="farmtop"></div>
+    <div class="guard" id="guard"></div>
+
+    <h2 class="sec">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16v14H4zM8 3v4M16 3v4M4 10h16"/></svg>
+      1~14일 캘린더 <span class="tail">칸을 누르면 원고가 열립니다</span>
+    </h2>
+    <div class="calendar" id="calendar"></div>
+
+    <div class="detail" id="detail" hidden>
+      <div class="dh">
+        <b id="d-title">—</b>
+        <span class="meta" id="d-meta"></span>
+        <div class="acts">
+          <button class="btn" data-copy="d-body">본문 복사</button>
+          <button class="btn" data-copy="d-comment">첫 댓글 복사</button>
+        </div>
+      </div>
+      <div class="body">
+        <div>
+          <div class="comment" style="border:0;padding:0;margin-bottom:8px"><div class="cl">본문</div></div>
+          <pre class="text" id="d-body"></pre>
+        </div>
+        <div>
+          <div class="comment">
+            <div class="cl">첫 댓글 (링크 + 공정위 문구)</div>
+            <pre class="text" id="d-comment"></pre>
+            <div class="none" id="d-comment-none" hidden>이 슬롯은 링크 없는 글입니다. 첫 댓글을 달지 않습니다.</div>
+          </div>
+          <div class="note" id="d-product"></div>
+        </div>
+      </div>
+    </div>
+    <p class="note" id="farm-note"></p>
+  </panel>
+
+  <!-- ── 보석함 · 재발행 ─────────────────────────────────── -->
+  <panel id="tab-gems" hidden>
+    <p class="lede">반응이 붙은 글을 <b>보석함</b>에 모으고, 3~5일 지난 글은 <b>재발행 큐</b>로 넘깁니다. 원문을 그대로 복사하지 않고, 내 페르소나로 다시 쓰게 하는 프롬프트를 함께 뽑습니다.</p>
+
+    <h2 class="sec">
+      <svg viewBox="0 0 24 24"><path d="M12 3l2.6 6.1L21 10l-4.8 4.2L17.5 21 12 17.6 6.5 21l1.3-6.8L3 10l6.4-.9z"/></svg>
+      보석함 <span class="tail" id="gems-tail"></span>
+    </h2>
+    <div class="gems" id="gembox"></div>
+
+    <h2 class="sec">
+      <svg viewBox="0 0 24 24"><path d="M4 9h11a4 4 0 010 8H8m-4-8l4-4M4 9l4 4"/></svg>
+      재발행 큐 <span class="tail" id="repost-tail"></span>
+    </h2>
+    <div class="card">
+      <div class="tbl-scroll">
+        <table id="repost">
+          <thead><tr>
+            <th style="width:70px">경과</th><th>첫 줄</th>
+            <th class="n" style="width:56px">조회</th><th class="n" style="width:56px">반응</th>
+            <th class="n" style="width:58px">점수</th><th style="width:150px"></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="note">재가공 원칙 — 사실은 그대로, 첫 두 줄만 새 각도로. 같은 글을 그대로 다시 올리면 계정이 ‘반복 계정’으로 읽힙니다.</p>
+  </panel>
+
+  <!-- ── 생성 스튜디오 ───────────────────────────────────── -->
+  <panel id="tab-studio" hidden>
+    <p class="lede">주제만 넣으면 <b>두괄식 본문 + 첫 댓글(링크·공정위)</b>을 바로 만듭니다. 본문에는 링크를 넣지 않고, 제휴 문구는 첫 댓글로 분리합니다.</p>
+
+    <div class="studio">
+      <div class="card">
+        <h3>입력</h3>
+        <p class="hint">주제 한 줄이면 충분합니다. 상품을 고르면 링크와 목록 제목이 자동으로 붙습니다.</p>
+        <div class="field">
+          <label for="s-topic">주제</label>
+          <input type="text" id="s-topic" placeholder="예: 싱크대 배수구 냄새" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="s-product">상품 묶음</label>
+          <select id="s-product">
+            <option value="">없음 (링크 없는 글)</option>
+            <option value="kitchen">못산템 · 주방 살림 20선</option>
+            <option value="pet">못산템 · 반려견 케어 20선</option>
+            <option value="bath">생활 꿀금고 · 욕실·수납 20선</option>
+            <option value="tech">생활 꿀금고 · 소형가전·디지털 20선</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="s-title">목록 제목</label>
+          <input type="text" id="s-title" placeholder="첫 댓글에 들어갈 목록 이름" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="s-link">링크</label>
+          <input type="text" id="s-link" placeholder="https://" autocomplete="off">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="s-angle">각도</label>
+            <select id="s-angle">
+              <option value="auto">자동 (상품 기준)</option>
+              <option value="struct">구조·원인</option>
+              <option value="time">시간·반복</option>
+              <option value="std">기준·선택</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="s-variant">문체 변형</label>
+            <select id="s-variant">
+              <option value="0">A · 기본</option>
+              <option value="1">B · 짧게 끊기</option>
+              <option value="2">C · 숫자로 시작</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn primary" id="s-run" style="width:100%;padding:10px">본문 생성</button>
+        <p class="note">서버 없이 브라우저에서 만듭니다. 같은 주제로 <b>문체 변형</b>만 바꿔 3안을 뽑아 비교하세요.</p>
+      </div>
+
+      <div class="out">
+        <div class="card">
+          <div class="oh"><h4>본문</h4><div class="acts"><button class="btn" data-copy="s-body">복사</button></div></div>
+          <textarea id="s-body" rows="9" spellcheck="false"></textarea>
+          <div class="checks" id="s-checks"></div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <div class="oh"><h4>첫 댓글</h4><div class="acts"><button class="btn" data-copy="s-comment">복사</button></div></div>
+          <textarea id="s-comment" rows="4" spellcheck="false"></textarea>
+        </div>
+        <div class="mock">
+          <div class="mh"><span class="av">s</span><div class="who">spring_1<span>@spring_2844</span></div></div>
+          <div class="mb" id="mock-body">주제를 넣고 본문을 생성하면 여기에 미리보기가 나옵니다.</div>
+          <div class="mf"><span>좋아요</span><span>댓글</span><span>리포스트</span><span>공유</span></div>
+          <div class="mc" id="mock-comment" hidden></div>
+        </div>
+      </div>
+    </div>
+  </panel>
+
+  <footer class="foot">
+    <div><b>《동곤 오토스레드 PRO》</b> — 계정 @spring_2844 · 데이터 출처: Meta Threads Graph API v1.0 (공식)</div>
+    <div>동기화: <span id="foot-sync">—</span> · 게시물 <span id="foot-posts">—</span>건 · 스케줄 큐 <span id="foot-queue">—</span>건</div>
+    <div>이 화면은 실측값과 예약 큐만 보여줍니다. 숫자를 만들어 채우지 않습니다.</div>
+  </footer>
+</main>
+
+<script id="seed" type="application/json">{"generated_at":"2026-11-15T19:59:19.352874+09:00","source":"Meta Threads Graph API v1.0 (공식)","account":{"username":"spring_2844","user_id":"29545113835105136"},"summary":{"account":"spring_2844","user_id":"29545113835105136","total_posts_fetched":205,"posts_measured":205,"total_views_post_level":21509,"total_reactions":293,"avg_reactions":1.43,"posts_over_1k":1,"posts_over_100":6,"account_views_30d":17507,"account_likes_30d":null,"account_replies_30d":null,"account_reposts_30d":null,"followers_count":null,"insight_window":{"since":"2026-10-16","until":"2026-11-15"},"by_kind":{"promo":70,"invite":58,"warmup":21,"short":56},"gembox_count":12,"repost_candidates":8},"daily":[{"date":"2026-10-15","views":2126},{"date":"2026-10-16","views":753},{"date":"2026-10-17","views":594},{"date":"2026-10-18","views":1606},{"date":"2026-10-19","views":2132},{"date":"2026-10-20","views":969},{"date":"2026-10-21","views":264},{"date":"2026-10-22","views":1896},{"date":"2026-10-23","views":345},{"date":"2026-10-24","views":113},{"date":"2026-10-25","views":98},{"date":"2026-10-26","views":193},{"date":"2026-10-27","views":133},{"date":"2026-10-28","views":122},{"date":"2026-10-29","views":336},{"date":"2026-10-30","views":330},{"date":"2026-10-31","views":1144},{"date":"2026-11-01","views":723},{"date":"2026-11-02","views":404},{"date":"2026-11-03","views":196},{"date":"2026-11-04","views":287},{"date":"2026-11-05","views":236},{"date":"2026-11-06","views":203},{"date":"2026-11-07","views":211},{"date":"2026-11-08","views":153},{"date":"2026-11-09","views":112},{"date":"2026-11-10","views":189},{"date":"2026-11-11","views":250},{"date":"2026-11-12","views":133},{"date":"2026-11-13","views":527},{"date":"2026-11-14","views":729}],"gembox":["18131463595706024","18105700513993641","17964328167079704","18342425905258424","17965890483227270","17899563138615222","18079829588442917","18043385819838939","18218617435359138","17985705408105141","17964382034997794","17993704437098479"],"repost_queue":["18162066301505753","18023921609732157","18030587690879537","18122696816177560","18134478943774763","17981260671156147","18129066130873072","18130142716884685"],"posts":[{"id":"18108083282124828","text":"일요일 저녁, 내일 점심은 어디서 먹을지 벌써 고민하게 되더라고요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-15T19:57:55+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfwnpkKGwYh","media_type":"TEXT_POST","kind":"promo","views":0,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":0.0,"reactions":0,"age_hours":0.0,"insights_ok":true},{"id":"17949922806367723","text":"몇명 안남았네. 어서와~\nhttps://dool2.com/?r=k5hkxk","posted_at":"2026-11-15T18:50:32+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfwf8DiEhoe","media_type":"TEXT_POST","kind":"invite","views":4,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":4.0,"reactions":0,"age_hours":1.1,"insights_ok":true},{"id":"17978438034169644","text":"샤워하고 나면 호스 안쪽에 초록 물때, 타일 줄눈엔 핑크 곰팡이. 볼 때마다 짜증.\n\n닦아도 금방 돌아오는 건 물이 고이는 구조 탓이 크더라. 호스는 안이 비치는 재질인지, 줄눈은 물 빠짐이 좋은 마감인지부터 보면 고르기 쉬워. 욕실·수납 필수템 20선에 그 기준으로 추려놨어. 필요한 거 있는지 아래 댓글 함 봐봐.","posted_at":"2026-11-15T18:00:52+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfwaPtimwYa","media_type":"TEXT_POST","kind":"warmup","views":1,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":14.5,"reactions":1,"age_hours":2.0,"insights_ok":true},{"id":"18119644610324334","text":"얼렁 들어와~\n https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-15T16:41:57+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfwRON_Hwsc","media_type":"TEXT_POST","kind":"invite","views":0,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":0.0,"reactions":0,"age_hours":3.3,"insights_ok":true},{"id":"18141018079724115","text":"피클 한마리 몰고 가~ . https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-15T15:28:42+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfwI1szH2D2","media_type":"TEXT_POST","kind":"invite","views":13,"likes":1,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":14.0,"reactions":1,"age_hours":4.5,"insights_ok":true},{"id":"17930628735427578","text":"일요일 오후, 주말이 끝나기 전 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-15T13:58:25+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfv-ge_G0w3","media_type":"TEXT_POST","kind":"promo","views":3,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":3.0,"reactions":0,"age_hours":6.0,"insights_ok":true},{"id":"17899126683417624","text":"얼렁 신청해\nhttps://dool2.com/?r=k5hkxk","posted_at":"2026-11-15T13:33:18+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfv7oiEkjUX","media_type":"TEXT_POST","kind":"invite","views":0,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":0.0,"reactions":0,"age_hours":6.4,"insights_ok":true},{"id":"18084631775391107","text":"얼렁 초댜장 가져가~ \n https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-15T11:21:32+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfvsjeEH9aE","media_type":"TEXT_POST","kind":"invite","views":72,"likes":1,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":86.5,"reactions":2,"age_hours":8.6,"insights_ok":true},{"id":"17899563138615222","text":"초대장 받아가.\nhttps://link.vooy.com/invite?invite_code=VY-YZ8V-YYBZ&fallback_desktop=https%3A%2F%2Fapp.vooy.com%2Finvite%2FVY-YZ8V-YYBZ","posted_at":"2026-11-15T10:00:52+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfvjUjqn41N","media_type":"TEXT_POST","kind":"promo","views":211,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":224.5,"reactions":1,"age_hours":10.0,"insights_ok":true},{"id":"18079829588442917","text":"산책 나갔다 오면 발 닦이고 눈물자국 닦는 게 일이지.\n물티슈만으론 끈적임이 남아서 결국 다시 씻기게 되더라...\n\n집에 강아지 키우는 사람이라면 산책용품이랑 간식, 데일리 케어템은 매일 쓰는 거라\n성분이나 마감 꼼꼼히 따져서 괜찮은 걸로 모아두는 게 훨씬 편해.\n\n반려견 키우면서 매일 손 가는 간식·산책·케어템 20개만 따로 묶어뒀어.\n필요한 거 있는지 아래 댓글 함 봐봐","posted_at":"2026-11-15T09:44:06+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfvhZSNmR-3","media_type":"TEXT_POST","kind":"warmup","views":67,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":80.5,"reactions":1,"age_hours":10.3,"insights_ok":true},{"id":"18184807282452212","text":"피클 한마리.델구가~\n https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-15T09:22:52+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfve-Rtn5P9","media_type":"TEXT_POST","kind":"invite","views":21,"likes":1,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":22.0,"reactions":1,"age_hours":10.6,"insights_ok":true},{"id":"17964382034997794","text":"싱크대 하부장 문 열 때마다\n냄비 뚜껑 우르르 쏟아지는 거 진짜 짜증 나지.\n\n물건이 많은 게 아니라\n세로 공간이 놀고 있어서 그래...\n\n냄비거치대랑 슬라이딩 선반 하나씩만 들여도\n그릇 꺼낼 때마다 낑낑대는 일이 확 줄지.\n\n주방 동선 답답해서 모아둔 살림템 20개,\n댓글 함 봐봐","posted_at":"2026-11-15T08:42:42+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfvaYHhn8pD","media_type":"TEXT_POST","kind":"warmup","views":18,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":31.5,"reactions":1,"age_hours":11.3,"insights_ok":true},{"id":"18176532034403095","text":"얼렁 받아가~\nhttps://ch.xyz/kr/s/yr77bj9y5m?v=29586&utm_source=threads","posted_at":"2026-11-15T08:13:32+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfvXCeMEpHG","media_type":"TEXT_POST","kind":"invite","views":2,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":2.0,"reactions":0,"age_hours":11.8,"insights_ok":true},{"id":"18043385819838939","text":"일요일 아침, 오늘 아이와 함께 갈 곳을 아직 안 정하셨다면요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-15T07:58:38+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfvVVaID35T","media_type":"TEXT_POST","kind":"promo","views":54,"likes":1,"replies":1,"reposts":1,"quotes":0,"shares":0,"potential_score":72.5,"reactions":3,"age_hours":12.0,"insights_ok":true},{"id":"17921345235466244","text":"일요일 새벽, 이번 주말은 어떻게 보내고 계세요?\n\"이번 주말엔 어디 가지?\"\n\n찾아보면 이미 끝난 축제도 있고, 지역마다 행사 정보가 흩어져 있어서 한참을 뒤져야 하더라고요.\n\n그래서 전국 축제와 행사를 날짜별로 찾아볼 수 있는 '주말 어디가?'를 직접 만들었습니다. 이번 주말에 열리는 행사를 지도와 목록으로 함께 볼 수 있게 정리해 뒀어요.\n\n멀리 가지 않아도, 근처 작은 행사 하나면 주말이 조금 특별해질 수 있으니까요.\n\n이번 주말, 어디 가실 예정인가요?\nhttps://weekendgo.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-15T01:58:46+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfusJlhmhP-","media_type":"TEXT_POST","kind":"promo","views":16,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":16.0,"reactions":0,"age_hours":18.0,"insights_ok":true},{"id":"18124291591930697","text":"還好嗎?","posted_at":"2026-11-14T20:02:13+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfuDVjvolwE","media_type":"IMAGE","kind":"short","views":8,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":21.5,"reactions":1,"age_hours":24.0,"insights_ok":true},{"id":"18026264774949472","text":"げんき?","posted_at":"2026-11-14T20:01:23+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfuDPVRo_eZ","media_type":"IMAGE","kind":"short","views":18,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":31.5,"reactions":1,"age_hours":24.0,"insights_ok":true},{"id":"18135333340808561","text":"Jalitji","posted_at":"2026-11-14T20:00:40+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfuDKTBI9qn","media_type":"IMAGE","kind":"short","views":5,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":18.5,"reactions":1,"age_hours":24.0,"insights_ok":true},{"id":"17898591696682265","text":"잘 있지?","posted_at":"2026-11-14T19:59:37+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfuDCXtojzu","media_type":"IMAGE","kind":"short","views":11,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":24.5,"reactions":1,"age_hours":24.0,"insights_ok":true},{"id":"18127804324683541","text":"피클에 초대장 받아가~\n https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-14T18:07:21+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dft2MzcH_t0","media_type":"TEXT_POST","kind":"invite","views":52,"likes":1,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":53.0,"reactions":1,"age_hours":25.9,"insights_ok":true},{"id":"18116397359164046","text":"AI 비서 '두리' 베타 신청 받는대.\nhttps://dool2.com/?r=k5hkxk","posted_at":"2026-11-14T15:15:41+09:00","permalink":"https://www.threads.com/@spring_2844/post/DftijhSktW4","media_type":"TEXT_POST","kind":"invite","views":3,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":3.0,"reactions":0,"age_hours":28.7,"insights_ok":true},{"id":"17965890483227270","text":"AI 비서 '두리' 베타 신청 받는대. 무료고 오픈소스. 같이 신청하자\nhttps://dool2.com/?r=k5hkxk","posted_at":"2026-11-14T14:53:30+09:00","permalink":"https://www.threads.com/@spring_2844/post/DftgBGaEp2I","media_type":"TEXT_POST","kind":"invite","views":234,"likes":0,"replies":3,"reposts":0,"quotes":0,"shares":0,"potential_score":274.5,"reactions":3,"age_hours":29.1,"insights_ok":true},{"id":"18122440825748980","text":"얼렁 받아가~  https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-14T14:02:49+09:00","permalink":"https://www.threads.com/@spring_2844/post/DftaN3MH50T","media_type":"TEXT_POST","kind":"invite","views":0,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":0.0,"reactions":0,"age_hours":29.9,"insights_ok":true},{"id":"17941373259399913","text":"토요일 오후, 오늘 저녁은 어디서 먹을지 벌써 고민하게 되더라고요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-14T13:58:20+09:00","permalink":"https://www.threads.com/@spring_2844/post/DftZs-Gm3Bh","media_type":"TEXT_POST","kind":"promo","views":13,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":13.0,"reactions":0,"age_hours":30.0,"insights_ok":true},{"id":"18018025727979071","text":"아이가 떠난 뒤, 사진첩을 열면 하고 싶은 말이 먼저 떠오를 때가 있어요.\n\n별다방은 사진과 이야기로 아이를 기억하는 온라인 추모관입니다. 이름과 이메일만으로 추모관을 만들 수 있고, 그리울 때 들러 짧은 편지를 남길 수 있어요.\n\n오늘도 조용히 아이를 떠올리는 분들께, 작은 자리가 되었으면 해요.\nhttps://starpet.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_starpet","posted_at":"2026-11-14T08:59:21+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfs3fLajyrN","media_type":"TEXT_POST","kind":"promo","views":66,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":66.0,"reactions":0,"age_hours":35.0,"insights_ok":true},{"id":"18180380191443589","text":"토요일 새벽, 잠들기 전 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-14T01:58:59+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfsHYVXmoiV","media_type":"TEXT_POST","kind":"promo","views":5,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":5.0,"reactions":0,"age_hours":42.0,"insights_ok":true},{"id":"17915881920519164","text":"금요일 저녁, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-13T19:58:07+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfreFSIG9So","media_type":"TEXT_POST","kind":"promo","views":11,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":11.0,"reactions":0,"age_hours":48.0,"insights_ok":true},{"id":"18084691025538834","text":"얼렁 받아가~\n https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-13T18:32:12+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfrUQBzH6_Y","media_type":"TEXT_POST","kind":"invite","views":15,"likes":1,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":16.0,"reactions":1,"age_hours":49.5,"insights_ok":true},{"id":"18123635587910918","text":"피클 얼렁 받어~ \n https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-13T17:35:16+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfrNu_tn_7c","media_type":"TEXT_POST","kind":"invite","views":1,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":1.0,"reactions":0,"age_hours":50.4,"insights_ok":true},{"id":"18342425905258424","text":"초대장 받아라~ https://link.vooy.com/invite?invite_code=VY-39RJ-63NF&fallback_desktop=https%3A%2F%2Fapp.vooy.com%2Finvite%2FVY-39RJ-63NF","posted_at":"2026-11-13T17:06:52+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfrKe8oH1tW","media_type":"TEXT_POST","kind":"promo","views":262,"likes":1,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":276.5,"reactions":2,"age_hours":50.9,"insights_ok":true},{"id":"18171076165416904","text":"금요일 오후, 벌써 이번 주말이 기다려지시나요?\n\"이번 주말엔 어디 가지?\"\n\n찾아보면 이미 끝난 축제도 있고, 지역마다 행사 정보가 흩어져 있어서 한참을 뒤져야 하더라고요.\n\n그래서 전국 축제와 행사를 날짜별로 찾아볼 수 있는 '주말 어디가?'를 직접 만들었습니다. 이번 주말에 열리는 행사를 지도와 목록으로 함께 볼 수 있게 정리해 뒀어요.\n\n멀리 가지 않아도, 근처 작은 행사 하나면 주말이 조금 특별해질 수 있으니까요.\n\n이번 주말, 어디 가실 예정인가요?\nhttps://weekendgo.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-13T13:59:22+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfq1BsyG1MG","media_type":"TEXT_POST","kind":"promo","views":4,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":4.0,"reactions":0,"age_hours":54.0,"insights_ok":true},{"id":"17891034159478837","text":"피클에 초대장~ https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-13T12:05:03+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfqn8X9H8Bx","media_type":"TEXT_POST","kind":"invite","views":9,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":9.0,"reactions":0,"age_hours":55.9,"insights_ok":true},{"id":"18081656000750921","text":"還好嗎?","posted_at":"2026-11-13T09:39:21+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfqXQrpIPm4","media_type":"IMAGE","kind":"short","views":0,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":13.5,"reactions":1,"age_hours":58.3,"insights_ok":true},{"id":"18120663581071518","text":"げんき?","posted_at":"2026-11-13T09:37:47+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfqXFFUoZ63","media_type":"IMAGE","kind":"short","views":2,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":15.5,"reactions":1,"age_hours":58.4,"insights_ok":true},{"id":"17886429777626975","text":"Jalitji","posted_at":"2026-11-13T09:36:13+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfqW5l2oItt","media_type":"IMAGE","kind":"short","views":0,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":13.5,"reactions":1,"age_hours":58.4,"insights_ok":true},{"id":"18116407490031442","text":"잘 있지?","posted_at":"2026-11-13T09:34:47+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfqWuwto4Cu","media_type":"IMAGE","kind":"short","views":5,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":18.5,"reactions":1,"age_hours":58.4,"insights_ok":true},{"id":"18156251350550546","text":"還好嗎?","posted_at":"2026-11-13T02:51:01+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfpohhlomjc","media_type":"IMAGE","kind":"short","views":4,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":17.5,"reactions":1,"age_hours":65.1,"insights_ok":true},{"id":"18076856840775103","text":"げんき?","posted_at":"2026-11-13T02:49:35+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfpoXNjoO-8","media_type":"IMAGE","kind":"short","views":3,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":16.5,"reactions":1,"age_hours":65.2,"insights_ok":true},{"id":"17918671164535836","text":"Jalitji","posted_at":"2026-11-13T02:47:50+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfpoKO2o0NE","media_type":"IMAGE","kind":"short","views":1,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":14.5,"reactions":1,"age_hours":65.2,"insights_ok":true},{"id":"17929253808434267","text":"잘 있지?","posted_at":"2026-11-13T02:46:22+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfpn_KGIfpj","media_type":"IMAGE","kind":"short","views":16,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":29.5,"reactions":1,"age_hours":65.2,"insights_ok":true},{"id":"18184214941442340","text":"還好嗎?","posted_at":"2026-11-12T20:02:42+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfo5zbZI2ba","media_type":"IMAGE","kind":"short","views":4,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":17.5,"reactions":1,"age_hours":71.9,"insights_ok":true},{"id":"18073869461767001","text":"げんき?","posted_at":"2026-11-12T20:01:37+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfo5rhooRKT","media_type":"IMAGE","kind":"short","views":2,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":15.5,"reactions":1,"age_hours":72.0,"insights_ok":true},{"id":"18110240126262350","text":"Jalitji","posted_at":"2026-11-12T20:00:26+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfo5i3QIT37","media_type":"IMAGE","kind":"short","views":2,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":15.5,"reactions":1,"age_hours":72.0,"insights_ok":true},{"id":"18027747104871205","text":"잘 있지?","posted_at":"2026-11-12T19:59:08+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfo5ZTWoa8Y","media_type":"IMAGE","kind":"short","views":9,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":22.5,"reactions":1,"age_hours":72.0,"insights_ok":true},{"id":"18130142716884685","text":"목요일 오후, 오늘 저녁은 어디서 먹을지 벌써 고민하게 되더라고요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-12T16:25:53+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfog_8EGz6b","media_type":"TEXT_POST","kind":"promo","views":1,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":1.0,"reactions":0,"age_hours":75.6,"insights_ok":true},{"id":"18023921609732157","text":"목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.\n\n별다방은 사진과 이야기로 아이를 기억하는 온라인 추모관입니다. 이름과 이메일만으로 추모관을 만들 수 있고, 그리울 때 들러 짧은 편지를 남길 수 있어요.\n\n오늘도 아이를 떠올리는 마음이 조용히 이어지길 바라요.\nhttps://starpet.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_starpet","posted_at":"2026-11-12T08:58:14+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfntxR4DyCa","media_type":"TEXT_POST","kind":"promo","views":39,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":39.0,"reactions":0,"age_hours":83.0,"insights_ok":true},{"id":"18122696816177560","text":"목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-12T07:58:07+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfnm48xDwu1","media_type":"TEXT_POST","kind":"promo","views":14,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":14.0,"reactions":0,"age_hours":84.0,"insights_ok":true},{"id":"18030587690879537","text":"목요일 새벽, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-12T01:58:57+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dfm9yVOGprv","media_type":"TEXT_POST","kind":"promo","views":35,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":35.0,"reactions":0,"age_hours":90.0,"insights_ok":true},{"id":"17981260671156147","text":"수요일 저녁, 벌써 이번 주말이 기다려지시나요?\n\"이번 주말엔 어디 가지?\"\n\n찾아보면 이미 끝난 축제도 있고, 지역마다 행사 정보가 흩어져 있어서 한참을 뒤져야 하더라고요.\n\n그래서 전국 축제와 행사를 날짜별로 찾아볼 수 있는 '주말 어디가?'를 직접 만들었습니다. 이번 주말에 열리는 행사를 지도와 목록으로 함께 볼 수 있게 정리해 뒀어요.\n\n멀리 가지 않아도, 근처 작은 행사 하나면 주말이 조금 특별해질 수 있으니까요.\n\n이번 주말, 어디 가실 예정인가요?\nhttps://weekendgo.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-11T19:57:54+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfmUd7sGys6","media_type":"TEXT_POST","kind":"promo","views":11,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":11.0,"reactions":0,"age_hours":96.0,"insights_ok":true},{"id":"18361516876246993","text":"還好嗎?","posted_at":"2026-11-11T14:04:28+09:00","permalink":"https://www.threads.com/@spring_2844/post/DflsAvaoGGw","media_type":"IMAGE","kind":"short","views":8,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":21.5,"reactions":1,"age_hours":101.9,"insights_ok":true},{"id":"18021771773951952","text":"げんき?","posted_at":"2026-11-11T14:03:21+09:00","permalink":"https://www.threads.com/@spring_2844/post/Dflr4dOoW-q","media_type":"IMAGE","kind":"short","views":2,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":15.5,"reactions":1,"age_hours":101.9,"insights_ok":true},{"id":"18114942278177074","text":"Jalitji","posted_at":"2026-11-11T14:02:02+09:00","permalink":"https://www.threads.com/@spring_2844/post/DflrutZILPa","media_type":"IMAGE","kind":"short","views":5,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":18.5,"reactions":1,"age_hours":102.0,"insights_ok":true},{"id":"18005851575007898","text":"잘 있지?","posted_at":"2026-11-11T14:00:56+09:00","permalink":"https://www.threads.com/@spring_2844/post/DflrmxqIdOZ","media_type":"IMAGE","kind":"short","views":11,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":24.5,"reactions":1,"age_hours":102.0,"insights_ok":true},{"id":"18129066130873072","text":"수요일 아침, 오늘 점심은 어디서 먹을지 벌써 고민하게 되더라고요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-11T08:51:39+09:00","permalink":"https://www.threads.com/@spring_2844/post/DflIONND3XG","media_type":"TEXT_POST","kind":"promo","views":10,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":10.0,"reactions":0,"age_hours":107.1,"insights_ok":true},{"id":"18134478943774763","text":"수요일 새벽, 잠들기 전 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-11T02:12:04+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfkaffvGKc1","media_type":"TEXT_POST","kind":"promo","views":13,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":13.0,"reactions":0,"age_hours":113.8,"insights_ok":true},{"id":"18162066301505753","text":"화요일 저녁, 내일 퇴근 후 아이와 어디로 산책 나갈지 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-10T19:57:38+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfjvpGgm600","media_type":"TEXT_POST","kind":"promo","views":53,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":53.0,"reactions":0,"age_hours":120.0,"insights_ok":true},{"id":"18107966963125550","text":"피클에 초대장~ https://pickle.com/i/9C2YPH4V","posted_at":"2026-11-10T17:52:43+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfjhWHQHzjm","media_type":"TEXT_POST","kind":"invite","views":38,"likes":1,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":39.0,"reactions":1,"age_hours":122.1,"insights_ok":true},{"id":"17934340293165355","text":"화요일 오후, 벌써 이번 주말이 기다려지시나요?\n\"이번 주말엔 어디 가지?\"\n\n찾아보면 이미 끝난 축제도 있고, 지역마다 행사 정보가 흩어져 있어서 한참을 뒤져야 하더라고요.\n\n그래서 전국 축제와 행사를 날짜별로 찾아볼 수 있는 '주말 어디가?'를 직접 만들었습니다. 이번 주말에 열리는 행사를 지도와 목록으로 함께 볼 수 있게 정리해 뒀어요.\n\n멀리 가지 않아도, 근처 작은 행사 하나면 주말이 조금 특별해질 수 있으니까요.\n\n이번 주말, 어디 가실 예정인가요?\nhttps://weekendgo.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-10T13:58:56+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfjGl4zG-g-","media_type":"TEXT_POST","kind":"promo","views":4,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":4.0,"reactions":0,"age_hours":126.0,"insights_ok":true},{"id":"17992054647380792","text":"화요일 아침, 문득 아이가 떠오르는 날이 있어요.\n\n별다방은 사진과 이야기로 아이를 기억하는 온라인 추모관입니다. 이름과 이메일만으로 추모관을 만들 수 있고, 그리울 때 들러 짧은 편지를 남길 수 있어요.\n\n오늘 하루, 아이를 떠올리는 마음이 조금은 가벼워지길 바라요.\nhttps://starpet.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_starpet","posted_at":"2026-11-10T09:00:47+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfikeLXme9r","media_type":"TEXT_POST","kind":"promo","views":15,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":0,"potential_score":15.0,"reactions":0,"age_hours":131.0,"insights_ok":true},{"id":"17955245322321492","text":"還好嗎?","posted_at":"2026-11-10T08:16:41+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfifZj-o0SX","media_type":"IMAGE","kind":"short","views":6,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":19.5,"reactions":1,"age_hours":131.7,"insights_ok":true},{"id":"18218617435359138","text":"토요일 저녁, 내일 반려동물과 함께 갈 곳을 찾고 계신가요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-11-07T19:57:18+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfcBN_qG76Q","media_type":"TEXT_POST","kind":"promo","views":71,"likes":0,"replies":0,"reposts":0,"quotes":0,"shares":3,"potential_score":71.0,"reactions":3,"age_hours":192.0,"insights_ok":true},{"id":"17964328167079704","text":"챗GPT 쓰다가 피클로 완전히 갈아탄 이유 ㄷㄷ\n\n보통 AI는 \"이렇게 하세요\"라고 방법만 알려주는데,\n피클은 \"제가 전화해서 처리하고 올게요\" 하고 진짜 지가 직접 함 ㅋㅋㅋ\n\n1. 전화하기 귀찮은 고객센터 통화 대행 (요금제 변경, 환불)\n2. 전화 예약만 받는 맛집 대신 전화해서 예약 잡아줌\n3. 쿠팡 최저가 찾아서 결제 직전까지 세팅\n4. 필요한 웹사이트나 자동화 툴 말하면 1분 만에 라이브로 배포해 줌\n5. KTX 매진표 취소 나오는 거 감시하다가 바로 낚아챔\n6. 결정적으로 카드 결제나 돈 나가는 건 무조건 내 승인받고 실행해서 안심\n\n하루 종일 일에 치이는 1인 사업자나 귀차니즘 만렙들한테는\n진짜 사람 비서 한 명 옆에 둔 느낌이라 신세계임...📌\n\nhttps://pickle.com/i/9C2YPH4V","posted_at":"2026-11-01T05:50:32+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfLDi0AE7mh","media_type":"TEXT_POST","kind":"promo","views":529,"likes":3,"replies":1,"reposts":1,"quotes":0,"shares":1,"potential_score":549.5,"reactions":6,"age_hours":350.1,"insights_ok":true},{"id":"17993704437098479","text":"중고차 가격을 비교하다 보면, 공매라는 선택지도 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","posted_at":"2026-10-31T04:58:07+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfIYwIHn3RT","media_type":"TEXT_POST","kind":"promo","views":14,"likes":0,"replies":1,"reposts":0,"quotes":0,"shares":0,"potential_score":27.5,"reactions":1,"age_hours":375.0,"insights_ok":true},{"id":"17985705408105141","text":"오늘 점심 메뉴를 정하기 전에, 문득 이런 게 궁금해졌어요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr","posted_at":"2026-10-29T08:01:12+09:00","permalink":"https://www.threads.com/@spring_2844/post/DfDkG_1j0nh","media_type":"TEXT_POST","kind":"warmup","views":41,"likes":0,"replies":2,"reposts":0,"quotes":0,"shares":0,"potential_score":68.0,"reactions":2,"age_hours":420.0,"insights_ok":true},{"id":"18131463595706024","text":"써니와 마지막 인사를 나누던 날이에요.\n\n화면에는 생전 써니 사진과 함께 이런 말을 띄웠어요.\n\"아플 때 약 먹느라 힘들진 않았어? 엄마 아빠가 날 낫게 해주려고 했다는 거, 다 알고 있었어.\"\n\n써니를 기억할 작은 공간이 갖고 싶어서 온라인 추모관 '별다방'을 직접 만들었습니다.\n같은 그리움을 안고 있는 분들과 나누고 싶어요.\n\nstarpet.co.kr","posted_at":"2026-10-12T12:33:00+09:00","permalink":"https://www.threads.com/@spring_2844/post/DeYRtLXn4bl","media_type":"IMAGE","kind":"warmup","views":16475,"likes":40,"replies":0,"reposts":4,"quotes":158,"shares":0,"potential_score":17163.0,"reactions":202,"age_hours":823.4,"insights_ok":true},{"id":"18105700513993641","text":"써니와 마지막 인사를 나누던 날이에요.\n\n화면에는 생전 써니 사진과 함께 이런 말을 띄웠어요.\n\"아플 때 약 먹느라 힘들진 않았어? 엄마 아빠가 날 낫게 해주려고 했다는 거, 다 알고 있었어.\"\n\n써니를 기억할 작은 공간이 갖고 싶어서 온라인 추모관 '별다방'을 직접 만들었습니다.\n같은 그리움을 안고 있는 분들과 나누고 싶어요.\n\nstarpet.co.kr","posted_at":"2026-10-12T11:28:59+09:00","permalink":"https://www.threads.com/@spring_2844/post/DeYKYQMH-mX","media_type":"TEXT_POST","kind":"warmup","views":576,"likes":1,"replies":1,"reposts":0,"quotes":7,"shares":0,"potential_score":618.5,"reactions":9,"age_hours":824.5,"insights_ok":true}],"warnings":[],"queue":[{"id":"at_20261115_0745","date":"2026-11-15","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"출근길 커피 고민","text":"출근길에 커피 살까 고민하다 그냥 걸었다.\n\n천 원 아끼려고 20분 더 걸은 셈인데\n\n기분은 오히려 나았다.\n\n오늘 아침은 어떻게 시작했어?","first_comment":null,"source":"library"},{"id":"at_20261115_1800","date":"2026-11-15","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"싱크대 배수구 냄새와 조리대 부족","text":"싱크대 배수구 냄새는 청소보다 구조 문제인 경우가 많다.\n\n물이 고이면 그 안에서 다시 올라온다.\n\n그래서 트랩과 패킹, 물 빠짐부터 보면 고르는 시간이 줄어든다.\n\n주방 살림에서 자주 무너지는 데 열 군데를 그 기준으로 추려뒀다. 필요한 게 있는지 아래 댓글에 정리해놨어.","first_comment":"못산템 | 자취·주방 살림 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438561168960\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"kitchen","title":"못산템 | 자취·주방 살림 꿀템 20선","url":"https://cshop.naver.com/lifevault?c=1017438561168960"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261115_2130","date":"2026-11-15","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"물건이 안 늘어나는 이유","text":"물건이 안 늘어나는 사람은 정리를 잘해서가 아니다.\n\n안 사서다.\n\n수납용품을 사면서 정리하는 사람은 계속 산다.\n\n이 말에 할 말 있는 사람?","first_comment":null,"source":"library"},{"id":"at_20261116_0745","date":"2026-11-16","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"시작일 정하는 습관","text":"운동도 돈 관리도 똑같다.\n\n시작일을 정하는 순간 안 한다.\n\n'월요일부터'가 제일 위험하다.\n\n오늘 안 하면 안 하는 거다.\n\n너는 어떤 걸 미뤄뒀어?","first_comment":null,"source":"library"},{"id":"at_20261116_1800","date":"2026-11-16","slot":"18:00","slot_label":"퇴근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"냉장고 파먹기 실패","text":"냉장고 문 열고 3분째 서 있다.\n\n파먹기로 마음먹었는데 결국 배달앱을 다시 켰다.\n\n이 시간에 제일 자주 시켜먹는 메뉴는 뭐야?","first_comment":null,"source":"library"},{"id":"at_20261116_2130","date":"2026-11-16","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"정보가 없어서 못 한다","text":"'정보가 없어서 못 한다'는 말은 대개 틀렸다.\n\n정보는 이미 유튜브에 다 있다.\n\n안 하는 이유는 그냥 안 해서다.\n\n나도 그런 말을 제일 많이 한다.","first_comment":null,"source":"library"},{"id":"at_20261117_0745","date":"2026-11-17","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"퇴근 후 10분","text":"퇴근하고 현관문 열면 10분은 아무것도 안 한다.\n\n가방도 안 내려놓고 그냥 서 있는 시간.\n\n하루 중 제일 조용하다.\n\n집에 들어가면 제일 먼저 뭐 해?","first_comment":null,"source":"library"},{"id":"at_20261117_1800","date":"2026-11-17","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"산책 후 발 씻기와 털갈이","text":"비 온 다음 날 산책하고 들어오면 발 닦는 일이 남는다.\n\n수건은 금방 젖고 바닥은 미끄럽고.\n\n발바닥 털까지 생각하면 준비물이 늘어난다.\n\n산책 후 동선이 정리되는 물건들, 아래 댓글에 모아놨어.","first_comment":"못산템 | 반려견 간식·산책·케어 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438200544928\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"pet","title":"못산템 | 반려견 간식·산책·케어 꿀템 20선","url":"https://cshop.naver.com/lifevault?c=1017438200544928"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261117_2130","date":"2026-11-17","slot":"21:30","slot_label":"심야","mode":"repost","kind_label":"재발행","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":true,"topic":"재발행 · 화요일 저녁, 내일 퇴근 후 아이와 어디로 산책 나갈지 미리 골라두는 건","text":"한 번 지나간 얘기지만 다시 꺼내도 좋을 것 같아서.\n\n화요일 저녁, 내일 퇴근 후 아이와 어디로 산책 나갈지 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=pr…","first_comment":null,"repost_of":{"id":"18162066301505753","permalink":"https://www.threads.com/@spring_2844/post/DfjvpGgm600","views":53,"reactions":0,"score":53.0},"source":"repost"},{"id":"at_20261118_0745","date":"2026-11-18","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"말투로 평가받는 사람","text":"일 잘하는데 말이 센 사람은\n\n결국 실력이 아니라 말투로 기억된다.\n\n반대도 마찬가지다.\n\n칭찬 한마디 잘하는 사람이 오래 간다.","first_comment":null,"source":"library"},{"id":"at_20261118_1800","date":"2026-11-18","slot":"18:00","slot_label":"퇴근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"서랍 정리하다 멈춤","text":"정리 마음먹고 서랍을 열었다.\n\n옛날 영수증과 안 쓰는 케이블을 30분째 보고 있다.\n\n정리는 언제 시작되는 거지.\n\n너도 서랍 열면 이러지?","first_comment":null,"source":"library"},{"id":"at_20261118_2130","date":"2026-11-18","slot":"21:30","slot_label":"심야","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"다이소에서 하나만 사기","text":"다이소에 하나만 사러 갔다.\n\n나올 때는 양손이 가득이다.\n\n필요해서 산 건 두 개고 나머지는 '있으면 쓸 것 같아서'다.\n\n그거 결국 쓰고 있어?","first_comment":null,"source":"library"},{"id":"at_20261119_0745","date":"2026-11-19","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"주말 아침 이불 빨래","text":"주말 아침 9시에 눈이 떴다.\n\n더 자려고 누웠는데 잠이 안 와서 그냥 이불 빨래를 돌렸다.\n\n이런 날이 제일 뿌듯하다.\n\n주말에 갑자기 하는 집안일 있어?","first_comment":null,"source":"library"},{"id":"at_20261119_1800","date":"2026-11-19","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"욕실 물때·곰팡이와 좁은 수납","text":"샤워기 호스 안쪽 물때는 밖에서 안 보인다.\n\n안이 비치는 재질인지, 물이 고이지 않는 구조인지가 먼저다.\n\n줄눈은 물 빠짐이 좋은 마감인지 보면 다시 찍히는 속도가 다르다.\n\n욕실에서 반복되는 문제들, 아래 댓글에 정리해뒀다.","first_comment":"생활 꿀금고 | 욕실·수납 정리 필수템 20선\nhttps://cshop.naver.com/lifevault\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"bath","title":"생활 꿀금고 | 욕실·수납 정리 필수템 20선","url":"https://cshop.naver.com/lifevault"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261119_2130","date":"2026-11-19","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"연말 계획","text":"연말에 계획 세우는 사람 중에\n\n작년 계획을 기억하는 사람은 거의 없다.\n\n계획은 세우는 게 아니라 남기는 거다.\n\n올해 남은 두 달, 뭐 하나만 남겨봐.","first_comment":null,"source":"library"},{"id":"at_20261120_0745","date":"2026-11-20","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"해결법은 아는데","text":"요즘 잘 안 풀리는 일이 하나 있다.\n\n해결할 방법은 아는데 시작을 못 하고 있다.\n\n이럴 때 너는 어떻게 넘어가?","first_comment":null,"source":"library"},{"id":"at_20261120_1800","date":"2026-11-20","slot":"18:00","slot_label":"퇴근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"3년 전 산 물건","text":"3년 전에 산 물건 중에 아직 쓰는 게 몇 개나 되나 세어봤다.\n\n손에 꼽는다.\n\n반대로 만 원도 안 되는 물건 하나는 매일 쓴다.\n\n비싼 것보다 자주 쓰는 게 오래 남더라.","first_comment":null,"source":"library"},{"id":"at_20261120_2130","date":"2026-11-20","slot":"21:30","slot_label":"심야","mode":"repost","kind_label":"재발행","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":true,"topic":"재발행 · 목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.","text":"이거 지난주에 썼던 건데 생각보다 반응이 있어서 다시.\n\n목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.\n\n별다방은 사진과 이야기로 아이를 기억하는 온라인 추모관입니다. 이름과 이메일만으로 추모관을 만들 수 있고, 그리울 때 들러 짧은 편지를 남길 수 있어요.\n\n오늘도 아이를 떠올리는 마음이 조용히 이어지길 바라요.\nhttps://starpet.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_starpet","first_comment":null,"repost_of":{"id":"18023921609732157","permalink":"https://www.threads.com/@spring_2844/post/DfntxR4DyCa","views":39,"reactions":0,"score":39.0},"source":"repost"},{"id":"at_20261121_0745","date":"2026-11-21","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"장 볼 때 리스트","text":"장 보러 갈 때 리스트를 안 쓰면\n\n집에 와서 뭐가 빠졌는지 안다.\n\n오늘 빠진 것도 간장이다.\n\n너는 장 볼 때 뭘 자주 빠뜨려?","first_comment":null,"source":"library"},{"id":"at_20261121_1800","date":"2026-11-21","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"충전선 엉킴과 겨울 실내 건조","text":"침대 머리맡 충전선이 세 개 엉켜 있으면\n\n아침마다 하나씩 풀어야 한다.\n\n선 정리 하나로 매일 30초가 아낀다.\n\n한 달이면 15분이다.\n\n소형가전·디지털 쪽에 찾는 게 있으면 아래 댓글 봐봐.","first_comment":"생활 꿀금고 | 소형가전·디지털 꿀템 20선\nhttps://cshop.naver.com/lifevault\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"tech","title":"생활 꿀금고 | 소형가전·디지털 꿀템 20선","url":"https://cshop.naver.com/lifevault"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261121_2130","date":"2026-11-21","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"물어보기가 제일 어렵다","text":"누군가에게 물어보면 10분이면 될 일을\n\n혼자 붙잡고 있는 게 아깝다.\n\n근데 그 '물어보기'가 제일 어렵다.\n\n너는 잘 물어보는 편이야?","first_comment":null,"source":"library"},{"id":"at_20261122_0745","date":"2026-11-22","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"새벽에 생각 많아짐","text":"새벽에 자다 깨면 아무 문제 없다가도\n\n그때만 생각이 많아진다.\n\n아침 되면 대수롭지 않은 것들이\n\n밤에는 전부 큰일이 된다.\n\n너도 그렇지?","first_comment":null,"source":"library"},{"id":"at_20261122_1800","date":"2026-11-22","slot":"18:00","slot_label":"퇴근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"세탁기 깜빡","text":"세탁기 돌려놓고 나간 걸 하루 종일 생각했다.\n\n집에 와서 보니 그냥 젖은 빨래가 있었다.\n\n별일 아니었는데 왜 그렇게 신경 쓰였을까.\n\n이런 거 자주 있어?","first_comment":null,"source":"library"},{"id":"at_20261122_2130","date":"2026-11-22","slot":"21:30","slot_label":"심야","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"월급 지나고 통장","text":"월급날이 지나면 통장이 조용해진다.\n\n나가는 곳은 정해져 있는데 새는 곳이 있다.\n\n이번 달에 '이건 좀 아까웠다' 싶은 지출 있어?","first_comment":null,"source":"library"},{"id":"at_20261123_0745","date":"2026-11-23","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"겨울 현관 신발","text":"겨울만 되면 현관 신발이 두 배가 된다.\n\n한 켤레는 밖에, 한 켤레는 안에, 하나는 반쯤 걸쳐서.\n\n사람이 늘어난 것도 아닌데.\n\n너희 집 현관은 어때?","first_comment":null,"source":"library"},{"id":"at_20261123_1800","date":"2026-11-23","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"싱크대 배수구 냄새와 조리대 부족","text":"설거지하고 나서 행주를 어디 두느냐가 냄새를 정한다.\n\n젖은 채로 개수대에 걸어두면 하루면 쉰다.\n\n물 빠짐과 통풍, 이 두 가지만 따지면 정리가 덜 고민된다.\n\n주방 쪽에서 자주 반복되는 불편들, 아래 댓글 목록에 묶어놨어.","first_comment":"못산템 | 자취·주방 살림 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438561168960\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"kitchen","title":"못산템 | 자취·주방 살림 꿀템 20선","url":"https://cshop.naver.com/lifevault?c=1017438561168960"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261123_2130","date":"2026-11-23","slot":"21:30","slot_label":"심야","mode":"repost","kind_label":"재발행","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":true,"topic":"재발행 · 목요일 새벽, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요","text":"다시 봐도 이 부분은 그대로다.\n\n목요일 새벽, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation","first_comment":null,"repost_of":{"id":"18030587690879537","permalink":"https://www.threads.com/@spring_2844/post/Dfm9yVOGprv","views":35,"reactions":0,"score":35.0},"source":"repost"},{"id":"at_20261124_0745","date":"2026-11-24","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"들어주는 사람","text":"말 잘하는 사람보다 들어주는 사람이 오래 남는다.\n\n내 주변에 그런 사람이 한 명 있다.\n\n연락 한 번 해봐야겠다.\n\n너한테 그런 사람은 누구야?","first_comment":null,"source":"library"},{"id":"at_20261124_1800","date":"2026-11-24","slot":"18:00","slot_label":"퇴근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"택배 미루기","text":"택배 왔다는 문자를 받고도 3시간 뒤에 들였다.\n\n현관까지 나가는 20초가 그렇게 싫다.\n\n미루는 데는 재능이 있는 것 같다.","first_comment":null,"source":"library"},{"id":"at_20261124_2130","date":"2026-11-24","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"남의 일은 쉽다","text":"누가 물어보면 조언을 잘한다.\n\n내 일은 못 정한다.\n\n남의 일은 쉽고 내 일은 어렵다.\n\n이거 왜 이럴까.","first_comment":null,"source":"library"},{"id":"at_20261125_0745","date":"2026-11-25","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"첫 추위와 옷장","text":"첫 추위에 옷장을 다 열었다.\n\n작년에 입던 코트는 어디 갔는지 모르겠고\n\n결국 제일 자주 입는 건 무난한 그 옷이다.\n\n겨울에 제일 손이 가는 옷은 뭐야?","first_comment":null,"source":"library"},{"id":"at_20261125_1800","date":"2026-11-25","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"산책 후 발 씻기와 털갈이","text":"털갈이 시즌엔 옷과 소파가 같이 희끗해진다.\n\n털을 붙잡는 것보다 날리는 걸 줄이는 게 먼저다.\n\n그 기준으로 고르면 사는 개수가 줄어든다.\n\n반려견 쪽에 필요한 게 있는지 아래 댓글 함 봐.","first_comment":"못산템 | 반려견 간식·산책·케어 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438200544928\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"pet","title":"못산템 | 반려견 간식·산책·케어 꿀템 20선","url":"https://cshop.naver.com/lifevault?c=1017438200544928"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261125_2130","date":"2026-11-25","slot":"21:30","slot_label":"심야","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"연말 정산 서랍","text":"연말이 다가오니 영수증을 모아둔 서랍이 눈에 밟힌다.\n\n미리 정리해두면 12월이 편하다.\n\n올해는 좀 일찍 해볼 생각이다.","first_comment":null,"source":"library"},{"id":"at_20261126_0745","date":"2026-11-26","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"만족이 안 남는 소비","text":"돈을 쓰는데 만족이 아니라 허전함이 남는 소비가 있다.\n\n반대로 만 원도 안 되는 것에 하루가 좋아진 적도 있고.\n\n이번 달은 후자 쪽으로 써보려고 한다.","first_comment":null,"source":"library"},{"id":"at_20261126_1800","date":"2026-11-26","slot":"18:00","slot_label":"퇴근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"요즘 어때","text":"'요즘 어때'라는 말을\n\n진짜 궁금해서 하는 사람이 몇 명이나 될까 생각했다.\n\n그래서 나는 그 말을 받으면 한 줄은 더 써서 답한다.\n\n요즘 어때?","first_comment":null,"source":"library"},{"id":"at_20261126_2130","date":"2026-11-26","slot":"21:30","slot_label":"심야","mode":"repost","kind_label":"재발행","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":true,"topic":"재발행 · 목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다 공매라는 선택지가","text":"지난번에 적어둔 글인데, 요즘도 같은 생각이다.\n\n목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=socia…","first_comment":null,"repost_of":{"id":"18122696816177560","permalink":"https://www.threads.com/@spring_2844/post/Dfnm48xDwu1","views":14,"reactions":0,"score":14.0},"source":"repost"},{"id":"at_20261127_0745","date":"2026-11-27","slot":"07:45","slot_label":"출근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"집에서 커피","text":"집에서 커피 내리는 데 3분이 걸린다.\n\n나가서 사오는 데는 15분이 걸린다.\n\n15분이 아까워서 3분을 택했는데\n\n맛은 나가는 게 낫다. 이게 사람 마음이다.","first_comment":null,"source":"library"},{"id":"at_20261127_1800","date":"2026-11-27","slot":"18:00","slot_label":"퇴근길","mode":"affiliate","kind_label":"수익화","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"욕실 물때·곰팡이와 좁은 수납","text":"욕실 수납은 넣는 것보다 걸고 세우는 게 오래 간다.\n\n바닥에 두면 물기가 남고, 남으면 다시 청소다.\n\n이 기준 하나만 잡아도 사는 물건이 절반으로 줄어든다.\n\n욕실·수납 목록은 아래 댓글에 있어.","first_comment":"생활 꿀금고 | 욕실·수납 정리 필수템 20선\nhttps://cshop.naver.com/lifevault\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","product":{"key":"bath","title":"생활 꿀금고 | 욕실·수납 정리 필수템 20선","url":"https://cshop.naver.com/lifevault"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","source":"library"},{"id":"at_20261127_2130","date":"2026-11-27","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"물건이 안 늘어나는 이유","text":"물건이 안 늘어나는 사람은 정리를 잘해서가 아니다.\n\n안 사서다.\n\n수납용품을 사면서 정리하는 사람은 계속 산다.\n\n이 말에 할 말 있는 사람?","first_comment":null,"source":"library"},{"id":"at_20261128_0745","date":"2026-11-28","slot":"07:45","slot_label":"출근길","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"시작일 정하는 습관","text":"운동도 돈 관리도 똑같다.\n\n시작일을 정하는 순간 안 한다.\n\n'월요일부터'가 제일 위험하다.\n\n오늘 안 하면 안 하는 거다.\n\n너는 어떤 걸 미뤄뒀어?","first_comment":null,"source":"library"},{"id":"at_20261128_1800","date":"2026-11-28","slot":"18:00","slot_label":"퇴근길","mode":"daily","kind_label":"일상","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"겨울 이불","text":"겨울 이불을 꺼내는데 냄새가 났다.\n\n한 여름 동안 장롱 안에 있었으니까.\n\n결국 밤 11시에 빨래를 돌렸다.\n\n계절 바뀔 때 너도 이러지?","first_comment":null,"source":"library"},{"id":"at_20261128_2130","date":"2026-11-28","slot":"21:30","slot_label":"심야","mode":"empathy","kind_label":"쓰아리","status":"queued","created_at":"2026-11-15T20:01:32.382467+09:00","polish":false,"topic":"정보가 없어서 못 한다","text":"'정보가 없어서 못 한다'는 말은 대개 틀렸다.\n\n정보는 이미 유튜브에 다 있다.\n\n안 하는 이유는 그냥 안 해서다.\n\n나도 그런 말을 제일 많이 한다.","first_comment":null,"source":"library"}],"channels":{"threads":{"username":"spring_2844","user_id":"29545113835105136","token_type":"long_lived","token_issued":"2026-11-15T09:43:00+09:00","api":"Graph API v1.0","ok":true},"instagram":{"username":"spring_2844","link_status":"linked","media_count":130,"followers_count":1,"publish_quota":{"used":0,"total":100,"window_hours":24,"checked_at":"2026-11-15T10:18:58+09:00"},"checked_at":"2026-11-15T10:18:58+09:00"},"facebook":{"page_name":"비즈브릿지","page_id":"1275959672265825"},"naver":{"driver":"github-pages"}},"products":[{"key":"kitchen","title":"못산템 | 자취·주방 살림 꿀템 20선","url":"https://cshop.naver.com/lifevault?c=1017438561168960"},{"key":"pet","title":"못산템 | 반려견 간식·산책·케어 꿀템 20선","url":"https://cshop.naver.com/lifevault?c=1017438200544928"},{"key":"bath","title":"생활 꿀금고 | 욕실·수납 정리 필수템 20선","url":"https://cshop.naver.com/lifevault"},{"key":"tech","title":"생활 꿀금고 | 소형가전·디지털 꿀템 20선","url":"https://cshop.naver.com/lifevault"}],"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.","queue_meta":{"generated_at":"2026-11-15T20:01:32.382467+09:00","range":{"start":"2026-11-15","end":"2026-11-28"},"days":14,"slots":["07:45","18:00","21:30"],"ratio":{"일상":38.1,"수익화":16.7,"쓰아리":35.7,"재발행":9.5},"counts":{"일상":16,"수익화":7,"쓰아리":15,"재발행":4},"monetized_days":["2026-11-15","2026-11-17","2026-11-19","2026-11-21","2026-11-23","2026-11-25","2026-11-27"],"guardrails":{"수익화":"하루 최대 1건 · 같은 날 중복 금지 · 수익화일 사이 최소 1일 간격","재발행":"3~5일 경과 실측 글 중 반응이 붙은 글만","본문":"두괄식 2줄 훅 + 문장마다 짧은 끊김·여백","제휴":"본문 링크 금지 · 첫 댓글에 목록+링크+공정위 문구"},"disclosure":"※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다."}}</script>
+<script>
+(function(){
+  "use strict";
+  var SEED = {};
+  try { SEED = JSON.parse(document.getElementById('seed').textContent || '{}'); } catch(e) { SEED = {}; }
+  var DATA = SEED;
+
+  var KIND_LABEL = {daily:'일상', empathy:'쓰아리', affiliate:'수익화', repost:'재발행',
+                    promo:'자사 홍보', invite:'초대·단문', short:'단문', warmup:'일상·공감'};
+  var KIND_COLOR = {daily:'#b9b7ac', empathy:'#3e6b57', affiliate:'#a9762f', repost:'#3c5a78',
+                    promo:'#8b8a80', invite:'#cfcdc3', short:'#dedcd3', warmup:'#6f7d68'};
+  var CLS = {daily:'daily', empathy:'empathy', affiliate:'affiliate', repost:'repost'};
+  var PRODUCTS = {
+    kitchen:{title:'못산템 | 자취·주방 살림 꿀템 20선',url:'https://cshop.naver.com/lifevault?c=1017438561168960',
+             angle:'청소보다 구조(물 빠짐·트랩) 문제인 경우가 많다'},
+    pet:{title:'못산템 | 반려견 간식·산책·케어 꿀템 20선',url:'https://cshop.naver.com/lifevault?c=1017438200544928',
+         angle:'닦는 것보다 날리는·묻는 걸 줄이는 게 먼저다'},
+    bath:{title:'생활 꿀금고 | 욕실·수납 정리 필수템 20선',url:'https://cshop.naver.com/lifevault',
+          angle:'물이 고이면 다시 생긴다. 물 빠짐부터 본다'},
+    tech:{title:'생활 꿀금고 | 소형가전·디지털 꿀템 20선',url:'https://cshop.naver.com/lifevault',
+          angle:'선 정리·습도처럼 매일 반복되는 것부터 줄인다'}
+  };
+  var DISCLOSURE = '※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.';
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmt(n){ if(n==null||n==='') return '—'; return Number(n).toLocaleString('ko-KR'); }
+  function postById(id){ var ps=DATA.posts||[]; for(var i=0;i<ps.length;i++){ if(ps[i].id===id) return ps[i]; } return null; }
+  function firstLine(t){ return String(t||'').split('\n').find(function(l){ return l.trim(); })||''; }
+  function shortDate(iso){
+    if(!iso) return '—';
+    var d = new Date(iso); if(isNaN(d)) return '—';
+    var p=function(x){ return (x<10?'0':'')+x; };
+    return (d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes());
+  }
+  var WD = ['일','월','화','수','목','금','토'];
+  function dayLabel(iso){
+    var parts = iso.split('-'), d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+    return {md:(+parts[1])+'/'+(+parts[2]), wd:WD[d.getDay()]};
+  }
+
+  /* ── 대시보드 ─────────────────────────────────────────── */
+  function renderDash(){
+    var s = DATA.summary || {};
+    var stats = [
+      ['총 게시물', fmt(s.total_posts_fetched), '건'],
+      ['게시물 조회 합계', fmt(s.total_views_post_level), '회'],
+      ['최근 30일 계정 조회', fmt(s.account_views_30d), '회'],
+      ['반응 합계', fmt(s.total_reactions), '건'],
+      ['평균 반응 / 글', s.avg_reactions==null?'—':s.avg_reactions, ''],
+      ['조회 1K+ 글', fmt(s.posts_over_1k), '건']
+    ];
+    $('stats').innerHTML = stats.map(function(x){
+      return '<div><div class="k">'+esc(x[0])+'</div><div class="v">'+esc(x[1])+'<small>'+esc(x[2])+'</small></div></div>';
+    }).join('');
+
+    // 일별 조회수
+    var daily = (DATA.daily||[]).slice();
+    var views = daily.filter(function(d){ return d.views!=null; });
+    var chart = $('chart'), max = 0, peak = null;
+    views.forEach(function(d){ if(d.views>max){ max=d.views; peak=d; } });
+    chart.innerHTML = views.map(function(d){
+      var h = max ? Math.max(2, Math.round(d.views/max*100)) : 2;
+      var cls = 'bar has' + (d===peak?' peak':'');
+      return '<div class="'+cls+'" style="height:'+h+'%" title="'+esc(d.date+' · '+fmt(d.views)+'회')+'"></div>';
+    }).join('') || '<div class="empty" style="width:100%">일별 조회수 데이터가 없습니다.</div>';
+    $('chart-from').textContent = views.length ? views[0].date : '';
+    $('chart-to').textContent = views.length ? views[views.length-1].date : '';
+    $('chart-tail').textContent = peak ? ('최고 '+peak.date+' · '+fmt(peak.views)+'회') : '';
+
+    // 글 유형 비중
+    var bk = s.by_kind || {}, total=0, rows=[];
+    Object.keys(bk).forEach(function(k){ total += bk[k]; });
+    var order = ['daily','affiliate','empathy','promo','warmup','invite','short'];
+    order.forEach(function(k){ if(bk[k]) rows.push([k,bk[k]]); });
+    Object.keys(bk).forEach(function(k){ if(order.indexOf(k)<0) rows.push([k,bk[k]]); });
+    $('mix-bar').innerHTML = rows.map(function(r){
+      return '<i style="width:'+(r[1]/total*100)+'%;background:'+(KIND_COLOR[r[0]]||'#ccc')+'"></i>';
+    }).join('');
+    $('mix-legend').innerHTML = rows.map(function(r){
+      return '<div><i style="background:'+(KIND_COLOR[r[0]]||'#ccc')+'"></i>'+esc(KIND_LABEL[r[0]]||r[0])+
+             '<b>'+fmt(r[1])+' <span style="color:#8b8a80;font-weight:400">'+(Math.round(r[1]/total*1000)/10)+'%</span></b></div>';
+    }).join('');
+    $('mix-tail').textContent = total ? ('총 '+fmt(total)+'건 분류') : '';
+
+    // 전환 준비 상태
+    var ch = DATA.channels || {}, ig = ch.instagram||{}, th = ch.threads||{}, fb = ch.facebook||{};
+    var rows2 = [
+      ['Threads', (th.username?'@'+th.username:'—')+' · '+(th.api||'Graph API'),
+       th.ok ? '연결됨' : '연결 안 됨', th.ok?'':true],
+      ['Instagram', ig.username?('@'+ig.username+' · 미디어 '+fmt(ig.media_count)+' · 팔로워 '+fmt(ig.followers_count)):'—',
+       ig.link_status==='linked' ? '연결됨' : '미연결', ig.link_status!=='linked'],
+      ['Facebook', fb.page_name?('페이지 '+fb.page_name):'—', fb.page_name?'연결됨':'—', !fb.page_name],
+      ['네이버 크리에이터샵', '생활 꿀금고 컬렉션 '+(DATA.products||[]).length+'개 · 첫 댓글 링크', '운영 중', false]
+    ];
+    $('channels').innerHTML = rows2.map(function(r){
+      return '<div class="statusrow"><span class="ch">'+esc(r[0])+'</span><span class="dt">'+esc(r[1])+
+             '</span><span class="st'+(r[3]?' off':'')+'">'+esc(r[2])+'</span></div>';
+    }).join('');
+
+    // 최근 게시물
+    var recent = (DATA.posts||[]).slice(0,12);
+    var tb = $('recent').querySelector('tbody');
+    tb.innerHTML = recent.map(function(p){
+      var k = p.kind || 'short';
+      return '<tr>'+
+        '<td class="num" style="color:var(--ink-soft)">'+esc(shortDate(p.posted_at))+'</td>'+
+        '<td><span class="chip '+(CLS[k]||'muted')+'">'+esc(KIND_LABEL[k]||k)+'</span></td>'+
+        '<td><span class="first" title="'+esc(p.text||'')+'">'+esc(firstLine(p.text)||'(이미지 글)')+'</span></td>'+
+        '<td class="n">'+fmt(p.views)+'</td>'+
+        '<td class="n">'+fmt(p.likes)+'</td>'+
+        '<td class="n">'+fmt(p.replies)+'</td>'+
+        '<td class="n">'+(p.potential_score==null?'—':fmt(Math.round(p.potential_score)))+'</td>'+
+        '<td>'+(p.permalink?'<a href="'+esc(p.permalink)+'" target="_blank" rel="noopener" style="color:var(--ink-muted);font-size:12px">원문</a>':'')+'</td>'+
+      '</tr>';
+    }).join('') || '<tr><td colspan="8"><div class="empty">게시물 데이터가 없습니다.</div></td></tr>';
+
+    var w = (DATA.warnings||[]);
+    $('warnings').innerHTML = w.length ? ('<b>주의</b> · '+w.map(esc).join(' / '))
+      : '측정 지표 — 조회수·좋아요·댓글·리포스트·인용·공유(게시물) / 조회수(계정 일별). 응답이 없는 필드는 비웁니다.';
+  }
+
+  /* ── 농장 스케줄러 ────────────────────────────────────── */
+  var selectedItem = null;
+  function renderFarm(){
+    var q = DATA.queue || [], meta = DATA.queue_meta || {};
+    var counts = meta.counts || {}, ratio = meta.ratio || {};
+    $('farmtop').innerHTML = [
+      ['기간', (meta.range? (meta.range.start+' → '+meta.range.end) : '—'), meta.days?meta.days+'일':''],
+      ['슬롯', (meta.slots||['07:45','18:00','21:30']).join(' · '), '하루 3건'],
+      ['비율', Object.keys(ratio).map(function(k){ return k+' '+ratio[k]+'%'; }).join(' · '), ''],
+      ['수익화일', (meta.monetized_days||[]).length+'일', '최소 1일 간격']
+    ].map(function(r){
+      return '<div><div class="k">'+esc(r[0])+'</div><div class="v">'+esc(r[1])+(r[2]?'<small>'+esc(r[2])+'</small>':'')+'</div></div>';
+    }).join('');
+
+    var g = meta.guardrails || {};
+    $('guard').innerHTML = Object.keys(g).map(function(k){
+      return '<div><b>'+esc(k)+'</b>'+esc(g[k])+'</div>';
+    }).join('');
+
+    var byDate = {};
+    q.forEach(function(it){ (byDate[it.date] = byDate[it.date]||[]).push(it); });
+    var dates = Object.keys(byDate).sort();
+    var slots = meta.slots || ['07:45','18:00','21:30'];
+    var html = '<div class="calhead"><div>날짜</div>'+slots.map(function(s){ return '<div>'+esc(s)+'</div>'; }).join('')+'</div>';
+    dates.forEach(function(d){
+      var lab = dayLabel(d);
+      var row = '<div class="calrow"><div class="day"><b>'+esc(lab.md)+'</b><em>'+esc(lab.wd)+'</em></div>';
+      slots.forEach(function(slot){
+        var it = (byDate[d]||[]).filter(function(x){ return x.slot===slot; })[0];
+        if(!it){ row += '<div class="slot" style="color:var(--ink-muted);font-size:12px">—</div>'; return; }
+        var k = it.mode || 'daily';
+        var done = it.status==='published';
+        row += '<button class="slot" type="button" data-id="'+esc(it.id)+'">'+
+          '<span class="t"><span class="chip '+(CLS[k]||'muted')+'">'+esc(it.kind_label||KIND_LABEL[k]||k)+'</span>'+
+          (done?'<span class="done">발행</span>':'')+'</span>'+
+          '<span class="tp">'+esc(it.topic||'')+'</span></button>';
+      });
+      html += row + '</div>';
+    });
+    $('calendar').innerHTML = html || '<div class="empty">예약 큐가 없습니다. modules/autothread_farm.py 를 실행하세요.</div>';
+
+    var pending = q.filter(function(x){ return x.status!=='published'; }).length;
+    $('cnt-farm').textContent = q.length ? String(q.length) : '';
+    $('farm-note').innerHTML = '발행 <b>'+q.filter(function(x){return x.status==='published';}).length+'건</b> · 예약 <b>'+pending+
+      '건</b> · 큐 생성 '+(meta.generated_at?esc(shortDate(meta.generated_at)):'—')+
+      '. 스케줄러가 도는 시각에 예약 원고가 있으면 scripts/threads_auto_post.py 가 이 원고를 먼저 씁니다.';
+
+    var target = null;
+    for(var i=0;i<q.length && !target;i++){ if(q[i].status!=='published') target = q[i]; }
+    selectItem(selectedItem || target);
+  }
+
+  function selectItem(it){
+    if(!it){ $('detail').hidden = true; return; }
+    selectedItem = it;
+    $('detail').hidden = false;
+    $('d-title').textContent = (it.kind_label||'') + ' · ' + (it.date||'') + ' ' + (it.slot||'');
+    $('d-meta').textContent = [it.topic, it.status==='published'?'발행 완료':'예약됨'].filter(Boolean).join(' · ');
+    $('d-body').textContent = it.text || '';
+    var c = it.first_comment;
+    $('d-comment').textContent = c || '';
+    $('d-comment').hidden = !c;
+    $('d-comment-none').hidden = !!c;
+    var p = it.product;
+    $('d-product').innerHTML = p ? ('상품 묶음 <b>'+esc(p.title)+'</b> · <a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="color:var(--accent)">링크 열기</a>')
+      : (it.repost_of ? ('재발행 원문 <a href="'+esc(it.repost_of.permalink||'#')+'" target="_blank" rel="noopener" style="color:var(--accent)">보기</a> · 원문 조회 '+fmt(it.repost_of.views)) : '');
+    Array.prototype.forEach.call(document.querySelectorAll('.slot'), function(b){
+      b.setAttribute('aria-current', b.getAttribute('data-id')===it.id ? 'true':'false');
+    });
+  }
+
+  document.getElementById('calendar').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('.slot') : null;
+    if(!b || !b.getAttribute('data-id')) return;
+    var id = b.getAttribute('data-id');
+    var it = (DATA.queue||[]).filter(function(x){ return x.id===id; })[0];
+    if(it) selectItem(it);
+  });
+
+  /* ── 보석함 · 재발행 ─────────────────────────────────── */
+  function reworkPrompt(p){
+    return '아래는 내가 예전에 스레드(@spring_2844)에 쓴 글이다. 같은 계정의 반말 구어체로 재가공해줘.\n\n'+
+      '규칙\n'+
+      '1. 첫 두 줄은 새 각도로 다시 잡아 훅을 만든다.\n'+
+      '2. 문장은 짧게 끊고 문장 사이에 빈 줄을 넣는다.\n'+
+      '3. 마지막은 댓글을 부르는 가벼운 질문 한 마디.\n'+
+      '4. 사실과 의미는 유지한다. 링크·이모지·해시태그 금지. 120~260자.\n'+
+      '5. 본문만 출력한다.\n\n'+
+      '원문:\n'+(p.text||'');
+  }
+  function reworkDraft(p){
+    var openers = ['지난번에 적어둔 글인데, 요즘도 같은 생각이다.',
+                   '한 번 지나간 얘기지만 다시 꺼내도 좋을 것 같아서.',
+                   '이거 지난주에 썼던 건데 반응이 있어서 다시.',
+                   '다시 봐도 이 부분은 그대로다.'];
+    var n = (p.id||'').split('').reduce(function(a,c){ return a+c.charCodeAt(0); },0) % openers.length;
+    return openers[n]+'\n\n'+(p.text||'');
+  }
+
+  function renderGems(){
+    var gems = (DATA.gembox||[]).map(postById).filter(Boolean);
+    $('cnt-gems').textContent = gems.length ? String(gems.length) : '';
+    $('gems-tail').textContent = gems.length ? ('상위 '+gems.length+'건 · 포텐셜 점수 순') : '';
+    $('gembox').innerHTML = gems.map(function(p,i){
+      return '<div class="gem">'+
+        '<div class="gh"><span class="rank">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="chip '+(CLS[p.kind]||'muted')+'">'+esc(KIND_LABEL[p.kind]||p.kind||'')+'</span>'+
+        '<span>'+esc(shortDate(p.posted_at))+'</span>'+
+        '<span class="score">'+fmt(Math.round(p.potential_score||0))+'<small>점</small></span></div>'+
+        '<p>'+esc(p.text||'').replace(/\n+/g,' ')+'</p>'+
+        '<div class="gf"><span class="sp">조회 '+fmt(p.views)+' · 좋아요 '+fmt(p.likes)+' · 댓글 '+fmt(p.replies)+' · 리포스트 '+fmt(p.reposts)+'</span>'+
+        '<span class="acts"><button class="btn" data-prompt="'+esc(p.id)+'">프롬프트</button>'+
+        '<button class="btn" data-draft="'+esc(p.id)+'">재가공 초안</button>'+
+        (p.permalink?'<a class="btn" href="'+esc(p.permalink)+'" target="_blank" rel="noopener" style="text-decoration:none">원문</a>':'')+
+        '</span></div></div>';
+    }).join('') || '<div class="empty">아직 보석함이 비었습니다. 게시물 반응이 쌓이면 자동으로 채워집니다.</div>';
+
+    var rq = (DATA.repost_queue||[]).map(postById).filter(Boolean);
+    $('repost-tail').textContent = rq.length ? (rq.length+'건 · 3~5일 경과') : '대상 없음';
+    var tb = $('repost').querySelector('tbody');
+    tb.innerHTML = rq.map(function(p){
+      var age = p.age_hours!=null ? (p.age_hours/24).toFixed(1)+'일' : '—';
+      return '<tr><td class="n">'+esc(age)+'</td>'+
+        '<td><span class="first" title="'+esc(p.text||'')+'">'+esc(firstLine(p.text))+'</span></td>'+
+        '<td class="n">'+fmt(p.views)+'</td><td class="n">'+fmt(p.reactions)+'</td>'+
+        '<td class="n">'+fmt(Math.round(p.potential_score||0))+'</td>'+
+        '<td><button class="btn" data-prompt="'+esc(p.id)+'">프롬프트</button> '+
+        '<button class="btn" data-draft="'+esc(p.id)+'">초안</button></td></tr>';
+    }).join('') || '<tr><td colspan="6"><div class="empty">3~5일 경과 글 중 반응이 붙은 대상이 없습니다.</div></td></tr>';
+  }
+
+  /* ── 생성 스튜디오 ───────────────────────────────────── */
+  function angleText(topic, product, angleSel){
+    if(angleSel==='struct') return '청소보다 구조(물 빠짐·트랩) 문제인 경우가 많다';
+    if(angleSel==='time') return '한 번 생기면 반복된다. 매일 같은 자리에서 같은 일이 벌어진다';
+    if(angleSel==='std') return '고를 때 기준 하나만 잡으면 사는 개수가 줄어든다';
+    if(product && PRODUCTS[product]) return PRODUCTS[product].angle;
+    return '청소보다 구조·습관 문제인 경우가 많다';
+  }
+  function buildBody(topic, product, angleSel, variant){
+    var angle = angleText(topic, product, angleSel);
+    var t = topic || '주제';
+    if(variant==='1'){
+      return t+'\n\n한 번 생기면 반복된다.\n\n닦아도 다시 돌아오는 건 구조 때문이다.\n\n'+angle+'.\n\n'+
+        '그래서 고를 때 보는 건 두 가지다.\n\n물이 고이지 않는지, 매일 손이 닿는 자리에 두는지.\n\n'+
+        '이 기준으로 추리면 쓸데없이 사는 게 줄어든다.\n\n필요한 거 있으면 아래 한번 봐봐.';
+    }
+    if(variant==='2'){
+      return t+'\n\n하루 3분, 한 달이면 90분이다.\n\n'+angle+'.\n\n'+
+        '그 기준으로 몇 개만 바꾸면 이 시간이 줄어든다.\n\n'+
+        '큰 걸 사는 것보다 매일 반복되는 걸 줄이는 쪽이 낫다.\n\n필요한 것만 골라 봐.';
+    }
+    return t+'\n\n대개 청소보다 구조 문제다.\n\n'+angle+'.\n\n'+
+      '그래서 고를 때 보는 건 두 가지다.\n\n'+
+      '물이 고이지 않는지, 매일 손이 닿는 자리에 두는지.\n\n'+
+      '이 기준으로 추리면 쓸데없이 사는 게 줄어든다.\n\n필요한 거 있으면 아래 한번 봐봐.';
+  }
+  function buildComment(title, link){
+    if(!link) return '';
+    return (title ? title+'\n' : '')+link+'\n\n'+DISCLOSURE;
+  }
+  function updateChecks(){
+    var body = $('s-body').value || '', comment = $('s-comment').value || '';
+    var lines = body.split('\n').filter(function(l){ return l.trim(); }).length;
+    var hasLink = /https?:\/\/|www\./.test(body);
+    var hasTag = /#/.test(body);
+    var hasBan = /써봤|사용해봤|효과 봤|보장|무조건|완벽|대박/.test(body);
+    var hasDisc = /수수료를 지급받습니다/.test(comment);
+    var checks = [
+      [body.length>=100 && body.length<=300, '길이 '+body.length+'자'],
+      [lines>=4 && lines<=7, '문장 '+lines+'줄'],
+      [!hasLink, '본문 링크 없음'],
+      [!hasTag, '해시태그 없음'],
+      [!hasBan, '금지어 없음'],
+      [comment? hasDisc : true, '공정위 문구']
+    ];
+    $('s-checks').innerHTML = checks.map(function(c){
+      return '<span class="chk '+(c[0]?'ok':'bad')+'">'+esc(c[1])+'</span>';
+    }).join('');
+    $('mock-body').textContent = body || '주제를 넣고 본문을 생성하면 여기에 미리보기가 나옵니다.';
+    $('mock-comment').hidden = !comment;
+    $('mock-comment').textContent = comment;
+  }
+  function runStudio(){
+    var topic = $('s-topic').value.trim();
+    if(!topic){ $('s-topic').focus(); return; }
+    var product = $('s-product').value;
+    var variant = $('s-variant').value;
+    var title = $('s-title').value.trim() || (product && PRODUCTS[product] ? PRODUCTS[product].title : '');
+    var link = $('s-link').value.trim() || (product && PRODUCTS[product] ? PRODUCTS[product].url : '');
+    $('s-body').value = buildBody(topic, product, $('s-angle').value, variant);
+    $('s-comment').value = buildComment(title, link);
+    updateChecks();
+  }
+  $('s-product').addEventListener('change', function(){
+    var p = PRODUCTS[this.value];
+    if(p){ $('s-title').value = p.title; $('s-link').value = p.url; }
+    else if(!p){ $('s-title').value=''; $('s-link').value=''; }
+    if($('s-topic').value.trim()) runStudio();
+  });
+  $('s-run').addEventListener('click', runStudio);
+  ['s-body','s-comment'].forEach(function(id){ $(id).addEventListener('input', updateChecks); });
+  ['s-variant','s-angle'].forEach(function(id){ $(id).addEventListener('change', function(){ if($('s-topic').value.trim()) runStudio(); }); });
+  $('s-topic').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); runStudio(); } });
+
+  /* ── 복사 ─────────────────────────────────────────────── */
+  function copyText(text, btn){
+    var done = function(){
+      if(!btn) return;
+      btn.classList.add('copied');
+      var old = btn.textContent; btn.textContent = '복사됨';
+      setTimeout(function(){ btn.classList.remove('copied'); btn.textContent = old; }, 1400);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.top='-1000px';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('button') : null;
+    if(!b) return;
+    if(b.hasAttribute('data-copy')){
+      var el = $(b.getAttribute('data-copy'));
+      if(el) copyText(el.textContent != null && el.tagName!=='TEXTAREA' ? el.textContent : el.value, b);
+    } else if(b.hasAttribute('data-prompt')){
+      var p = postById(b.getAttribute('data-prompt'));
+      if(p) copyText(reworkPrompt(p), b);
+    } else if(b.hasAttribute('data-draft')){
+      var q = postById(b.getAttribute('data-draft'));
+      if(q) copyText(reworkDraft(q), b);
+    }
+  });
+
+  /* ── 탭 ───────────────────────────────────────────────── */
+  document.querySelector('nav.tabs').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('button') : null;
+    if(!b || !b.getAttribute('data-tab')) return;
+    Array.prototype.forEach.call(document.querySelectorAll('nav.tabs button'), function(x){
+      x.setAttribute('aria-selected', x===b ? 'true':'false');
+    });
+    ['dash','farm','gems','studio'].forEach(function(t){
+      $('tab-'+t).hidden = (t !== b.getAttribute('data-tab'));
+    });
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+
+  /* ── 렌더 ─────────────────────────────────────────────── */
+  function renderAll(){
+    var gen = DATA.generated_at;
+    $('synced').innerHTML = gen
+      ? ('마지막 실측 <b>'+esc(shortDate(gen))+'</b> · 데이터 출처 <b>'+(DATA.source||'Meta Threads Graph API')+'</b>')
+      : '동기화 기록이 없습니다. scripts/autothread_sync.py 를 실행하세요.';
+    $('foot-sync').textContent = gen ? shortDate(gen) : '—';
+    $('foot-posts').textContent = (DATA.posts||[]).length ? fmt((DATA.summary||{}).total_posts_fetched) : '—';
+    $('foot-queue').textContent = (DATA.queue||[]).length ? fmt((DATA.queue||[]).length) : '—';
+    renderDash(); renderFarm(); renderGems(); updateChecks();
+  }
+
+  renderAll();
+  // 같은 폴더의 data.json 이 있으면 최신 실측으로 덮어쓴다(정적 폴백 유지).
+  fetch('./data.json?ts='+Date.now(), {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ if(j && j.generated_at && (!DATA.generated_at || j.generated_at >= DATA.generated_at)){ DATA = j; renderAll(); } })
+    .catch(function(){});
+})();
+</script>
+</body>
+</html>
