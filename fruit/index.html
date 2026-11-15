@@ -437,14 +437,13 @@ function goCalc() {
 
 /* ── 요약 ───────────────────────────────── */
 function renderStats() {
-  const sups = new Set();
-  let offers = 0;
-  SPECS.forEach(s => { s[10].forEach(o => { sups.add(o[0]); offers++; }); });
+  const ratios = SPECS.map(s => s[9] / s[5]).sort((a, b) => a - b);
+  const med = ratios[Math.floor(ratios.length / 2)];
   const rows = [
-    ['비교 규격', won(SPECS.length), '개'],
-    ['참여 도매처', sups.size, '곳'],
-    ['최저가 견적', won(offers), '건'],
-    ['집계', DATA.synced_at_kst.slice(5, 16), '']
+    ['kg 환산 규격', won(SPECS.length), '개'],
+    ['참여 도매처', DATA.supplier_count, '곳'],
+    ['수집 공급가', won(DATA.offer_rows), '건'],
+    ['최고/최저 격차 중앙', med.toFixed(2), '배']
   ];
   document.getElementById('statline').innerHTML = rows
     .map(([k, v, u]) => `<div><div class="k">${k}</div><div class="v">${v}<small>${u}</small></div></div>`).join('');
