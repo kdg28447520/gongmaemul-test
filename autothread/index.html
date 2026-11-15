@@ -464,6 +464,7 @@
     <div><b>《동곤 오토스레드 PRO》</b> — 계정 @spring_2844 · 데이터 출처: Meta Threads Graph API v1.0 (공식)</div>
     <div>동기화: <span id="foot-sync">—</span> · 게시물 <span id="foot-posts">—</span>건 · 스케줄 큐 <span id="foot-queue">—</span>건</div>
     <div>이 화면은 실측값과 예약 큐만 보여줍니다. 숫자를 만들어 채우지 않습니다.</div>
+    <div>갱신 순서: <b>scripts/autothread_sync.py</b> (실측) → <b>modules/autothread_farm.py</b> (큐) → <b>scripts/build_autothread_page.py</b> (화면) → push</div>
   </footer>
 </main>
 
@@ -497,11 +498,19 @@
   function fmt(n){ if(n==null||n==='') return '—'; return Number(n).toLocaleString('ko-KR'); }
   function postById(id){ var ps=DATA.posts||[]; for(var i=0;i<ps.length;i++){ if(ps[i].id===id) return ps[i]; } return null; }
   function firstLine(t){ return String(t||'').split('\n').find(function(l){ return l.trim(); })||''; }
+  // 모든 시각은 한국시간(KST)으로 표기한다 — 보는 사람의 시간대에 흔들리지 않게.
+  var KST_FMT = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Seoul', year:'numeric', month:'2-digit',
+    day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false});
+  function kstParts(iso){
+    var d = new Date(iso); if(isNaN(d)) return null;
+    var o = {};
+    KST_FMT.formatToParts(d).forEach(function(pt){ if(pt.type!=='literal') o[pt.type]=pt.value; });
+    return o;
+  }
   function shortDate(iso){
     if(!iso) return '—';
-    var d = new Date(iso); if(isNaN(d)) return '—';
-    var p=function(x){ return (x<10?'0':'')+x; };
-    return (d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes());
+    var o = kstParts(iso); if(!o) return '—';
+    return (+o.month)+'/'+(+o.day)+' '+o.hour+':'+o.minute;
   }
   var WD = ['일','월','화','수','목','금','토'];
   function dayLabel(iso){
