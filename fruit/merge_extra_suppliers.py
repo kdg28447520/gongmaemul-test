@@ -17,7 +17,7 @@ DATA = os.path.join(HERE, 'data.json')
 
 BASE_DEFAULTS = {
     'alias': None, 'type': None, 'account': None, 'price': None,
-    'flag': None, 'sheet': None, 'order_url': None,
+    'flag': None, 'sheet': None, 'order_url': None, 'contact': None,
 }
 
 PLATFORM_TYPE = {
