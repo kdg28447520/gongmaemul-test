@@ -21,7 +21,7 @@ BASE_DEFAULTS = {
 }
 
 PLATFORM_TYPE = {
-    'adminplus': '파트너 B2B(단가 로그인)',
+    'adminplus': '파트너 B2B',
     'gsheet': '구글시트 단가표',
     'baljuora': '발주오라',
     'direct': '자체 몰',
@@ -44,8 +44,8 @@ def merge(payload, extra=None):
     for s in sups:
         for k, v in BASE_DEFAULTS.items():
             s.setdefault(k, v)
-        if not s.get('type'):
-            s['type'] = PLATFORM_TYPE.get(s.get('platform'), None) or '도매처'
+        if not s.get('type') or s.get('type') == '파트너 B2B(단가 로그인)':
+            s['type'] = PLATFORM_TYPE.get(s.get('platform'), None) or s.get('type') or '도매처'
         s.setdefault('source', 'gum')
         s.setdefault('own', False)
 
