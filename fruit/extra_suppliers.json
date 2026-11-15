@@ -1,0 +1,133 @@
+{
+  "updated": "2026-11-15",
+  "about": "동곤 님이 직접 보유한 과일·농산물 도매처. refresh_snapshot.py가 data.json을 새로 쓸 때마다 이 파일을 다시 병합하므로, 구멍이 스카우트 스냅샷 갱신에 우리 거래처가 덮이지 않는다. 새 거래처는 suppliers 배열에, 기존 53곳에 대한 보강(가입·단가 상태, 비고)은 enrich 배열에 넣는다.",
+  "suppliers": [
+    {
+      "id": "sweetiefood",
+      "name": "스위티푸드",
+      "alias": "따고담고",
+      "url": "https://sweetiefood.com",
+      "platform": "direct",
+      "type": "과일·수산 위탁 B2B",
+      "items": 551,
+      "last": "2026-11-05",
+      "active": true,
+      "account": "가입완료",
+      "price": "단가표 보유",
+      "note": "구글 계정 로그인 B2B. 2026-11-05 단가표 551옵션 확보(품절 172). 엔부 실속 1kg 6,500 · 2kg 9,300 · 5kg 18,200, 대봉감 5kg 중소과 13,600 · 10kg 22,500. 청도반시는 5kg 60과 9,000원이 최저이고 30~35과는 14,700~16,300원 — 9,000원짜리로 쿠팡 16,710원에 팔면 순익 1,062원(6.3%)이라 과수 등급을 반드시 맞춰 발주한다(11/13 라이브뷰 실측 정정)."
+    },
+    {
+      "id": "bunnies",
+      "name": "버니즈농장",
+      "url": "https://docs.google.com/spreadsheets/d/1IlHvMxTIJaOdolePc2xtHBxt_czcqj9KVaK_V_xt2KY/edit",
+      "platform": "gsheet",
+      "type": "과일·축산·수산 위탁(셀러방)",
+      "items": 788,
+      "last": "2026-11-14",
+      "active": true,
+      "account": "가입완료",
+      "price": "시트 열람",
+      "note": "구글시트 '품목리스트'(badsofu@gmail.com, 11-14 갱신) 788품목. 시나노골드 2kg 6,400~, 감홍 2kg 7,500~, 대봉감 소과 7,200~, 단감 4,600~. 11/6 엔비사과 정식 출하, 감홍은 11/20 시즌아웃. 입금자명 '셀러코드_상호명', CS는 수령 24시간 내 설문+사진 3장, 단순변심 반품 불가."
+    },
+    {
+      "id": "hwifresh",
+      "name": "휘프레시",
+      "url": "https://hwifresh.co.kr",
+      "order_url": "https://shop.baljuora.com/hwifresh50",
+      "platform": "baljuora",
+      "type": "안동 도매시장 중도매인 직영",
+      "items": null,
+      "last": "2026-11-13",
+      "active": true,
+      "account": "발주 1건 가능",
+      "price": "발주오라 확인",
+      "note": "안동농산물도매시장 경북청과 50번 직영. 3억 규모 비파괴 당도선별기, 당일 경매·당일 선별 출고라 최고집식 미출고 지연이 없다. 일반 도매몰보다 10~15% 낮은 공급가. 11/2 오픈 후 KG이니시스 심사로 카드결제가 일시 중단된 상태(11/13 실측) — 재개 여부 확인 필요."
+    },
+    {
+      "id": "try365",
+      "name": "트라이365",
+      "url": "https://docs.google.com/spreadsheets/d/1R6iviy3KXjEdK4zknX_2NbVTLiYa0yHZx65XUxSXPeM/edit",
+      "platform": "gsheet",
+      "type": "과일·농산물 도매(시트 단가)",
+      "items": null,
+      "last": "2026-11-13",
+      "active": true,
+      "account": "시트 공유",
+      "price": "시트 열람",
+      "note": "구글시트 '트라이365 상품리스트'(365tryon@gmail.com, 11-13 갱신)를 공유받아 열람 중. 품목 전수 파싱은 아직 안 했고, 파싱하면 최저가 보드에 업체로 합칠 수 있다."
+    },
+    {
+      "id": "foodmix",
+      "name": "푸드믹스",
+      "url": "https://m.foodmix.co.kr",
+      "platform": "direct",
+      "type": "식자재·농산물 종합 도매",
+      "items": null,
+      "last": "2026-11-15",
+      "active": true,
+      "account": "승인대기",
+      "price": "승인 후",
+      "note": "2026-11-15 사업자 회원가입 접수(아이디 kdg2844), 관리자 수동 승인 대기. 카카오채널(pf.kakao.com/_xlIswxb)로 사업자등록증을 보내면 승인이 빨라진다. 승인 확인 일일 스케줄 운영 중."
+    }
+  ],
+  "enrich": [
+    {
+      "id": "choigozip",
+      "own": true,
+      "account": "파트너몰 가입",
+      "price": "열람 가능",
+      "note": "매일 오전 10:30 단가 갱신, 전 품목 무료배송·면세. 대봉감 6,750~, 엔부 7,600~. 다만 11/13 셀러 단톡방 분석에서 하루 2만 건 폭주로 미출고·3~7일 지연이 반복돼 정시배송 패널티와 계정정지 리스크가 확인됐다 — 급한 물량은 대체 공급처를 함께 둔다."
+    },
+    {
+      "id": "jaehwan0330",
+      "own": true,
+      "account": "가입",
+      "price": "열람 가능",
+      "note": "부사 5kg 9,900·부유단감 5kg 7,600으로 최저가권. 다만 셀러 단톡방 언급 1,511건에 못난이 CS 불가·곰팡이 환불 전가 사례가 많다 — 가격만 보고 대량 발주하지 않는다."
+    },
+    {
+      "id": "kdc6026",
+      "own": true,
+      "account": "가입",
+      "price": "열람 가능",
+      "note": "제주 감귤 5kg 중과 7,400원(10/30 실측)으로 감귤 최저가. 구글시트 단가가 실시간 갱신된다."
+    },
+    {
+      "id": "farmflow",
+      "own": true,
+      "account": "가입",
+      "price": "시트 열람",
+      "note": "구글시트 '팜플로우 품목리스트'(kllopr1016@gmail.com, 11-13 갱신) 4,727품목 공유."
+    },
+    {
+      "id": "matox",
+      "own": true,
+      "account": "가입",
+      "price": "시트 열람",
+      "note": "구글시트 단가표 공유(11/4 확인)."
+    },
+    {
+      "id": "econfarm",
+      "own": true,
+      "account": "파트너몰 승인",
+      "price": "열람 가능",
+      "note": "판매중 4,241품목 단가 확보: 부유단감 10kg 흠과혼합 11,700·5kg 8,600, 부사 2kg 6,900, 샤인 2kg 8,400, 나주배 3kg 7,300. 사진 1장으로 수거 없이 100% 환불·재발송하는 CS 책임제가 강점."
+    },
+    {
+      "id": "rhdnsl2236",
+      "own": true,
+      "account": "가입",
+      "price": "열람 가능",
+      "flag": "퇴출",
+      "note": "11/5 셀러방 28만 줄 분석에서 곰팡이 클레임이 반복돼 영구 퇴출 결정. 단가가 싸도 다시 쓰지 않는다."
+    },
+    {
+      "id": "welgreen",
+      "price": "시트 열람"
+    },
+    {
+      "id": "daon",
+      "price": "시트 열람"
+    }
+  ]
+}

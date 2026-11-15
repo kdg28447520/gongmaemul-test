@@ -10,6 +10,13 @@ import os
 import re
 import urllib.request
 
+try:  # 같은 폴더의 병합기(동곤 님 보유 도매처) — 스냅샷 갱신이 우리 거래처를 지우지 않게 한다
+    from merge_extra_suppliers import merge as merge_extra
+    merge_error = None
+except Exception as e:  # 병합기 파일을 못 읽어도 공급가 갱신 자체는 계속한다
+    merge_extra = None
+    merge_error = e
+
 K = 'sb_publishable_XsFJFllSfCCEtbgeb_5VXA_4gKWthjb'
 U = 'https://kotlqerjhtqtbxfzwenq.supabase.co/rest/v1'
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -114,6 +121,11 @@ def main():
         'suppliers': sup,
         'specs': out,
     }
+    if merge_extra:
+        merge_extra(payload)
+    else:
+        print('보유 도매처 병합 건너뜀:', merge_error)
+
     path = os.path.join(HERE, 'data.json')
     with open(path, 'w') as f:
         json.dump(payload, f, ensure_ascii=False, separators=(',', ':'))

@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>과일 소싱 관제탑 — 도매 최저가·로스 마진</title>
-<meta name="description" content="과일 위탁판매 셀러용 도매 관제탑. 도매처 53곳의 공급가를 kg당으로 비교하고, 로스율과 쿠팡 수수료를 반영한 실제 마진을 계산합니다.">
+<meta name="description" content="과일 위탁판매 셀러용 도매 관제탑. 과일 도매처 58곳(구멍이 B2B 53 + 직접 보유 5)의 공급가를 kg당으로 비교하고, 로스율과 쿠팡 수수료를 반영한 실제 마진을 계산합니다.">
 <link rel="canonical" href="https://gongmaemul.co.kr/fruit/">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="과일 소싱 관제탑 — 도매 최저가·로스 마진">
-<meta property="og:description" content="도매처 53곳·규격 1,676개의 kg당 최저가와 로스 반영 마진 계산.">
+<meta property="og:description" content="도매처 58곳·규격 1,676개의 kg당 최저가와 로스 반영 마진 계산.">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
 <style>
@@ -192,21 +192,32 @@
 
   /* ── suppliers ──────────────────────────── */
   .suprow {
-    display: grid; grid-template-columns: minmax(0, 1fr) 96px 74px 116px;
+    display: grid; grid-template-columns: minmax(0, 1fr) 104px 104px 62px 92px;
     gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line);
+    cursor: pointer;
   }
   .suprow:last-child { border-bottom: 0; }
+  .suprow:hover { background: #fbfbf8; }
   .suprow .nm { min-width: 0; }
   .suprow .nm b { font-weight: 500; }
+  .suprow .nm .alias { font-size: 12px; color: var(--ink-muted); margin-left: 5px; }
+  .suprow .nm .meta { font-size: 12px; color: var(--ink-muted); line-height: 1.5; margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .suprow.open .nm .meta { display: block; overflow: visible; }
   .suprow .nm .tag { font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: 1px; }
   .suprow .nm .tag.off { color: var(--ink-muted); background: var(--surface-2); }
+  .suprow .nm .tag.bad { color: var(--minus); background: #f4e7e2; }
   .suprow .plat { font-size: 12px; color: var(--ink-muted); }
+  .suprow .st { font-size: 11.5px; line-height: 1.55; color: var(--ink-soft); }
+  .suprow .st span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .suprow .st .dim { color: var(--ink-muted); }
+  .suprow .st .wait { color: var(--minus); }
   .suprow .items { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--ink-soft); }
-  .suprow .go { text-align: right; }
+  .suprow .go { text-align: right; font-size: 13px; line-height: 1.6; }
   .suprow .go a { font-size: 13px; color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-strong); padding-bottom: 1px; }
   .suprow .go a:hover { color: var(--accent); border-color: var(--accent); }
-  .suphead { font-size: 12px; color: var(--ink-muted); background: var(--surface-2); border-bottom: 1px solid var(--line); }
-  .suphead .items, .suphead .go { font-family: inherit; font-size: 12px; }
+  .suphead { font-size: 12px; color: var(--ink-muted); background: var(--surface-2); border-bottom: 1px solid var(--line); cursor: default; }
+  .suphead:hover { background: var(--surface-2); }
+  .suphead .items, .suphead .go, .suphead .st { font-family: inherit; font-size: 12px; color: var(--ink-muted); }
 
   footer.foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-muted); line-height: 1.7; }
   footer.foot a { color: var(--ink-soft); }
@@ -238,9 +249,11 @@
     .brow .gap::after { content: "배"; font-size: 11px; }
     .brow .act { grid-column: 2; grid-row: 4; }
     .brow .act button { font-size: 12px; padding: 4px 8px; }
-    .suprow { grid-template-columns: minmax(0, 1fr) 74px 92px; }
+    .suprow { grid-template-columns: minmax(0, 1fr) 58px 78px; align-items: start; }
     .suprow .plat { display: none; }
     .suphead .plat { display: none; }
+    .suprow .st { display: none; }
+    .suphead .st { display: none; }
     .two { grid-template-columns: 1fr 1fr; }
     nav.tabs { gap: 16px; }
     nav.tabs button { font-size: 14px; }
@@ -366,10 +379,12 @@
 
   <!-- ── 도매처 ────────────────────────────────── -->
   <panel id="panel-sup" hidden>
-    <p class="lede">공급가를 받아본 과일 도매처 <b id="supLede"></b>입니다. 대부분 업체 승인을 받아야 단가가 보이는 B2B라, 가격은 위 최저가 보드에서 확인하고 여기서는 거래처를 고릅니다.</p>
+    <p class="lede">공급가를 받아본 과일 도매처 <b id="supLede"></b>입니다. 구멍이 클래스가 공개한 B2B 목록에 <b>직접 거래·보유 중인 곳</b>을 합쳤고, 가입과 단가 열람이 어디까지 됐는지 함께 적었습니다. 대부분 업체 승인을 받아야 단가가 보이는 B2B라, 가격은 위 최저가 보드에서 확인하고 여기서는 거래처를 고릅니다.</p>
+    <div class="chips" id="supChips"></div>
     <div class="toolbar">
-      <input type="search" id="sq" placeholder="도매처 이름 검색">
+      <input type="search" id="sq" placeholder="도매처 이름·별칭·비고 검색 (예: 따고담고, 청도반시, 승인대기)">
       <select id="ssort" class="sortsel">
+        <option value="own">내 보유 먼저</option>
         <option value="items">품목 많은 순</option>
         <option value="name">이름 순</option>
         <option value="recent">최근 수집 순</option>
@@ -377,8 +392,9 @@
     </div>
     <div class="board">
       <div class="suprow suphead">
-        <div>도매처</div>
+        <div>도매처 · 비고</div>
         <div class="plat">유형</div>
+        <div class="st">가입 / 단가</div>
         <div class="items">품목</div>
         <div class="go">바로가기</div>
       </div>
@@ -403,7 +419,7 @@ let DATA = null, SUPS = [], SPECS = [];
 const state = { group: '전체', q: '', sort: 'kg', shown: 60, open: -1 };
 
 /* ── 데이터 ─────────────────────────────── */
-fetch('data.json?v=202611151537')
+fetch('data.json?v=202611151604')
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(d => { DATA = d; SUPS = d.suppliers; SPECS = d.specs; init(); })
   .catch(e => {
@@ -653,27 +669,73 @@ function maxCost(c, marginPct) {
 }
 
 /* ── 도매처 ─────────────────────────────── */
-function renderSup() {
-  const q = (document.getElementById('sq').value || '').trim().toLowerCase();
-  let list = SUPS.filter(s => !q || s.name.toLowerCase().includes(q));
-  const sort = document.getElementById('ssort').value;
-  if (sort === 'items') list.sort((a, b) => (b.items || 0) - (a.items || 0));
-  else if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-  else list.sort((a, b) => String(b.last || '').localeCompare(String(a.last || '')));
+const S = { filter: 'all', open: new Set() };
+const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const platLabel = p => ({ adminplus: 'partner 로그인', gsheet: '구글시트 단가표', baljuora: '발주오라', direct: '자체 몰', walldo: '자체 몰' }[p] || p || '—');
 
-  const platLabel = p => ({ adminplus: 'partner 로그인', gsheet: '구글시트 단가표', baljuora: '발주오라', direct: '자체 몰', walldo: '자체 몰' }[p] || p);
-  document.getElementById('supRows').innerHTML = list.map(s => `
-    <div class="suprow">
-      <div class="nm"><b>${s.name}</b>${s.active === false ? '<span class="tag off">수집 중단</span>' : ''}${s.gum ? '<span class="tag">구멍이 수록</span>' : ''}</div>
-      <div class="plat">${platLabel(s.platform)}</div>
-      <div class="items">${s.items == null ? '—' : won(s.items)}</div>
-      <div class="go">${/^https?:/.test(s.url) ? `<a href="${s.url}" target="_blank" rel="noopener">열기 →</a>` : '—'}</div>
-    </div>`).join('') || '<div class="empty">해당 도매처가 없습니다.</div>';
-
-  document.getElementById('supNote').innerHTML =
-    `대부분 <b>partner 계정 승인</b>이 있어야 단가가 보입니다. 업체마다 영업 담당에게 사업자등록증을 보내고 계정을 받는 방식이라, 가입 폼이 아니라 문의로 진행됩니다. 구글시트 단가표로 운영하는 곳(웰그린푸드·다온)은 시트 링크를 받아 열람하고 발주는 발주오라에서 합니다.`;
+function renderSupChips() {
+  const own = SUPS.filter(s => s.own).length;
+  const defs = [['all', '전체', SUPS.length], ['own', '내 보유', own], ['gum', '구멍이 B2B', SUPS.length - own]];
+  const el = document.getElementById('supChips');
+  el.innerHTML = defs.map(([k, label, n]) =>
+    `<button data-f="${k}" aria-pressed="${k === S.filter}">${label} <span style="opacity:.6;font-size:12px">${n}</span></button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    S.filter = b.dataset.f; renderSup();
+  }));
 }
 
+function renderSup() {
+  renderSupChips();
+  const q = (document.getElementById('sq').value || '').trim().toLowerCase();
+  let list = SUPS.map((s, i) => ({ s, i }));
+  if (S.filter === 'own') list = list.filter(x => x.s.own);
+  if (S.filter === 'gum') list = list.filter(x => !x.s.own);
+  if (q) list = list.filter(({ s }) =>
+    [s.name, s.alias, s.type, s.platform, s.account, s.price, s.note].filter(Boolean).join(' ').toLowerCase().includes(q));
+  const sort = document.getElementById('ssort').value;
+  if (sort === 'own') list.sort((a, b) => (b.s.own ? 1 : 0) - (a.s.own ? 1 : 0) || (b.s.items || 0) - (a.s.items || 0));
+  else if (sort === 'items') list.sort((a, b) => (b.s.items || 0) - (a.s.items || 0));
+  else if (sort === 'name') list.sort((a, b) => a.s.name.localeCompare(b.s.name, 'ko'));
+  else list.sort((a, b) => String(b.s.last || '').localeCompare(String(a.s.last || '')));
+
+  const stCell = s => {
+    if (!s.account && !s.price) return '<span class="dim">—</span>';
+    const a = s.account ? `<span class="${/대기/.test(s.account) ? 'wait' : ''}">${esc(s.account)}</span>` : '';
+    const p = s.price ? `<span class="dim">${esc(s.price)}</span>` : '';
+    return a + p;
+  };
+
+  document.getElementById('supRows').innerHTML = list.map(({ s, i }) => `
+    <div class="suprow${S.open.has(i) ? ' open' : ''}" data-i="${i}">
+      <div class="nm"><b>${esc(s.name)}</b>${s.alias ? `<span class="alias">${esc(s.alias)}</span>` : ''}` +
+      `${s.own ? '<span class="tag">내 보유</span>' : (s.gum ? '<span class="tag off">구멍이 수록</span>' : '')}` +
+      `${s.flag ? `<span class="tag bad">${esc(s.flag)}</span>` : ''}` +
+      `${s.active === false ? '<span class="tag off">수집 중단</span>' : ''}` +
+      `${s.note ? `<div class="meta">${esc(s.note)}</div>` : ''}</div>
+      <div class="plat">${esc(s.type || platLabel(s.platform))}</div>
+      <div class="st">${stCell(s)}</div>
+      <div class="items">${s.items == null ? '—' : won(s.items)}</div>
+      <div class="go">${/^https?:/.test(s.url || '') ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">열기 →</a>` : '—'}${s.order_url ? `<br><a href="${esc(s.order_url)}" target="_blank" rel="noopener">발주오라 →</a>` : ''}</div>
+    </div>`).join('') || '<div class="empty">해당 도매처가 없습니다.</div>';
+
+  document.querySelectorAll('#supRows .suprow').forEach(r => r.addEventListener('click', ev => {
+    if (ev.target.tagName === 'A') return;
+    const i = Number(r.dataset.i);
+    if (S.open.has(i)) S.open.delete(i); else S.open.add(i);
+    renderSup();
+  }));
+
+  const own = SUPS.filter(s => s.own).length;
+  const pending = SUPS.filter(s => s.own && /대기/.test(s.account || '')).length;
+  document.getElementById('supNote').innerHTML =
+    `구멍이 B2B <b>${SUPS.length - own}</b>곳 + 직접 보유 <b>${own}</b>곳 = <b>${SUPS.length}</b>곳. ` +
+    `보유 거래처는 가입·단가 확보 상태와 우리가 실측한 단가 메모를 비고에 적었습니다` +
+    (pending ? ` · 가입 승인 대기 <b>${pending}</b>곳` : '') + `. ` +
+    `보유 거래처의 단가는 공개 스냅샷에 없어 위 최저가 보드에는 나오지 않습니다. ` +
+    `나머지는 <b>partner 계정 승인</b>이 있어야 단가가 보이고, 구글시트로 운영하는 곳은 시트 링크를 받아 열람한 뒤 발주오라에서 발주합니다.`;
+}
+
+renderSupChips();
 document.getElementById('sq').addEventListener('input', renderSup);
 document.getElementById('ssort').addEventListener('change', renderSup);
 </script>
