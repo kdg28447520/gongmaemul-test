@@ -19,7 +19,7 @@
     {
       "id": "bunnies",
       "name": "버니즈농장",
-      "url": "https://docs.google.com/spreadsheets/d/1IlHvMxTIJaOdolePc2xtHBxt_czcqj9KVaK_V_xt2KY/edit",
+      "url": "https://xn--980b9wu7sxrl7ic.kr",
       "platform": "gsheet",
       "type": "과일·축산·수산 위탁(셀러방)",
       "items": 788,
@@ -27,7 +27,7 @@
       "active": true,
       "account": "가입완료",
       "price": "시트 열람",
-      "note": "구글시트 '품목리스트'(badsofu@gmail.com, 11-14 갱신) 788품목. 시나노골드 2kg 6,400~, 감홍 2kg 7,500~, 대봉감 소과 7,200~, 단감 4,600~. 11/6 엔비사과 정식 출하, 감홍은 11/20 시즌아웃. 입금자명 '셀러코드_상호명', CS는 수령 24시간 내 설문+사진 3장, 단순변심 반품 불가."
+      "note": "공유받은 구글시트 '품목리스트'(11-14 갱신) 788품목. 시나노골드 2kg 6,400~, 감홍 2kg 7,500~, 대봉감 소과 7,200~, 단감 4,600~. 11/6 엔비사과 정식 출하, 감홍은 11/20 시즌아웃. 입금자명 '셀러코드_상호명', CS는 수령 24시간 내 설문+사진 3장, 단순변심 반품 불가."
     },
     {
       "id": "hwifresh",
@@ -46,7 +46,7 @@
     {
       "id": "try365",
       "name": "트라이365",
-      "url": "https://docs.google.com/spreadsheets/d/1R6iviy3KXjEdK4zknX_2NbVTLiYa0yHZx65XUxSXPeM/edit",
+      "url": null,
       "platform": "gsheet",
       "type": "과일·농산물 도매(시트 단가)",
       "items": null,
@@ -54,7 +54,7 @@
       "active": true,
       "account": "시트 공유",
       "price": "시트 열람",
-      "note": "구글시트 '트라이365 상품리스트'(365tryon@gmail.com, 11-13 갱신)를 공유받아 열람 중. 품목 전수 파싱은 아직 안 했고, 파싱하면 최저가 보드에 업체로 합칠 수 있다."
+      "note": "공유받은 구글시트 '트라이365 상품리스트'(11-13 갱신)를 열람 중. 공개 사이트는 확인되지 않아 단가표로만 거래한다. 품목 전수 파싱은 아직 안 했고, 파싱하면 최저가 보드에 업체로 합칠 수 있다."
     },
     {
       "id": "foodmix",
@@ -97,7 +97,7 @@
       "own": true,
       "account": "가입",
       "price": "시트 열람",
-      "note": "구글시트 '팜플로우 품목리스트'(kllopr1016@gmail.com, 11-13 갱신) 4,727품목 공유."
+      "note": "구글시트 '팜플로우 품목리스트'(11-13 갱신) 4,727품목 공유."
     },
     {
       "id": "matox",
@@ -127,7 +127,8 @@
     },
     {
       "id": "daon",
-      "price": "시트 열람"
+      "price": "시트 열람",
+      "note": "구글시트 단가표로 단가를 공유받아 발주한다. 담당 연락처는 사내 목록에 보관."
     }
   ]
 }
