@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-15T19:59:19.352874+09:00",
+  "generated_at": "2026-11-15T20:07:25.888266+09:00",
   "source": "Meta Threads Graph API v1.0 (공식)",
   "account": {
     "username": "spring_2844",
@@ -10,7 +10,7 @@
     "user_id": "29545113835105136",
     "total_posts_fetched": 205,
     "posts_measured": 205,
-    "total_views_post_level": 21509,
+    "total_views_post_level": 21512,
     "total_reactions": 293,
     "avg_reactions": 1.43,
     "posts_over_1k": 1,
@@ -19,19 +19,20 @@
     "account_likes_30d": null,
     "account_replies_30d": null,
     "account_reposts_30d": null,
-    "followers_count": null,
+    "followers_count": 19,
     "insight_window": {
       "since": "2026-10-16",
       "until": "2026-11-15"
     },
     "by_kind": {
-      "promo": 70,
-      "invite": 58,
-      "warmup": 21,
+      "promo": 67,
+      "invite": 61,
+      "affiliate": 1,
+      "warmup": 20,
       "short": 56
     },
     "gembox_count": 12,
-    "repost_candidates": 8
+    "repost_candidates": 7
   },
   "daily": [
     {
@@ -161,20 +162,19 @@
   ],
   "gembox": [
     "18131463595706024",
-    "18105700513993641",
-    "17964328167079704",
-    "18342425905258424",
-    "17965890483227270",
-    "17899563138615222",
     "18079829588442917",
     "18043385819838939",
     "18218617435359138",
     "17985705408105141",
     "17964382034997794",
-    "17993704437098479"
+    "17993704437098479",
+    "17869471755660031",
+    "17988120987081557",
+    "17978438034169644",
+    "17916282648473112",
+    "18018280724993965"
   ],
   "repost_queue": [
-    "18162066301505753",
     "18023921609732157",
     "18030587690879537",
     "18122696816177560",
@@ -199,7 +199,7 @@
       "shares": 0,
       "potential_score": 0.0,
       "reactions": 0,
-      "age_hours": 0.0,
+      "age_hours": 0.2,
       "insights_ok": true
     },
     {
@@ -217,7 +217,7 @@
       "shares": 0,
       "potential_score": 4.0,
       "reactions": 0,
-      "age_hours": 1.1,
+      "age_hours": 1.3,
       "insights_ok": true
     },
     {
@@ -226,7 +226,7 @@
       "posted_at": "2026-11-15T18:00:52+09:00",
       "permalink": "https://www.threads.com/@spring_2844/post/DfwaPtimwYa",
       "media_type": "TEXT_POST",
-      "kind": "warmup",
+      "kind": "affiliate",
       "views": 1,
       "likes": 0,
       "replies": 1,
@@ -235,7 +235,7 @@
       "shares": 0,
       "potential_score": 14.5,
       "reactions": 1,
-      "age_hours": 2.0,
+      "age_hours": 2.1,
       "insights_ok": true
     },
     {
@@ -253,7 +253,7 @@
       "shares": 0,
       "potential_score": 0.0,
       "reactions": 0,
-      "age_hours": 3.3,
+      "age_hours": 3.4,
       "insights_ok": true
     },
     {
@@ -263,15 +263,15 @@
       "permalink": "https://www.threads.com/@spring_2844/post/DfwI1szH2D2",
       "media_type": "TEXT_POST",
       "kind": "invite",
-      "views": 13,
+      "views": 14,
       "likes": 1,
       "replies": 0,
       "reposts": 0,
       "quotes": 0,
       "shares": 0,
-      "potential_score": 14.0,
+      "potential_score": 15.0,
       "reactions": 1,
-      "age_hours": 4.5,
+      "age_hours": 4.6,
       "insights_ok": true
     },
     {
@@ -289,7 +289,7 @@
       "shares": 0,
       "potential_score": 3.0,
       "reactions": 0,
-      "age_hours": 6.0,
+      "age_hours": 6.2,
       "insights_ok": true
     },
     {
@@ -307,7 +307,7 @@
       "shares": 0,
       "potential_score": 0.0,
       "reactions": 0,
-      "age_hours": 6.4,
+      "age_hours": 6.6,
       "insights_ok": true
     },
     {
@@ -325,7 +325,7 @@
       "shares": 0,
       "potential_score": 86.5,
       "reactions": 2,
-      "age_hours": 8.6,
+      "age_hours": 8.8,
       "insights_ok": true
     },
     {
@@ -334,16 +334,16 @@
       "posted_at": "2026-11-15T10:00:52+09:00",
       "permalink": "https://www.threads.com/@spring_2844/post/DfvjUjqn41N",
       "media_type": "TEXT_POST",
-      "kind": "promo",
-      "views": 211,
+      "kind": "invite",
+      "views": 213,
       "likes": 0,
       "replies": 1,
       "reposts": 0,
       "quotes": 0,
       "shares": 0,
-      "potential_score": 224.5,
+      "potential_score": 226.5,
       "reactions": 1,
-      "age_hours": 10.0,
+      "age_hours": 10.1,
       "insights_ok": true
     },
     {
@@ -361,7 +361,7 @@
       "shares": 0,
       "potential_score": 80.5,
       "reactions": 1,
-      "age_hours": 10.3,
+      "age_hours": 10.4,
       "insights_ok": true
     },
     {
@@ -379,7 +379,7 @@
       "shares": 0,
       "potential_score": 22.0,
       "reactions": 1,
-      "age_hours": 10.6,
+      "age_hours": 10.7,
       "insights_ok": true
     },
     {
@@ -397,7 +397,7 @@
       "shares": 0,
       "potential_score": 31.5,
       "reactions": 1,
-      "age_hours": 11.3,
+      "age_hours": 11.4,
       "insights_ok": true
     },
     {
@@ -415,7 +415,7 @@
       "shares": 0,
       "potential_score": 2.0,
       "reactions": 0,
-      "age_hours": 11.8,
+      "age_hours": 11.9,
       "insights_ok": true
     },
     {
@@ -433,7 +433,7 @@
       "shares": 0,
       "potential_score": 72.5,
       "reactions": 3,
-      "age_hours": 12.0,
+      "age_hours": 12.1,
       "insights_ok": true
     },
     {
@@ -451,7 +451,7 @@
       "shares": 0,
       "potential_score": 16.0,
       "reactions": 0,
-      "age_hours": 18.0,
+      "age_hours": 18.1,
       "insights_ok": true
     },
     {
@@ -469,7 +469,7 @@
       "shares": 0,
       "potential_score": 21.5,
       "reactions": 1,
-      "age_hours": 24.0,
+      "age_hours": 24.1,
       "insights_ok": true
     },
     {
@@ -487,7 +487,7 @@
       "shares": 0,
       "potential_score": 31.5,
       "reactions": 1,
-      "age_hours": 24.0,
+      "age_hours": 24.1,
       "insights_ok": true
     },
     {
@@ -505,7 +505,7 @@
       "shares": 0,
       "potential_score": 18.5,
       "reactions": 1,
-      "age_hours": 24.0,
+      "age_hours": 24.1,
       "insights_ok": true
     },
     {
@@ -523,7 +523,7 @@
       "shares": 0,
       "potential_score": 24.5,
       "reactions": 1,
-      "age_hours": 24.0,
+      "age_hours": 24.1,
       "insights_ok": true
     },
     {
@@ -541,7 +541,7 @@
       "shares": 0,
       "potential_score": 53.0,
       "reactions": 1,
-      "age_hours": 25.9,
+      "age_hours": 26.0,
       "insights_ok": true
     },
     {
@@ -559,7 +559,7 @@
       "shares": 0,
       "potential_score": 3.0,
       "reactions": 0,
-      "age_hours": 28.7,
+      "age_hours": 28.9,
       "insights_ok": true
     },
     {
@@ -577,7 +577,7 @@
       "shares": 0,
       "potential_score": 274.5,
       "reactions": 3,
-      "age_hours": 29.1,
+      "age_hours": 29.2,
       "insights_ok": true
     },
     {
@@ -595,7 +595,7 @@
       "shares": 0,
       "potential_score": 0.0,
       "reactions": 0,
-      "age_hours": 29.9,
+      "age_hours": 30.1,
       "insights_ok": true
     },
     {
@@ -613,7 +613,7 @@
       "shares": 0,
       "potential_score": 13.0,
       "reactions": 0,
-      "age_hours": 30.0,
+      "age_hours": 30.2,
       "insights_ok": true
     },
     {
@@ -631,7 +631,7 @@
       "shares": 0,
       "potential_score": 66.0,
       "reactions": 0,
-      "age_hours": 35.0,
+      "age_hours": 35.1,
       "insights_ok": true
     },
     {
@@ -649,7 +649,7 @@
       "shares": 0,
       "potential_score": 5.0,
       "reactions": 0,
-      "age_hours": 42.0,
+      "age_hours": 42.1,
       "insights_ok": true
     },
     {
@@ -667,7 +667,7 @@
       "shares": 0,
       "potential_score": 11.0,
       "reactions": 0,
-      "age_hours": 48.0,
+      "age_hours": 48.2,
       "insights_ok": true
     },
     {
@@ -685,7 +685,7 @@
       "shares": 0,
       "potential_score": 16.0,
       "reactions": 1,
-      "age_hours": 49.5,
+      "age_hours": 49.6,
       "insights_ok": true
     },
     {
@@ -703,7 +703,7 @@
       "shares": 0,
       "potential_score": 1.0,
       "reactions": 0,
-      "age_hours": 50.4,
+      "age_hours": 50.5,
       "insights_ok": true
     },
     {
@@ -712,7 +712,7 @@
       "posted_at": "2026-11-13T17:06:52+09:00",
       "permalink": "https://www.threads.com/@spring_2844/post/DfrKe8oH1tW",
       "media_type": "TEXT_POST",
-      "kind": "promo",
+      "kind": "invite",
       "views": 262,
       "likes": 1,
       "replies": 1,
@@ -721,7 +721,7 @@
       "shares": 0,
       "potential_score": 276.5,
       "reactions": 2,
-      "age_hours": 50.9,
+      "age_hours": 51.0,
       "insights_ok": true
     },
     {
@@ -739,7 +739,7 @@
       "shares": 0,
       "potential_score": 4.0,
       "reactions": 0,
-      "age_hours": 54.0,
+      "age_hours": 54.1,
       "insights_ok": true
     },
     {
@@ -757,7 +757,7 @@
       "shares": 0,
       "potential_score": 9.0,
       "reactions": 0,
-      "age_hours": 55.9,
+      "age_hours": 56.0,
       "insights_ok": true
     },
     {
@@ -775,7 +775,7 @@
       "shares": 0,
       "potential_score": 13.5,
       "reactions": 1,
-      "age_hours": 58.3,
+      "age_hours": 58.5,
       "insights_ok": true
     },
     {
@@ -793,7 +793,7 @@
       "shares": 0,
       "potential_score": 15.5,
       "reactions": 1,
-      "age_hours": 58.4,
+      "age_hours": 58.5,
       "insights_ok": true
     },
     {
@@ -811,7 +811,7 @@
       "shares": 0,
       "potential_score": 13.5,
       "reactions": 1,
-      "age_hours": 58.4,
+      "age_hours": 58.5,
       "insights_ok": true
     },
     {
@@ -829,7 +829,7 @@
       "shares": 0,
       "potential_score": 18.5,
       "reactions": 1,
-      "age_hours": 58.4,
+      "age_hours": 58.5,
       "insights_ok": true
     },
     {
@@ -847,7 +847,7 @@
       "shares": 0,
       "potential_score": 17.5,
       "reactions": 1,
-      "age_hours": 65.1,
+      "age_hours": 65.3,
       "insights_ok": true
     },
     {
@@ -865,7 +865,7 @@
       "shares": 0,
       "potential_score": 16.5,
       "reactions": 1,
-      "age_hours": 65.2,
+      "age_hours": 65.3,
       "insights_ok": true
     },
     {
@@ -883,7 +883,7 @@
       "shares": 0,
       "potential_score": 14.5,
       "reactions": 1,
-      "age_hours": 65.2,
+      "age_hours": 65.3,
       "insights_ok": true
     },
     {
@@ -901,7 +901,7 @@
       "shares": 0,
       "potential_score": 29.5,
       "reactions": 1,
-      "age_hours": 65.2,
+      "age_hours": 65.4,
       "insights_ok": true
     },
     {
@@ -919,7 +919,7 @@
       "shares": 0,
       "potential_score": 17.5,
       "reactions": 1,
-      "age_hours": 71.9,
+      "age_hours": 72.1,
       "insights_ok": true
     },
     {
@@ -937,7 +937,7 @@
       "shares": 0,
       "potential_score": 15.5,
       "reactions": 1,
-      "age_hours": 72.0,
+      "age_hours": 72.1,
       "insights_ok": true
     },
     {
@@ -955,7 +955,7 @@
       "shares": 0,
       "potential_score": 15.5,
       "reactions": 1,
-      "age_hours": 72.0,
+      "age_hours": 72.1,
       "insights_ok": true
     },
     {
@@ -973,7 +973,7 @@
       "shares": 0,
       "potential_score": 22.5,
       "reactions": 1,
-      "age_hours": 72.0,
+      "age_hours": 72.1,
       "insights_ok": true
     },
     {
@@ -991,7 +991,7 @@
       "shares": 0,
       "potential_score": 1.0,
       "reactions": 0,
-      "age_hours": 75.6,
+      "age_hours": 75.7,
       "insights_ok": true
     },
     {
@@ -1009,7 +1009,7 @@
       "shares": 0,
       "potential_score": 39.0,
       "reactions": 0,
-      "age_hours": 83.0,
+      "age_hours": 83.2,
       "insights_ok": true
     },
     {
@@ -1027,7 +1027,7 @@
       "shares": 0,
       "potential_score": 14.0,
       "reactions": 0,
-      "age_hours": 84.0,
+      "age_hours": 84.2,
       "insights_ok": true
     },
     {
@@ -1045,7 +1045,7 @@
       "shares": 0,
       "potential_score": 35.0,
       "reactions": 0,
-      "age_hours": 90.0,
+      "age_hours": 90.1,
       "insights_ok": true
     },
     {
@@ -1063,7 +1063,7 @@
       "shares": 0,
       "potential_score": 11.0,
       "reactions": 0,
-      "age_hours": 96.0,
+      "age_hours": 96.2,
       "insights_ok": true
     },
     {
@@ -1081,7 +1081,7 @@
       "shares": 0,
       "potential_score": 21.5,
       "reactions": 1,
-      "age_hours": 101.9,
+      "age_hours": 102.0,
       "insights_ok": true
     },
     {
@@ -1099,7 +1099,7 @@
       "shares": 0,
       "potential_score": 15.5,
       "reactions": 1,
-      "age_hours": 101.9,
+      "age_hours": 102.1,
       "insights_ok": true
     },
     {
@@ -1117,7 +1117,7 @@
       "shares": 0,
       "potential_score": 18.5,
       "reactions": 1,
-      "age_hours": 102.0,
+      "age_hours": 102.1,
       "insights_ok": true
     },
     {
@@ -1135,7 +1135,7 @@
       "shares": 0,
       "potential_score": 24.5,
       "reactions": 1,
-      "age_hours": 102.0,
+      "age_hours": 102.1,
       "insights_ok": true
     },
     {
@@ -1153,7 +1153,7 @@
       "shares": 0,
       "potential_score": 10.0,
       "reactions": 0,
-      "age_hours": 107.1,
+      "age_hours": 107.3,
       "insights_ok": true
     },
     {
@@ -1171,7 +1171,7 @@
       "shares": 0,
       "potential_score": 13.0,
       "reactions": 0,
-      "age_hours": 113.8,
+      "age_hours": 113.9,
       "insights_ok": true
     },
     {
@@ -1189,7 +1189,7 @@
       "shares": 0,
       "potential_score": 53.0,
       "reactions": 0,
-      "age_hours": 120.0,
+      "age_hours": 120.2,
       "insights_ok": true
     },
     {
@@ -1207,7 +1207,7 @@
       "shares": 0,
       "potential_score": 39.0,
       "reactions": 1,
-      "age_hours": 122.1,
+      "age_hours": 122.2,
       "insights_ok": true
     },
     {
@@ -1225,7 +1225,7 @@
       "shares": 0,
       "potential_score": 4.0,
       "reactions": 0,
-      "age_hours": 126.0,
+      "age_hours": 126.1,
       "insights_ok": true
     },
     {
@@ -1243,7 +1243,7 @@
       "shares": 0,
       "potential_score": 15.0,
       "reactions": 0,
-      "age_hours": 131.0,
+      "age_hours": 131.1,
       "insights_ok": true
     },
     {
@@ -1261,7 +1261,25 @@
       "shares": 0,
       "potential_score": 19.5,
       "reactions": 1,
-      "age_hours": 131.7,
+      "age_hours": 131.8,
+      "insights_ok": true
+    },
+    {
+      "id": "18018280724993965",
+      "text": "일요일 아침, 오늘 점심은 어디서 먹을지 고르기 전에 한 번쯤 이런 궁금증이 들더라고요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation",
+      "posted_at": "2026-11-08T08:11:35+09:00",
+      "permalink": "https://www.threads.com/@spring_2844/post/DfdVQBDj-JJ",
+      "media_type": "TEXT_POST",
+      "kind": "promo",
+      "views": 7,
+      "likes": 0,
+      "replies": 0,
+      "reposts": 0,
+      "quotes": 0,
+      "shares": 1,
+      "potential_score": 7.0,
+      "reactions": 1,
+      "age_hours": 179.9,
       "insights_ok": true
     },
     {
@@ -1279,25 +1297,43 @@
       "shares": 3,
       "potential_score": 71.0,
       "reactions": 3,
-      "age_hours": 192.0,
+      "age_hours": 192.2,
       "insights_ok": true
     },
     {
-      "id": "17964328167079704",
-      "text": "챗GPT 쓰다가 피클로 완전히 갈아탄 이유 ㄷㄷ\n\n보통 AI는 \"이렇게 하세요\"라고 방법만 알려주는데,\n피클은 \"제가 전화해서 처리하고 올게요\" 하고 진짜 지가 직접 함 ㅋㅋㅋ\n\n1. 전화하기 귀찮은 고객센터 통화 대행 (요금제 변경, 환불)\n2. 전화 예약만 받는 맛집 대신 전화해서 예약 잡아줌\n3. 쿠팡 최저가 찾아서 결제 직전까지 세팅\n4. 필요한 웹사이트나 자동화 툴 말하면 1분 만에 라이브로 배포해 줌\n5. KTX 매진표 취소 나오는 거 감시하다가 바로 낚아챔\n6. 결정적으로 카드 결제나 돈 나가는 건 무조건 내 승인받고 실행해서 안심\n\n하루 종일 일에 치이는 1인 사업자나 귀차니즘 만렙들한테는\n진짜 사람 비서 한 명 옆에 둔 느낌이라 신세계임...📌\n\nhttps://pickle.com/i/9C2YPH4V",
-      "posted_at": "2026-11-01T05:50:32+09:00",
-      "permalink": "https://www.threads.com/@spring_2844/post/DfLDi0AE7mh",
+      "id": "17916282648473112",
+      "text": "수요일 오후, 이번 주말 나들이는 어디로 가볼까요?\n\"이번 주말엔 어디로 가볼까?\"\n\n찾아보면 이미 끝난 축제도 있고, 지역마다 행사 정보가 흩어져 있어서 한참을 뒤져야 하더라고요.\n\n그래서 전국 축제와 행사를 날짜별로 찾아볼 수 있는 '주말 어디가?'를 직접 만들었습니다. 이번 주말에 열리는 행사를 지도와 목록으로 함께 볼 수 있게 정리해 뒀어요.\n\n멀리 가지 않아도, 근처 작은 행사 하나면 주말이 조금 특별해질 수 있으니까요.\n\n이번 주말, 어디 가실 예정인가요?\nhttps://weekendgo.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation",
+      "posted_at": "2026-11-04T13:57:03+09:00",
+      "permalink": "https://www.threads.com/@spring_2844/post/DfTpm5vGz0U",
       "media_type": "TEXT_POST",
       "kind": "promo",
-      "views": 529,
-      "likes": 3,
-      "replies": 1,
-      "reposts": 1,
+      "views": 5,
+      "likes": 2,
+      "replies": 0,
+      "reposts": 0,
       "quotes": 0,
-      "shares": 1,
-      "potential_score": 549.5,
-      "reactions": 6,
-      "age_hours": 350.1,
+      "shares": 0,
+      "potential_score": 7.0,
+      "reactions": 2,
+      "age_hours": 270.2,
+      "insights_ok": true
+    },
+    {
+      "id": "17988120987081557",
+      "text": "일요일 오후, 이번 주말 마지막 나들이는 어디로 가볼까요?\n\"이번 주말엔 어디로 가볼까?\"\n\n찾아보면 이미 끝난 축제도 있고, 지역마다 행사 정보가 흩어져 있어서 한참을 뒤져야 하더라고요.\n\n그래서 전국 축제와 행사를 날짜별로 찾아볼 수 있는 '주말 어디가?'를 직접 만들었습니다. 이번 주말에 열리는 행사를 지도와 목록으로 함께 볼 수 있게 정리해 뒀어요.\n\n멀리 가지 않아도, 근처 작은 행사 하나면 주말이 조금 특별해질 수 있으니까요.\n\n이번 주말, 어디 가실 예정인가요?\nhttps://weekendgo.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation",
+      "posted_at": "2026-11-01T13:58:19+09:00",
+      "permalink": "https://www.threads.com/@spring_2844/post/DfL7XeMm9ZD",
+      "media_type": "TEXT_POST",
+      "kind": "promo",
+      "views": 14,
+      "likes": 1,
+      "replies": 0,
+      "reposts": 0,
+      "quotes": 0,
+      "shares": 0,
+      "potential_score": 15.0,
+      "reactions": 1,
+      "age_hours": 342.2,
       "insights_ok": true
     },
     {
@@ -1315,7 +1351,7 @@
       "shares": 0,
       "potential_score": 27.5,
       "reactions": 1,
-      "age_hours": 375.0,
+      "age_hours": 375.2,
       "insights_ok": true
     },
     {
@@ -1333,7 +1369,25 @@
       "shares": 0,
       "potential_score": 68.0,
       "reactions": 2,
-      "age_hours": 420.0,
+      "age_hours": 420.1,
+      "insights_ok": true
+    },
+    {
+      "id": "17869471755660031",
+      "text": "점심때마다 궁금했어요.\n공무원들은 어디서 밥을 먹을까?\n\n업무추진비 같은 공개 지출 기록을 들여다보니, 공무원들이 자주 이용한 식당이 그대로 남아 있더라고요. 국회의원들이 정치자금으로 식사한 기록도 마찬가지고요.\n\n그래서 그 기록들을 지역별로 모아 지도로 만든 게 '공공 이용 식당 지도'예요. 맛을 평가한 맛집 지도는 아니에요. 실제로 자주 이용한 기록이 쌓인 식당을 동네별로 찾아볼 수 있게 정리한 겁니다.\n\n여러분 동네에서는 어떤 식당이 기록에 남아 있을까요? 한 번 찾아보세요.\nhttps://publicfood.co.kr",
+      "posted_at": "2026-10-24T18:10:01+09:00",
+      "permalink": "https://www.threads.com/@spring_2844/post/De3xzaBDrR-",
+      "media_type": "TEXT_POST",
+      "kind": "warmup",
+      "views": 21,
+      "likes": 1,
+      "replies": 0,
+      "reposts": 1,
+      "quotes": 0,
+      "shares": 0,
+      "potential_score": 26.0,
+      "reactions": 2,
+      "age_hours": 530.0,
       "insights_ok": true
     },
     {
@@ -1351,25 +1405,7 @@
       "shares": 0,
       "potential_score": 17163.0,
       "reactions": 202,
-      "age_hours": 823.4,
-      "insights_ok": true
-    },
-    {
-      "id": "18105700513993641",
-      "text": "써니와 마지막 인사를 나누던 날이에요.\n\n화면에는 생전 써니 사진과 함께 이런 말을 띄웠어요.\n\"아플 때 약 먹느라 힘들진 않았어? 엄마 아빠가 날 낫게 해주려고 했다는 거, 다 알고 있었어.\"\n\n써니를 기억할 작은 공간이 갖고 싶어서 온라인 추모관 '별다방'을 직접 만들었습니다.\n같은 그리움을 안고 있는 분들과 나누고 싶어요.\n\nstarpet.co.kr",
-      "posted_at": "2026-10-12T11:28:59+09:00",
-      "permalink": "https://www.threads.com/@spring_2844/post/DeYKYQMH-mX",
-      "media_type": "TEXT_POST",
-      "kind": "warmup",
-      "views": 576,
-      "likes": 1,
-      "replies": 1,
-      "reposts": 0,
-      "quotes": 7,
-      "shares": 0,
-      "potential_score": 618.5,
-      "reactions": 9,
-      "age_hours": 824.5,
+      "age_hours": 823.6,
       "insights_ok": true
     }
   ],
@@ -1383,7 +1419,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "출근길 커피 고민",
       "text": "출근길에 커피 살까 고민하다 그냥 걸었다.\n\n천 원 아끼려고 20분 더 걸은 셈인데\n\n기분은 오히려 나았다.\n\n오늘 아침은 어떻게 시작했어?",
@@ -1398,9 +1434,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "싱크대 배수구 냄새와 조리대 부족",
+      "topic": "싱크대 배수구 냄새·물 고임",
       "text": "싱크대 배수구 냄새는 청소보다 구조 문제인 경우가 많다.\n\n물이 고이면 그 안에서 다시 올라온다.\n\n그래서 트랩과 패킹, 물 빠짐부터 보면 고르는 시간이 줄어든다.\n\n주방 살림에서 자주 무너지는 데 열 군데를 그 기준으로 추려뒀다. 필요한 게 있는지 아래 댓글에 정리해놨어.",
       "first_comment": "못산템 | 자취·주방 살림 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438561168960\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -1419,7 +1455,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "물건이 안 늘어나는 이유",
       "text": "물건이 안 늘어나는 사람은 정리를 잘해서가 아니다.\n\n안 사서다.\n\n수납용품을 사면서 정리하는 사람은 계속 산다.\n\n이 말에 할 말 있는 사람?",
@@ -1434,7 +1470,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "시작일 정하는 습관",
       "text": "운동도 돈 관리도 똑같다.\n\n시작일을 정하는 순간 안 한다.\n\n'월요일부터'가 제일 위험하다.\n\n오늘 안 하면 안 하는 거다.\n\n너는 어떤 걸 미뤄뒀어?",
@@ -1449,7 +1485,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "냉장고 파먹기 실패",
       "text": "냉장고 문 열고 3분째 서 있다.\n\n파먹기로 마음먹었는데 결국 배달앱을 다시 켰다.\n\n이 시간에 제일 자주 시켜먹는 메뉴는 뭐야?",
@@ -1464,7 +1500,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "정보가 없어서 못 한다",
       "text": "'정보가 없어서 못 한다'는 말은 대개 틀렸다.\n\n정보는 이미 유튜브에 다 있다.\n\n안 하는 이유는 그냥 안 해서다.\n\n나도 그런 말을 제일 많이 한다.",
@@ -1479,7 +1515,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "퇴근 후 10분",
       "text": "퇴근하고 현관문 열면 10분은 아무것도 안 한다.\n\n가방도 안 내려놓고 그냥 서 있는 시간.\n\n하루 중 제일 조용하다.\n\n집에 들어가면 제일 먼저 뭐 해?",
@@ -1494,9 +1530,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "산책 후 발 씻기와 털갈이",
+      "topic": "산책 후 발 씻기·바닥 물기",
       "text": "비 온 다음 날 산책하고 들어오면 발 닦는 일이 남는다.\n\n수건은 금방 젖고 바닥은 미끄럽고.\n\n발바닥 털까지 생각하면 준비물이 늘어난다.\n\n산책 후 동선이 정리되는 물건들, 아래 댓글에 모아놨어.",
       "first_comment": "못산템 | 반려견 간식·산책·케어 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438200544928\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -1515,17 +1551,17 @@
       "mode": "repost",
       "kind_label": "재발행",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": true,
-      "topic": "재발행 · 화요일 저녁, 내일 퇴근 후 아이와 어디로 산책 나갈지 미리 골라두는 건",
-      "text": "한 번 지나간 얘기지만 다시 꺼내도 좋을 것 같아서.\n\n화요일 저녁, 내일 퇴근 후 아이와 어디로 산책 나갈지 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=pr…",
+      "topic": "원문 · 목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.",
+      "text": "한 번 지나간 얘기지만 다시 꺼내도 좋을 것 같아서.\n\n목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.\n\n별다방은 사진과 이야기로 아이를 기억하는 온라인 추모관입니다. 이름과 이메일만으로 추모관을 만들 수 있고, 그리울 때 들러 짧은 편지를 남길 수 있어요.\n\n오늘도 아이를 떠올리는 마음이 조용히 이어지길 바라요.\nhttps://starpet.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_starpet",
       "first_comment": null,
       "repost_of": {
-        "id": "18162066301505753",
-        "permalink": "https://www.threads.com/@spring_2844/post/DfjvpGgm600",
-        "views": 53,
+        "id": "18023921609732157",
+        "permalink": "https://www.threads.com/@spring_2844/post/DfntxR4DyCa",
+        "views": 39,
         "reactions": 0,
-        "score": 53.0
+        "score": 39.0
       },
       "source": "repost"
     },
@@ -1537,7 +1573,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "말투로 평가받는 사람",
       "text": "일 잘하는데 말이 센 사람은\n\n결국 실력이 아니라 말투로 기억된다.\n\n반대도 마찬가지다.\n\n칭찬 한마디 잘하는 사람이 오래 간다.",
@@ -1552,7 +1588,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "서랍 정리하다 멈춤",
       "text": "정리 마음먹고 서랍을 열었다.\n\n옛날 영수증과 안 쓰는 케이블을 30분째 보고 있다.\n\n정리는 언제 시작되는 거지.\n\n너도 서랍 열면 이러지?",
@@ -1567,7 +1603,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "다이소에서 하나만 사기",
       "text": "다이소에 하나만 사러 갔다.\n\n나올 때는 양손이 가득이다.\n\n필요해서 산 건 두 개고 나머지는 '있으면 쓸 것 같아서'다.\n\n그거 결국 쓰고 있어?",
@@ -1582,7 +1618,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "주말 아침 이불 빨래",
       "text": "주말 아침 9시에 눈이 떴다.\n\n더 자려고 누웠는데 잠이 안 와서 그냥 이불 빨래를 돌렸다.\n\n이런 날이 제일 뿌듯하다.\n\n주말에 갑자기 하는 집안일 있어?",
@@ -1597,9 +1633,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "욕실 물때·곰팡이와 좁은 수납",
+      "topic": "샤워기 호스 물때·줄눈 곰팡이",
       "text": "샤워기 호스 안쪽 물때는 밖에서 안 보인다.\n\n안이 비치는 재질인지, 물이 고이지 않는 구조인지가 먼저다.\n\n줄눈은 물 빠짐이 좋은 마감인지 보면 다시 찍히는 속도가 다르다.\n\n욕실에서 반복되는 문제들, 아래 댓글에 정리해뒀다.",
       "first_comment": "생활 꿀금고 | 욕실·수납 정리 필수템 20선\nhttps://cshop.naver.com/lifevault\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -1618,7 +1654,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "연말 계획",
       "text": "연말에 계획 세우는 사람 중에\n\n작년 계획을 기억하는 사람은 거의 없다.\n\n계획은 세우는 게 아니라 남기는 거다.\n\n올해 남은 두 달, 뭐 하나만 남겨봐.",
@@ -1633,7 +1669,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "해결법은 아는데",
       "text": "요즘 잘 안 풀리는 일이 하나 있다.\n\n해결할 방법은 아는데 시작을 못 하고 있다.\n\n이럴 때 너는 어떻게 넘어가?",
@@ -1648,7 +1684,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "3년 전 산 물건",
       "text": "3년 전에 산 물건 중에 아직 쓰는 게 몇 개나 되나 세어봤다.\n\n손에 꼽는다.\n\n반대로 만 원도 안 되는 물건 하나는 매일 쓴다.\n\n비싼 것보다 자주 쓰는 게 오래 남더라.",
@@ -1663,17 +1699,17 @@
       "mode": "repost",
       "kind_label": "재발행",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": true,
-      "topic": "재발행 · 목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.",
-      "text": "이거 지난주에 썼던 건데 생각보다 반응이 있어서 다시.\n\n목요일 아침, 아이가 떠난 뒤에도 남는 말들이 있어요.\n\n별다방은 사진과 이야기로 아이를 기억하는 온라인 추모관입니다. 이름과 이메일만으로 추모관을 만들 수 있고, 그리울 때 들러 짧은 편지를 남길 수 있어요.\n\n오늘도 아이를 떠올리는 마음이 조용히 이어지길 바라요.\nhttps://starpet.co.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_starpet",
+      "topic": "원문 · 목요일 새벽, 이번 주말 아이와 함께 갈 곳을",
+      "text": "이거 지난주에 썼던 건데 생각보다 반응이 있어서 다시.\n\n목요일 새벽, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_…",
       "first_comment": null,
       "repost_of": {
-        "id": "18023921609732157",
-        "permalink": "https://www.threads.com/@spring_2844/post/DfntxR4DyCa",
-        "views": 39,
+        "id": "18030587690879537",
+        "permalink": "https://www.threads.com/@spring_2844/post/Dfm9yVOGprv",
+        "views": 35,
         "reactions": 0,
-        "score": 39.0
+        "score": 35.0
       },
       "source": "repost"
     },
@@ -1685,7 +1721,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "장 볼 때 리스트",
       "text": "장 보러 갈 때 리스트를 안 쓰면\n\n집에 와서 뭐가 빠졌는지 안다.\n\n오늘 빠진 것도 간장이다.\n\n너는 장 볼 때 뭘 자주 빠뜨려?",
@@ -1700,9 +1736,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "충전선 엉킴과 겨울 실내 건조",
+      "topic": "침대 머리맡 충전선 엉킴",
       "text": "침대 머리맡 충전선이 세 개 엉켜 있으면\n\n아침마다 하나씩 풀어야 한다.\n\n선 정리 하나로 매일 30초가 아낀다.\n\n한 달이면 15분이다.\n\n소형가전·디지털 쪽에 찾는 게 있으면 아래 댓글 봐봐.",
       "first_comment": "생활 꿀금고 | 소형가전·디지털 꿀템 20선\nhttps://cshop.naver.com/lifevault\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -1721,7 +1757,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "물어보기가 제일 어렵다",
       "text": "누군가에게 물어보면 10분이면 될 일을\n\n혼자 붙잡고 있는 게 아깝다.\n\n근데 그 '물어보기'가 제일 어렵다.\n\n너는 잘 물어보는 편이야?",
@@ -1736,7 +1772,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "새벽에 생각 많아짐",
       "text": "새벽에 자다 깨면 아무 문제 없다가도\n\n그때만 생각이 많아진다.\n\n아침 되면 대수롭지 않은 것들이\n\n밤에는 전부 큰일이 된다.\n\n너도 그렇지?",
@@ -1751,7 +1787,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "세탁기 깜빡",
       "text": "세탁기 돌려놓고 나간 걸 하루 종일 생각했다.\n\n집에 와서 보니 그냥 젖은 빨래가 있었다.\n\n별일 아니었는데 왜 그렇게 신경 쓰였을까.\n\n이런 거 자주 있어?",
@@ -1766,7 +1802,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "월급 지나고 통장",
       "text": "월급날이 지나면 통장이 조용해진다.\n\n나가는 곳은 정해져 있는데 새는 곳이 있다.\n\n이번 달에 '이건 좀 아까웠다' 싶은 지출 있어?",
@@ -1781,7 +1817,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "겨울 현관 신발",
       "text": "겨울만 되면 현관 신발이 두 배가 된다.\n\n한 켤레는 밖에, 한 켤레는 안에, 하나는 반쯤 걸쳐서.\n\n사람이 늘어난 것도 아닌데.\n\n너희 집 현관은 어때?",
@@ -1796,9 +1832,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "싱크대 배수구 냄새와 조리대 부족",
+      "topic": "행주·수세미 찝찝함",
       "text": "설거지하고 나서 행주를 어디 두느냐가 냄새를 정한다.\n\n젖은 채로 개수대에 걸어두면 하루면 쉰다.\n\n물 빠짐과 통풍, 이 두 가지만 따지면 정리가 덜 고민된다.\n\n주방 쪽에서 자주 반복되는 불편들, 아래 댓글 목록에 묶어놨어.",
       "first_comment": "못산템 | 자취·주방 살림 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438561168960\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -1817,17 +1853,17 @@
       "mode": "repost",
       "kind_label": "재발행",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": true,
-      "topic": "재발행 · 목요일 새벽, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요",
-      "text": "다시 봐도 이 부분은 그대로다.\n\n목요일 새벽, 이번 주말 아이와 함께 갈 곳을 미리 골라두는 건 어떨까요?\n\"여기, 우리 아이도 같이 들어갈 수 있을까?\"\n\n괜찮아 보이는 카페나 식당을 발견해도, 동반이 되는지, 조건은 어떤지 매번 알아봐야 하잖아요.\n\n그래서 반려동물과 함께 갈 수 있는 장소를 모아 지도로 만든 '댕냥이와 함께'를 만들었습니다. 숙박, 식당·카페, 산책로, 24시 병원까지 1,390곳을 담아 뒀어요.\n\n장소마다 동반 조건이 달라 방문 전에 한 번 더 확인해야 하지만, 외출 준비가 조금이라도 편해졌으면 좋겠어요.\n\n여러분이 아는 반려동물 동반 장소도 알려주세요.\nhttps://www.petmap.kr?utm_source=threads&utm_medium=social&utm_campaign=promo_rotation",
+      "topic": "원문 · 목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다",
+      "text": "다시 봐도 이 부분은 그대로다.\n\n목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&utm_cam…",
       "first_comment": null,
       "repost_of": {
-        "id": "18030587690879537",
-        "permalink": "https://www.threads.com/@spring_2844/post/Dfm9yVOGprv",
-        "views": 35,
+        "id": "18122696816177560",
+        "permalink": "https://www.threads.com/@spring_2844/post/Dfnm48xDwu1",
+        "views": 14,
         "reactions": 0,
-        "score": 35.0
+        "score": 14.0
       },
       "source": "repost"
     },
@@ -1839,7 +1875,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "들어주는 사람",
       "text": "말 잘하는 사람보다 들어주는 사람이 오래 남는다.\n\n내 주변에 그런 사람이 한 명 있다.\n\n연락 한 번 해봐야겠다.\n\n너한테 그런 사람은 누구야?",
@@ -1854,7 +1890,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "택배 미루기",
       "text": "택배 왔다는 문자를 받고도 3시간 뒤에 들였다.\n\n현관까지 나가는 20초가 그렇게 싫다.\n\n미루는 데는 재능이 있는 것 같다.",
@@ -1869,7 +1905,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "남의 일은 쉽다",
       "text": "누가 물어보면 조언을 잘한다.\n\n내 일은 못 정한다.\n\n남의 일은 쉽고 내 일은 어렵다.\n\n이거 왜 이럴까.",
@@ -1884,7 +1920,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "첫 추위와 옷장",
       "text": "첫 추위에 옷장을 다 열었다.\n\n작년에 입던 코트는 어디 갔는지 모르겠고\n\n결국 제일 자주 입는 건 무난한 그 옷이다.\n\n겨울에 제일 손이 가는 옷은 뭐야?",
@@ -1899,9 +1935,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "산책 후 발 씻기와 털갈이",
+      "topic": "털갈이 시즌 옷·소파 털",
       "text": "털갈이 시즌엔 옷과 소파가 같이 희끗해진다.\n\n털을 붙잡는 것보다 날리는 걸 줄이는 게 먼저다.\n\n그 기준으로 고르면 사는 개수가 줄어든다.\n\n반려견 쪽에 필요한 게 있는지 아래 댓글 함 봐.",
       "first_comment": "못산템 | 반려견 간식·산책·케어 꿀템 20선\nhttps://cshop.naver.com/lifevault?c=1017438200544928\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -1920,7 +1956,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "연말 정산 서랍",
       "text": "연말이 다가오니 영수증을 모아둔 서랍이 눈에 밟힌다.\n\n미리 정리해두면 12월이 편하다.\n\n올해는 좀 일찍 해볼 생각이다.",
@@ -1935,7 +1971,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "만족이 안 남는 소비",
       "text": "돈을 쓰는데 만족이 아니라 허전함이 남는 소비가 있다.\n\n반대로 만 원도 안 되는 것에 하루가 좋아진 적도 있고.\n\n이번 달은 후자 쪽으로 써보려고 한다.",
@@ -1950,7 +1986,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "요즘 어때",
       "text": "'요즘 어때'라는 말을\n\n진짜 궁금해서 하는 사람이 몇 명이나 될까 생각했다.\n\n그래서 나는 그 말을 받으면 한 줄은 더 써서 답한다.\n\n요즘 어때?",
@@ -1965,17 +2001,17 @@
       "mode": "repost",
       "kind_label": "재발행",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": true,
-      "topic": "재발행 · 목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다 공매라는 선택지가",
-      "text": "지난번에 적어둔 글인데, 요즘도 같은 생각이다.\n\n목요일 아침, 출근 준비를 하다 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=socia…",
+      "topic": "원문 · 수요일 새벽, 잠들기 전 중고차 시세를 뒤적이다 공매라는",
+      "text": "지난번에 적어둔 글인데, 요즘도 같은 생각이다.\n\n수요일 새벽, 잠들기 전 중고차 시세를 뒤적이다 공매라는 선택지가 다시 눈에 들어오더라고요.\n\"나라에서 공매로 파는 자동차는 얼마나 할까?\"\n\n막상 찾아보니 차는 꽤 나오는데, 가격·연식·주행거리·입찰 마감일을 하나하나 따로 확인하려니 번거롭더라고요.\n\n그래서 자동차 공매 정보를 한곳에서 찾아볼 수 있는 '공매카'를 직접 만들었습니다. 지금 입찰 중인 차를 모아, 조건별로 걸러 볼 수 있게 정리해 뒀어요.\n\n물론 공매차는 차량 상태와 입찰 조건을 꼭 직접 확인해야 해요. 그래도 차를 사는 또 다른 방법을 알아보는 데 작은 도움이 됐으면 합니다.\n\n공매차를 알아본 경험, 있으신가요?\nhttps://gongmeca.co.kr?utm_source=threads&utm_medium=social&ut…",
       "first_comment": null,
       "repost_of": {
-        "id": "18122696816177560",
-        "permalink": "https://www.threads.com/@spring_2844/post/Dfnm48xDwu1",
-        "views": 14,
+        "id": "18134478943774763",
+        "permalink": "https://www.threads.com/@spring_2844/post/DfkaffvGKc1",
+        "views": 13,
         "reactions": 0,
-        "score": 14.0
+        "score": 13.0
       },
       "source": "repost"
     },
@@ -1987,7 +2023,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "집에서 커피",
       "text": "집에서 커피 내리는 데 3분이 걸린다.\n\n나가서 사오는 데는 15분이 걸린다.\n\n15분이 아까워서 3분을 택했는데\n\n맛은 나가는 게 낫다. 이게 사람 마음이다.",
@@ -2002,9 +2038,9 @@
       "mode": "affiliate",
       "kind_label": "수익화",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
-      "topic": "욕실 물때·곰팡이와 좁은 수납",
+      "topic": "욕실 수납 물기·바닥 정리",
       "text": "욕실 수납은 넣는 것보다 걸고 세우는 게 오래 간다.\n\n바닥에 두면 물기가 남고, 남으면 다시 청소다.\n\n이 기준 하나만 잡아도 사는 물건이 절반으로 줄어든다.\n\n욕실·수납 목록은 아래 댓글에 있어.",
       "first_comment": "생활 꿀금고 | 욕실·수납 정리 필수템 20선\nhttps://cshop.naver.com/lifevault\n\n※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
       "product": {
@@ -2023,7 +2059,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "물건이 안 늘어나는 이유",
       "text": "물건이 안 늘어나는 사람은 정리를 잘해서가 아니다.\n\n안 사서다.\n\n수납용품을 사면서 정리하는 사람은 계속 산다.\n\n이 말에 할 말 있는 사람?",
@@ -2038,7 +2074,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "시작일 정하는 습관",
       "text": "운동도 돈 관리도 똑같다.\n\n시작일을 정하는 순간 안 한다.\n\n'월요일부터'가 제일 위험하다.\n\n오늘 안 하면 안 하는 거다.\n\n너는 어떤 걸 미뤄뒀어?",
@@ -2053,7 +2089,7 @@
       "mode": "daily",
       "kind_label": "일상",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "겨울 이불",
       "text": "겨울 이불을 꺼내는데 냄새가 났다.\n\n한 여름 동안 장롱 안에 있었으니까.\n\n결국 밤 11시에 빨래를 돌렸다.\n\n계절 바뀔 때 너도 이러지?",
@@ -2068,7 +2104,7 @@
       "mode": "empathy",
       "kind_label": "쓰아리",
       "status": "queued",
-      "created_at": "2026-11-15T20:01:32.382467+09:00",
+      "created_at": "2026-11-15T20:08:33.756272+09:00",
       "polish": false,
       "topic": "정보가 없어서 못 한다",
       "text": "'정보가 없어서 못 한다'는 말은 대개 틀렸다.\n\n정보는 이미 유튜브에 다 있다.\n\n안 하는 이유는 그냥 안 해서다.\n\n나도 그런 말을 제일 많이 한다.",
@@ -2130,7 +2166,7 @@
   ],
   "disclosure": "※ 네이버 쇼핑 커넥트 활동의 일환으로 수수료를 지급받습니다.",
   "queue_meta": {
-    "generated_at": "2026-11-15T20:01:32.382467+09:00",
+    "generated_at": "2026-11-15T20:08:33.756272+09:00",
     "range": {
       "start": "2026-11-15",
       "end": "2026-11-28"
