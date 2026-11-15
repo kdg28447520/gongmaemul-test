@@ -156,11 +156,11 @@
   .comment pre{font-size:13.5px;color:var(--ink-soft);}
   .comment .none{font-size:13px;color:var(--ink-muted);}
 
-  button.btn{appearance:none;font:inherit;font-size:12.5px;padding:6px 11px;border-radius:6px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);cursor:pointer;}
-  button.btn:hover{border-color:var(--accent);color:var(--accent);}
-  button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
-  button.btn.primary:hover{opacity:.92;color:#fff;}
-  button.btn.copied{border-color:var(--accent);color:var(--accent);}
+  .btn{appearance:none;font:inherit;font-size:12.5px;padding:6px 11px;border-radius:6px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-soft);cursor:pointer;}
+  .btn:hover{border-color:var(--accent);color:var(--accent);}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn.primary:hover{opacity:.92;color:#fff;}
+  .btn.copied{border-color:var(--accent);color:var(--accent);}
 
   .guard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 16px;}
   .guard div{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 12px;font-size:12.5px;color:var(--ink-soft);}
@@ -715,7 +715,7 @@
         '<div class="gf"><span class="sp">조회 '+fmt(p.views)+' · 좋아요 '+fmt(p.likes)+' · 댓글 '+fmt(p.replies)+' · 리포스트 '+fmt(p.reposts)+'</span>'+
         '<span class="acts"><button class="btn" data-prompt="'+esc(p.id)+'">프롬프트</button>'+
         '<button class="btn" data-draft="'+esc(p.id)+'">재가공 초안</button>'+
-        (p.permalink?'<a class="btn" href="'+esc(p.permalink)+'" target="_blank" rel="noopener" style="text-decoration:none">원문</a>':'')+
+        (p.permalink?'<a class="btn" href="'+esc(p.permalink)+'" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">원문</a>':'')+
         '</span></div></div>';
     }).join('') || '<div class="empty">아직 보석함이 비었습니다. 게시물 반응이 쌓이면 자동으로 채워집니다.</div>';
 
