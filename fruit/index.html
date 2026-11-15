@@ -108,7 +108,7 @@
   .board { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
   .thead, .brow {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 96px 104px minmax(0, 1fr) 62px 74px;
+    grid-template-columns: minmax(0, 1fr) 92px 104px minmax(0, 1fr) 56px 72px 58px;
     align-items: center; gap: 10px; padding: 10px 14px;
   }
   .thead {
@@ -287,6 +287,7 @@
         <div>최저 업체</div>
         <div class="r">비교</div>
         <div class="r">최고/최저</div>
+        <div></div>
       </div>
       <div id="rows"></div>
     </div>
@@ -439,10 +440,13 @@ function goCalc() {
 function renderStats() {
   const ratios = SPECS.map(s => s[9] / s[5]).sort((a, b) => a - b);
   const med = ratios[Math.floor(ratios.length / 2)];
+  const sups = new Set();
+  let shown = 0;
+  SPECS.forEach(s => s[10].forEach(o => { sups.add(o[0]); shown++; }));
   const rows = [
     ['kg 환산 규격', won(SPECS.length), '개'],
-    ['참여 도매처', DATA.supplier_count, '곳'],
-    ['수집 공급가', won(DATA.offer_rows), '건'],
+    ['참여 도매처', DATA.supplier_count || sups.size, '곳'],
+    ['수집 공급가', won(DATA.offer_rows || shown), '건'],
     ['최고/최저 격차 중앙', med.toFixed(2), '배']
   ];
   document.getElementById('statline').innerHTML = rows
@@ -486,7 +490,7 @@ function renderBoard() {
     const ratio = s[9] / s[5];
     const open = state.open === i;
     let h = `<div class="brow" data-i="${i}">
-      <div class="name"><b>${g}</b>${s[1] ? '<em>' + s[1] + '</em>' : ''}</div>
+      <div class="name"><b>${g}</b>${s[1] && s[1] !== g && s[1] !== g + '류' ? '<em>' + s[1] + '</em>' : ''}</div>
       <div class="spec">${s[4] ? KG(s[4]) + 'kg' : '—'}${s[3] ? ' · ' + s[3] : ''}</div>
       <div class="kg">${won(s[5])}<small>원/kg</small></div>
       <div class="sup">${SUPS[s[7]].name}</div>
