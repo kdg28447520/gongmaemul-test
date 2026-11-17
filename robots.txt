@@ -27,3 +27,4 @@ User-agent: meta-externalagent
 Allow: /
 
 Sitemap: https://gongmaemul.co.kr/sitemap.xml
+Sitemap: https://gongmaemul.co.kr/sitemap-items.xml
