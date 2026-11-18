@@ -131,3 +131,21 @@ footer a { color: #4e5968; margin-right: 12px; }
   .badges { gap: 3px !important; margin-top: 6px !important; }
   .bg { font-size: 10px !important; padding: 2px 6px !important; }
 }
+
+/* 필터 사이드바 · 정렬 바 (마크업 클래스 .fg/.frow/.sortbar/.sorts 기준) */
+aside .fg { background: #ffffff; border: 1px solid #e5e8eb; border-radius: 12px; padding: 14px 12px 10px; margin-bottom: 12px; }
+aside .fg h4 { font-size: 13px; font-weight: 800; color: #191f28; margin: 0 0 8px; padding: 0 4px; }
+aside .fg > div { display: block; }
+aside .frow { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #4e5968; cursor: pointer; }
+aside .frow:hover { background: #f2f4f6; }
+aside .frow.on { background: #e8f3ff; color: #1b64da; font-weight: 800; }
+aside .frow span { font-size: 12px; font-weight: 600; color: #8b95a1; }
+aside .frow.on span { color: #1b64da; }
+.sortbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.sortbar .cnt { font-size: 14px; font-weight: 700; color: #191f28; }
+.sortbar .cnt b { color: #1b64da; }
+.sorts { display: flex; gap: 6px; flex-wrap: wrap; }
+.sorts span { padding: 7px 12px; border: 1px solid #e5e8eb; border-radius: 8px; background: #ffffff; font-size: 13px; font-weight: 600; color: #4e5968; cursor: pointer; }
+.sorts span:hover { border-color: #c9ced6; }
+.sorts span.on { background: #191f28; border-color: #191f28; color: #ffffff; font-weight: 700; }
+@media (max-width: 900px) { .sortbar { margin-top: 4px; } }
