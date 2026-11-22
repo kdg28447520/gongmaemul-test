@@ -28,9 +28,9 @@ def parse_dinnerqueen() -> list[dict]:
     urls = ["https://dinnerqueen.net/taste"] + [
         f"https://dinnerqueen.net/taste?ct={urllib.parse.quote(ct)}&page={p}"
         for ct in ("배송", "릴스", "맛집", "뷰티", "여가", "기자단", "기타")
-        for p in (1, 2, 3, 4)
+        for p in range(1, 13)
     ]
-    with ThreadPoolExecutor(max_workers=10) as ex:
+    with ThreadPoolExecutor(max_workers=16) as ex:
         pages = list(ex.map(safe_fetch, urls))
 
     for _, html in pages:
@@ -102,9 +102,9 @@ def parse_reviewplace() -> list[dict]:
     jobs = [
         (ct, f"https://www.reviewplace.co.kr/pr/?ct1={urllib.parse.quote(ct)}&page={p}")
         for ct in ("제품", "기자단", "지역")
-        for p in (1, 2, 3, 4)
+        for p in range(1, 11)
     ]
-    with ThreadPoolExecutor(max_workers=10) as ex:
+    with ThreadPoolExecutor(max_workers=16) as ex:
         pages = list(ex.map(lambda j: (j[0], safe_fetch(j[1])[1]), jobs))
 
     for ct, html in pages:
@@ -166,8 +166,77 @@ def parse_reviewplace() -> list[dict]:
             })
     return items
 
+def parse_mrblog() -> list[dict]:
+    items = []
+    seen = set()
+    urls = [
+        "https://www.mrblog.net/",
+        "https://www.mrblog.net/campaigns",
+        "https://www.mrblog.net/campaigns?type=delivery",
+        "https://www.mrblog.net/campaigns?type=visit",
+        "https://www.mrblog.net/campaigns?type=reporter",
+    ]
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        pages = list(ex.map(safe_fetch, urls))
+
+    for _, html in pages:
+        if not html:
+            continue
+        soup = BeautifulSoup(html, "html.parser")
+        for a in soup.select('a[href*="/campaigns/"]'):
+            href = a.get("href", "")
+            m_id = re.search(r"/campaigns/(\d+)$", href)
+            if not m_id:
+                continue
+            cid = m_id.group(1)
+            if cid in seen:
+                continue
+            card = a.parent
+            for _ in range(4):
+                if card and card.find("img") and "모집" in card.get_text():
+                    break
+                card = card.parent if card else None
+            if not card:
+                continue
+            img = card.find("img")
+            src = (img.get("src") or img.get("data-src") or "") if img else ""
+            if not src or src.startswith("data:"):
+                continue
+            seen.add(cid)
+            txt = card.get_text(" ", strip=True)
+            m_cnt = re.search(r"신청\s*([\d,]+)\s*명\s*/\s*모집\s*([\d,]+)\s*명", txt)
+            if not m_cnt:
+                continue
+            applied = int(m_cnt.group(1).replace(",", ""))
+            target = int(m_cnt.group(2).replace(",", ""))
+            m_dday = re.search(r"(오늘\s*마감|\d+일\s*남음)", txt)
+            dday = m_dday.group(1).replace(" ", "") if m_dday else "모집중"
+            lines = [s.strip() for s in card.stripped_strings if len(s.strip()) >= 4 and not re.match(r"^(배송|방문|기자단|신청|모집|\d+일|\*\*)", s.strip())]
+            title = lines[0] if lines else "미블 체험단"
+            title = title.splitlines()[0][:80]
+            cat = "배송" if "배송" in txt[:30] else ("기자단" if "기자단" in txt[:30] else "맛집")
+            channel = "인스타" if "인스타" in txt else ("릴스" if "릴스" in txt else "블로그")
+            rate = round((applied / target) * 100) if target > 0 else 999
+            shortage = max(0, target - applied)
+            full_url = href if href.startswith("http") else f"https://www.mrblog.net{href}"
+            items.append({
+                "id": f"mb_{cid}",
+                "source": "미블",
+                "category": cat,
+                "channel": channel,
+                "title": title,
+                "dday": dday,
+                "applied": applied,
+                "target": target,
+                "rate": rate,
+                "shortage": shortage,
+                "img": src,
+                "url": full_url,
+            })
+    return items
+
 def main():
-    all_items = parse_dinnerqueen() + parse_reviewplace()
+    all_items = parse_dinnerqueen() + parse_reviewplace() + parse_mrblog()
     all_items.sort(key=lambda x: (0 if x["shortage"] > 0 else 1, x["rate"], x["applied"]))
     out = {
         "updated_at": datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M"),

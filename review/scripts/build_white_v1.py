@@ -1,11 +1,9 @@
-from pathlib import Path
-BASE_DIR = Path(__file__).resolve().parent.parent
 #!/usr/bin/env python3
 import json
 import re
 from collections import defaultdict
 
-with open(BASE_DIR / "live_data.json", "r", encoding="utf-8") as f:
+with open("review-pilot/live_data.json", "r", encoding="utf-8") as f:
     live = json.load(f)
 
 raw_items = live["items"]
@@ -161,8 +159,8 @@ HTML = f"""<!DOCTYPE html>
 
         <!-- 필터 버튼 -->
         <div class="flex flex-wrap items-center gap-1.5 text-xs font-semibold">
-          <button onclick="filterCurated('all', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-sky-600 text-white shadow-sm">전체</button>
-          <button onclick="filterCurated('shortage', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">미달만</button>
+          <button onclick="filterCurated('shortage', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-sky-600 text-white shadow-sm">미달만</button>
+          <button onclick="filterCurated('all', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">전체</button>
           <button onclick="filterCurated('배송', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">배송</button>
           <button onclick="filterCurated('맛집', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">맛집</button>
           <button onclick="filterCurated('뷰티', this)" class="flt-btn px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200">뷰티</button>
@@ -230,7 +228,7 @@ HTML = f"""<!DOCTYPE html>
 
     const CURATED = {LIVE_JSON};
     const PAGE_SIZE = 20;
-    let activeFilter = 'all';
+    let activeFilter = 'shortage';
     let currentPage = 1;
 
     function renderPlatforms() {{
@@ -373,7 +371,7 @@ HTML = f"""<!DOCTYPE html>
 </html>
 """
 
-with open(BASE_DIR / "index.html", "w", encoding="utf-8") as f:
+with open("review-pilot/index.html", "w", encoding="utf-8") as f:
     f.write(HTML)
 
 print(f"built grouped white v1: {TOTAL_RAW} raw -> {TOTAL_GROUPS} groups (shortage: {SHORTAGE_GROUPS})")
