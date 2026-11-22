@@ -3,6 +3,7 @@ import json
 import re
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -15,17 +16,25 @@ def fetch_html(url: str) -> str:
     with urllib.request.urlopen(req, timeout=12) as resp:
         return resp.read().decode("utf-8", "ignore")
 
+def safe_fetch(url: str) -> tuple[str, str]:
+    try:
+        return url, fetch_html(url)
+    except Exception:
+        return url, ""
+
 def parse_dinnerqueen() -> list[dict]:
     items = []
     seen = set()
     urls = ["https://dinnerqueen.net/taste"] + [
-        f"https://dinnerqueen.net/taste?ct={urllib.parse.quote(ct)}"
+        f"https://dinnerqueen.net/taste?ct={urllib.parse.quote(ct)}&page={p}"
         for ct in ("배송", "릴스", "맛집", "뷰티", "여가", "기자단", "기타")
+        for p in (1, 2, 3, 4)
     ]
-    for url in urls:
-        try:
-            html = fetch_html(url)
-        except Exception:
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        pages = list(ex.map(safe_fetch, urls))
+
+    for _, html in pages:
+        if not html:
             continue
         soup = BeautifulSoup(html, "html.parser")
         for a in soup.select('a[href^="/taste/"]'):
@@ -90,11 +99,16 @@ def parse_dinnerqueen() -> list[dict]:
 def parse_reviewplace() -> list[dict]:
     items = []
     seen = set()
-    for ct in ("제품", "기자단"):
-        url = f"https://www.reviewplace.co.kr/pr/?ct1={urllib.parse.quote(ct)}"
-        try:
-            html = fetch_html(url)
-        except Exception:
+    jobs = [
+        (ct, f"https://www.reviewplace.co.kr/pr/?ct1={urllib.parse.quote(ct)}&page={p}")
+        for ct in ("제품", "기자단", "지역")
+        for p in (1, 2, 3, 4)
+    ]
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        pages = list(ex.map(lambda j: (j[0], safe_fetch(j[1])[1]), jobs))
+
+    for ct, html in pages:
+        if not html:
             continue
         soup = BeautifulSoup(html, "html.parser")
         for a in soup.select('a[href*="/pr/?id="], a[href*="pr_id="], a[href*="/pr/"]'):
@@ -135,10 +149,11 @@ def parse_reviewplace() -> list[dict]:
             rate = round((applied / target) * 100) if target > 0 else 999
             shortage = max(0, target - applied)
             full_url = href if href.startswith("http") else ("https://www.reviewplace.co.kr" + (href if href.startswith("/") else "/pr/" + href))
+            cat = "배송" if ct == "제품" else ("기자단" if ct == "기자단" else "맛집")
             items.append({
                 "id": f"rp_{cid}",
                 "source": "리뷰플레이스",
-                "category": "배송" if ct == "제품" else "기자단",
+                "category": cat,
                 "channel": channel,
                 "title": title,
                 "dday": dday,
@@ -159,7 +174,8 @@ def main():
         "count": len(all_items),
         "items": all_items,
     }
-    with open(Path(__file__).resolve().parent.parent / "live_data.json", "w", encoding="utf-8") as f:
+    out_path = Path(__file__).resolve().parent / "live_data.json"
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
     print(f"fetched {len(all_items)} items, shortage>0: {sum(1 for x in all_items if x['shortage'] > 0)}")
     from collections import Counter
