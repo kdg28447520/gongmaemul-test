@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ReviewPilot — 실시간 체험단</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+    body {
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #FFFFFF;
+      color: #222222;
+      letter-spacing: -0.015em;
+      -webkit-font-smoothing: antialiased;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-[#222222] pb-16">
+
+  <!-- 상단 고정 헤더 & 검색바 -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EBEBEB]">
+    <div class="max-w-6xl mx-auto px-3.5 sm:px-6 pt-3 pb-2.5 space-y-2.5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-full bg-[#FF385C] text-white flex items-center justify-center">
+            <i class="fa-solid fa-compass text-xs"></i>
+          </div>
+          <span class="font-bold text-base sm:text-lg tracking-tight text-[#FF385C]">ReviewPilot</span>
+        </div>
+        <div class="flex items-center space-x-1.5 text-[11px] text-[#717171]">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>실시간 2026-11-22 14:49 기준</span>
+        </div>
+      </div>
+
+      <!-- 에어비앤비 알약형 검색바 -->
+      <div class="flex items-center bg-white border border-[#DDDDDD] rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.06)] pl-4 pr-1.5 py-1.5">
+        <i class="fa-solid fa-magnifying-glass text-[#222222] text-xs mr-2.5"></i>
+        <input
+          id="searchInput"
+          type="text"
+          oninput="resetPageAndFilter()"
+          placeholder="상품명, 지역, 릴스/블로그 검색"
+          class="w-full text-[13px] bg-transparent outline-none text-[#222222] placeholder-[#717171]"
+        />
+        <button onclick="resetAll()" title="초기화" class="shrink-0 ml-2 w-7 h-7 rounded-full bg-[#FF385C] text-white flex items-center justify-center">
+          <i class="fa-solid fa-rotate-right text-[11px]"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 가로 카테고리 탭 -->
+    <div class="max-w-6xl mx-auto px-3.5 sm:px-6 flex items-center space-x-5 overflow-x-auto no-scrollbar border-t border-[#F3F3F3]">
+      <button onclick="selectTab('all', this)" class="cat-tab shrink-0 py-2.5 flex flex-col items-center space-y-1 border-b-2 border-[#222222] text-[#222222]">
+        <i class="fa-solid fa-border-all text-sm"></i>
+        <span class="text-[11px] font-semibold">전체</span>
+      </button>
+      <button onclick="selectTab('shortage', this)" class="cat-tab shrink-0 py-2.5 flex flex-col items-center space-y-1 border-b-2 border-transparent text-[#717171]">
+        <i class="fa-solid fa-bolt text-sm"></i>
+        <span class="text-[11px] font-semibold">미달 우선</span>
+      </button>
+      <button onclick="selectTab('배송', this)" class="cat-tab shrink-0 py-2.5 flex flex-col items-center space-y-1 border-b-2 border-transparent text-[#717171]">
+        <i class="fa-solid fa-box-open text-sm"></i>
+        <span class="text-[11px] font-semibold">배송형</span>
+      </button>
+      <button onclick="selectTab('맛집', this)" class="cat-tab shrink-0 py-2.5 flex flex-col items-center space-y-1 border-b-2 border-transparent text-[#717171]">
+        <i class="fa-solid fa-utensils text-sm"></i>
+        <span class="text-[11px] font-semibold">맛집·카페</span>
+      </button>
+      <button onclick="selectTab('뷰티', this)" class="cat-tab shrink-0 py-2.5 flex flex-col items-center space-y-1 border-b-2 border-transparent text-[#717171]">
+        <i class="fa-solid fa-sparkles text-sm"></i>
+        <span class="text-[11px] font-semibold">뷰티</span>
+      </button>
+      <button onclick="selectTab('릴스', this)" class="cat-tab shrink-0 py-2.5 flex flex-col items-center space-y-1 border-b-2 border-transparent text-[#717171]">
+        <i class="fa-solid fa-film text-sm"></i>
+        <span class="text-[11px] font-semibold">릴스·클립</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 2~4열 카드 그리드 -->
+  <main class="max-w-6xl mx-auto px-3.5 sm:px-6 pt-4 space-y-6">
+    <div class="flex items-center justify-between">
+      <p id="summaryText" class="text-xs sm:text-sm font-semibold text-[#222222]"></p>
+      <span class="text-[11px] text-[#717171]">경쟁률 낮은 순</span>
+    </div>
+
+    <div id="cardGrid" class="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-5 sm:gap-x-5 sm:gap-y-7"></div>
+
+    <!-- 20개 페이징 -->
+    <div id="pagination" class="flex items-center justify-center space-x-2 pt-4"></div>
+  </main>
+
+  <!-- 화이트 신청 모달 -->
+  <div id="applyModal" class="hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-[2px] flex items-end sm:items-center justify-center sm:p-4">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl max-w-md w-full p-5 shadow-2xl border border-[#EBEBEB] space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#EBEBEB]">
+        <span id="modalMeta" class="text-xs font-semibold text-[#FF385C]"></span>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full hover:bg-[#F7F7F7] flex items-center justify-center text-[#222222]">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <h3 id="modalTitle" class="font-bold text-sm sm:text-base text-[#222222] leading-snug"></h3>
+      <div class="grid grid-cols-2 gap-2 bg-[#F7F7F7] p-3 rounded-xl border border-[#EBEBEB] text-xs">
+        <div>
+          <span class="text-[#717171] block text-[11px]">수령인</span>
+          <span class="font-semibold">김동곤 (010-4982-2844)</span>
+        </div>
+        <div>
+          <span class="text-[#717171] block text-[11px]">배송지</span>
+          <span class="font-semibold truncate block"></span>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-semibold">신청 한마디</span>
+          <button onclick="copyAppeal()" class="text-xs font-semibold text-[#FF385C]">복사</button>
+        </div>
+        <textarea id="modalAppeal" rows="3" class="w-full p-2.5 border border-[#DDDDDD] rounded-xl text-xs leading-relaxed outline-none"></textarea>
+      </div>
+      <a id="modalLink" href="#" target="_blank" class="block w-full py-3 bg-[#FF385C] hover:bg-[#E31C5F] text-white font-bold text-xs text-center rounded-xl transition">
+        원본 공고에서 바로 신청하기
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const ITEMS = [{"id": "1614074", "source": "디너의여왕", "category": "배송", "channel": "릴스", "title": "[경남 통영][릴스] 테마찜질방", "dday": "7일남음", "applied": 0, "target": 5, "rate": 0, "shortage": 5, "img": "https://imgs.diq.kr/n1/posts/01a161fb-00a3-764e-8759-c66fa828f238.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1614074"}, {"id": "1648762", "source": "디너의여왕", "category": "맛집", "channel": "릴스", "title": "[경남 창원][릴스] 문카페", "dday": "7일남음", "applied": 3, "target": 10, "rate": 30, "shortage": 7, "img": "https://imgs.diq.kr/n1/sales/01a1ce8a-0be7-77bf-9ba8-48a833e8df60.jpg?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648762"}, {"id": "1648888", "source": "디너의여왕", "category": "뷰티", "channel": "클립", "title": "[서울 구로][클립] 미유리 살롱", "dday": "7일남음", "applied": 2, "target": 5, "rate": 40, "shortage": 3, "img": "https://imgs.diq.kr/n1/sales/01a1cec4-a9b8-74dd-999d-1bbe224741aa.png?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648888"}, {"id": "1648761", "source": "디너의여왕", "category": "배송", "channel": "블로그", "title": "[서울 마포] 심리카페점컴", "dday": "7일남음", "applied": 8, "target": 20, "rate": 40, "shortage": 12, "img": "https://imgs.diq.kr/n1/sales/019e00f2-ca1e-7588-acc7-567a8e57e7de.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648761"}, {"id": "1648763", "source": "디너의여왕", "category": "맛집", "channel": "릴스", "title": "[경북 칠곡][릴스] 아이엠쿡 왜관점", "dday": "7일남음", "applied": 1, "target": 1, "rate": 100, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts/01a1ce9f-670c-771d-8b23-d97e61e5f772.jfif?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648763"}, {"id": "1649233", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[경기 안성] 아양 양꼬치", "dday": "7일남음", "applied": 6, "target": 5, "rate": 120, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts/01a1d40c-06a5-704a-b06c-868523717e07.jpg?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1649233"}, {"id": "1648769", "source": "디너의여왕", "category": "뷰티", "channel": "블로그", "title": "[서울 구로] 미유리 살롱", "dday": "7일남음", "applied": 13, "target": 10, "rate": 130, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a1cec1-69cc-74ae-8e0f-f405129b5c4c.png?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648769"}, {"id": "1648714", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[전북 완주] 종가집추어탕", "dday": "7일남음", "applied": 4, "target": 2, "rate": 200, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a151ca-2038-71dc-9257-4be8ae18c288.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648714"}, {"id": "1648777", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[전남 광주] 번개어시장 1984 첨단점", "dday": "7일남음", "applied": 11, "target": 5, "rate": 220, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a01900-621d-718d-bda8-0d55ce00a8c4.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648777"}, {"id": "1648786", "source": "디너의여왕", "category": "맛집", "channel": "릴스", "title": "[부산 금정][릴스] 모시모시 부산대점", "dday": "7일남음", "applied": 13, "target": 5, "rate": 260, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a1531e-0121-73cd-be01-f7c81698f14e.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648786"}, {"id": "1648789", "source": "디너의여왕", "category": "맛집", "channel": "릴스", "title": "[부산 동래][릴스] 모시모시 스시 롯데백화점 동래점", "dday": "7일남음", "applied": 15, "target": 5, "rate": 300, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a15314-d784-715e-ae3a-68f7bcc055aa.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648789"}, {"id": "1638690", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[서울 노원] 밀리움 베이커리카페", "dday": "7일남음", "applied": 32, "target": 10, "rate": 320, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts/019dfb1e-6f5b-723d-8002-7e4ace4256fc.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1638690"}, {"id": "1648726", "source": "디너의여왕", "category": "맛집", "channel": "클립", "title": "[서울 강남][클립] 파나로마샌드위치", "dday": "7일남음", "applied": 17, "target": 5, "rate": 340, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a1a575-b988-766c-912b-e8d4cffd695b.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648726"}, {"id": "1648785", "source": "디너의여왕", "category": "맛집", "channel": "클립", "title": "[부산 금정][클립] 모시모시 부산대점", "dday": "7일남음", "applied": 21, "target": 5, "rate": 420, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a1531c-cbcb-7478-a958-a0001bf0ed96.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648785"}, {"id": "1648781", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[강원 춘천] 미사옥 춘천엔타", "dday": "7일남음", "applied": 13, "target": 3, "rate": 433, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts/01a0ad97-8192-70d9-81e1-c81252327121.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648781"}, {"id": "1648788", "source": "디너의여왕", "category": "맛집", "channel": "클립", "title": "[부산 동래][클립] 모시모시 스시 롯데백화점 동래점", "dday": "7일남음", "applied": 26, "target": 5, "rate": 520, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a15312-e878-75fe-8eee-5078bee95ab4.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648788"}, {"id": "1648815", "source": "디너의여왕", "category": "배송", "channel": "릴스", "title": "[릴스][하나마이] 프리벤티 아가베 이눌린 프리바이오틱스", "dday": "7일남음", "applied": 29, "target": 5, "rate": 580, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a17bc6-77fe-77bb-ab83-ede70ada9896.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648815"}, {"id": "1648741", "source": "디너의여왕", "category": "맛집", "channel": "클립", "title": "[서울 마포][클립] 카르타", "dday": "7일남음", "applied": 20, "target": 3, "rate": 667, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a0e6b9-3c01-74ba-81fd-52fe7da8d68a.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648741"}, {"id": "1648743", "source": "디너의여왕", "category": "맛집", "channel": "릴스", "title": "[서울 마포][릴스] 카르타", "dday": "7일남음", "applied": 24, "target": 3, "rate": 800, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a0e6ba-5bfd-77d9-83a1-8c5e1d5f2fb2.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648743"}, {"id": "1648782", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[경기 하남] 미사옥", "dday": "7일남음", "applied": 26, "target": 3, "rate": 867, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a0ad2a-4a0c-7221-97ea-87e49122c69a.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648782"}, {"id": "1648779", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[부산 동래] 안동한우곱창", "dday": "7일남음", "applied": 31, "target": 3, "rate": 1033, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts/01a1a5e8-26a4-7291-b0e1-ed62c9a18cbe.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648779"}, {"id": "1648734", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[서울 마포] 꽃피는 한우곰탕", "dday": "7일남음", "applied": 58, "target": 5, "rate": 1160, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a11a07-7606-75bf-aa94-4920de81c40c.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648734"}, {"id": "1648729", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[서울 강남] 파나로마샌드위치", "dday": "7일남음", "applied": 61, "target": 5, "rate": 1220, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a1a552-a0cf-7597-8440-80c6658573e5.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648729"}, {"id": "1648783", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[부산 금정] 모시모시 부산대점", "dday": "7일남음", "applied": 66, "target": 5, "rate": 1320, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a15319-c08d-7689-9cea-6fec66c717c1.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648783"}, {"id": "1648739", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[서울 마포] 카르타", "dday": "7일남음", "applied": 84, "target": 6, "rate": 1400, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a0e6b3-e348-72be-a3d0-3a3644e15901.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648739"}, {"id": "1648787", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[부산 동래] 모시모시 스시 롯데백화점 동래점", "dday": "7일남음", "applied": 94, "target": 5, "rate": 1880, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a1530e-0d65-7206-ab2a-9ef902e4c45b.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648787"}, {"id": "1648793", "source": "디너의여왕", "category": "배송", "channel": "블로그", "title": "[예미분식] 메밀전병+메밀부치기", "dday": "7일남음", "applied": 340, "target": 10, "rate": 3400, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/019eb595-4f70-755f-99ca-d6716517af09.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1648793"}, {"id": "1661621", "source": "디너의여왕", "category": "배송", "channel": "블로그", "title": "[버들러] 솔티드 카라멜 수제버터", "dday": "7일남음", "applied": 491, "target": 10, "rate": 4910, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts2/01a1f7e2-c3a8-7567-81dc-0f4b30362036.jpeg?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1661621"}, {"id": "1637555", "source": "디너의여왕", "category": "맛집", "channel": "블로그", "title": "[서울 강남] 홍영재장수청국장", "dday": "7일남음", "applied": 123, "target": 2, "rate": 6150, "shortage": 0, "img": "https://imgs.diq.kr/n1/sales/01a09e57-c59a-72f8-a034-6720b4f123a4.webp?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1637555"}, {"id": "1650470", "source": "디너의여왕", "category": "배송", "channel": "랜덤픽", "title": "[랜덤픽] 이솝 - 제라늄 리프 듀엣 세트 (바디워시&바디로션)", "dday": "오늘까지", "applied": 1470, "target": 1, "rate": 147000, "shortage": 0, "img": "https://imgs.diq.kr/n1/posts/01a1e1be-5300-73ac-824b-773ff33faa9d.jpg?s=360x360&t=crop&f=webp", "url": "https://dinnerqueen.net/taste/1650470"}];
+    const PAGE_SIZE = 20;
+    let activeTab = 'all';
+    let currentPage = 1;
+    const liked = new Set();
+
+    function selectTab(tab, el) {
+      activeTab = tab;
+      currentPage = 1;
+      document.querySelectorAll('.cat-tab').forEach(b => {
+        b.classList.remove('border-[#222222]', 'text-[#222222]');
+        b.classList.add('border-transparent', 'text-[#717171]');
+      });
+      el.classList.remove('border-transparent', 'text-[#717171]');
+      el.classList.add('border-[#222222]', 'text-[#222222]');
+      render();
+    }
+
+    function resetPageAndFilter() {
+      currentPage = 1;
+      render();
+    }
+
+    function resetAll() {
+      document.getElementById('searchInput').value = '';
+      selectTab('all', document.querySelector('.cat-tab'));
+    }
+
+    function toggleLike(id, btn) {
+      if (liked.has(id)) {
+        liked.delete(id);
+        btn.innerHTML = '<i class="fa-regular fa-heart text-white drop-shadow text-base"></i>';
+      } else {
+        liked.add(id);
+        btn.innerHTML = '<i class="fa-solid fa-heart text-[#FF385C] drop-shadow text-base"></i>';
+      }
+    }
+
+    function getFiltered() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      return ITEMS.filter(item => {
+        let matchTab = true;
+        if (activeTab === 'shortage') matchTab = item.shortage > 0;
+        else if (activeTab === '릴스') matchTab = item.channel === '릴스' || item.channel === '클립';
+        else if (activeTab !== 'all') matchTab = item.category.includes(activeTab);
+
+        const matchQ = !q || item.title.toLowerCase().includes(q) || item.category.toLowerCase().includes(q) || item.channel.toLowerCase().includes(q);
+        return matchTab && matchQ;
+      });
+    }
+
+    function render() {
+      const list = getFiltered();
+      const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const slice = list.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+      const shortageCnt = list.filter(x => x.shortage > 0).length;
+      document.getElementById('summaryText').innerText = `실시간 공고 ${list.length}건 (미달 ${shortageCnt}건)`;
+
+      const grid = document.getElementById('cardGrid');
+      if (slice.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-14 text-center text-xs text-[#717171]">조건에 맞는 실시간 공고가 없습니다.</div>`;
+      } else {
+        grid.innerHTML = slice.map(item => {
+          const badge = item.shortage > 0
+            ? `<span class="w-1.5 h-1.5 rounded-full bg-[#FF385C]"></span><span>${item.shortage}명 미달</span>`
+            : `<span>${item.dday}</span>`;
+          return `
+            <article class="flex flex-col cursor-pointer" onclick="openModal('${item.id}')">
+              <div class="relative aspect-square rounded-2xl overflow-hidden bg-[#F7F7F7] border border-[#EBEBEB] mb-2">
+                <img src="${item.img}" alt="${item.title}" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/95 text-[#222222] text-[10px] font-bold shadow-sm flex items-center space-x-1">
+                  ${badge}
+                </span>
+                <button onclick="event.stopPropagation(); toggleLike('${item.id}', this)" class="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full">
+                  <i class="${liked.has(item.id) ? 'fa-solid text-[#FF385C]' : 'fa-regular text-white'} fa-heart drop-shadow text-base"></i>
+                </button>
+              </div>
+              <div class="space-y-0.5">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="font-semibold text-[#222222] truncate">${item.category} · ${item.channel}</span>
+                  <span class="shrink-0 font-medium text-[#222222] ml-1">${item.applied}/${item.target}명</span>
+                </div>
+                <h3 class="text-[12.5px] sm:text-[13px] font-medium text-[#222222] line-clamp-2 leading-snug">
+                  ${item.title}
+                </h3>
+                <p class="text-[11px] text-[#717171] pt-0.5">${item.source} · 경쟁률 ${item.rate}%</p>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      const pag = document.getElementById('pagination');
+      if (totalPages <= 1) {
+        pag.innerHTML = '';
+      } else {
+        pag.innerHTML = Array.from({length: totalPages}, (_, i) => i + 1).map(p => `
+          <button onclick="currentPage=${p}; render(); window.scrollTo({top:0, behavior:'smooth'});"
+            class="w-8 h-8 rounded-full text-xs font-semibold transition ${p === currentPage ? 'bg-[#222222] text-white' : 'bg-[#F7F7F7] text-[#222222] hover:bg-[#EBEBEB]'}">
+            ${p}
+          </button>
+        `).join('');
+      }
+    }
+
+    function openModal(id) {
+      const item = ITEMS.find(x => x.id === id);
+      if (!item) return;
+      document.getElementById('modalMeta').innerText = `${item.source} · ${item.category} · ${item.applied}/${item.target}명 (${item.dday})`;
+      document.getElementById('modalTitle').innerText = item.title;
+      document.getElementById('modalAppeal').value = `[${item.channel} 체험 신청] 제품 특징과 실사용 모습을 깔끔한 사진/영상으로 정성껏 리뷰하겠습니다.`;
+      document.getElementById('modalLink').href = item.url;
+      document.getElementById('applyModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('applyModal').classList.add('hidden');
+    }
+
+    function copyAppeal() {
+      navigator.clipboard.writeText(document.getElementById('modalAppeal').value);
+      alert('신청 문구가 복사되었습니다.');
+    }
+
+    window.onload = render;
+  </script>
+</body>
+</html>
