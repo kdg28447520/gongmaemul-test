@@ -362,9 +362,10 @@
     .srow .dl { grid-column: 2; grid-row: 3; text-align: left; }
     .srow .go { grid-column: 3; grid-row: 2 / 4; align-self: center; }
     .lab .two { grid-template-columns: 1fr 1fr; }
-    .tout-row { gap: 8px; flex-wrap: wrap; }
-    .tout-row .lab2 { width: 100%; padding-top: 0; }
-    .tout-row .grow { flex-basis: calc(100% - 70px); }
+    .tout-row { display: block; gap: 0; padding: 13px 0; }
+    .tout-row .lab2 { width: auto; padding: 0 0 5px; font-size: 11.5px; }
+    .tout-row .grow { display: block; }
+    .tout-row [data-c] { margin-top: 9px; }
     .title-out { font-size: 15px; }
     .cal-head { padding: 14px; }
   }
