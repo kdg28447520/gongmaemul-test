@@ -658,12 +658,17 @@ function bindTabs() {
     b.addEventListener('click', () => {
       document.querySelectorAll('nav.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
       document.querySelectorAll('panel').forEach(p => { p.hidden = p.id !== 'panel-' + b.dataset.panel; });
+      if (window.history && history.replaceState) history.replaceState(null, '', '#' + b.dataset.panel);
       window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
     });
   });
 }
 function goCalc() {
   document.getElementById('tab-calc').click();
+}
+function openTab(name) {
+  const btn = document.querySelector('nav.tabs button[data-panel="' + name + '"]');
+  if (btn) btn.click();
 }
 
 /* ── 요약 ───────────────────────────────── */
@@ -1394,6 +1399,7 @@ function calBind() {
 
 /* ── 새 탭 초기화 ────────────────────────── */
 bindTabs();
+if (location.hash) openTab(location.hash.slice(1));
 seasonInit();
 labBind();
 calBind();
