@@ -1722,7 +1722,7 @@ function renderSS() {
   const rRows = [
     ledRow('판매가 (쿠폰 적용가)', won(price) + '원', 'goal'),
     ledRow('공급가', '−' + won(cost) + '원', 'm'),
-    ledRow('배송비', '−' + won(ship) + '원', 'm'),
+    ledRow('배송비', (ship ? '−' + won(ship) : '0') + '원', 'm'),
     ledRow('광고 주문 수수료 ' + SS_FEE_AD + '%', '−' + won(adFee) + '원', 'm'),
     ledRow('광고 전 마진 (건당 광고비 한도)', won(adProfit) + '원', adProfit > 0 ? 'sum' : 'neg')
   ];
@@ -2086,7 +2086,7 @@ if (location.hash) openTab(location.hash.slice(1));
 seasonInit();
 labBind();
 calBind();
-ssBind();
+bindSS();
 ehBind();
 kgBind();
 defBind();
