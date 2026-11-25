@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>늘봄 미니 사방넷 — 주문·발주 관제탑</title>
+  <meta name="description" content="쿠팡 윙·네이버 스마트스토어·토스쇼핑·당근 주문을 모아 쥬얼리프룻 발주서와 송장으로 잇는 셀러용 관제 페이지.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="늘봄 미니 사방넷 — 주문·발주 관제탑">
+  <meta property="og:description" content="채널별 주문·배송 현황과 쥬얼리프룻 발주서 변환, 송장 검증을 한 화면에서.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+  <link rel="stylesheet" href="sabang.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">늘봄 미니 사방넷</span>
+      <span class="brand-badge">관제탑</span>
+    </div>
+    <div class="head-right">
+      <span class="sync-time" id="syncTime"></span>
+      <button class="btn-ghost" id="refreshBtn" type="button">새로고침</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <p class="hero-eyebrow">과일 도매 발주 관제</p>
+      <h1 class="hero-title">주문에서 발주·송장까지 한 화면</h1>
+      <p class="hero-sub">쿠팡·스마트스토어·토스쇼핑·당근 주문을 모아 쥬얼리프룻 발주서로 넘기고, 내려온 운송장을 검증합니다.</p>
+      <div class="kpi-grid" id="kpi">
+        <div class="kpi">
+          <span class="kpi-label">연동 채널</span>
+          <strong class="kpi-value">—</strong>
+          <span class="kpi-unit"></span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-label">대기 주문</span>
+          <strong class="kpi-value">—</strong>
+          <span class="kpi-unit">건</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-label">배송중</span>
+          <strong class="kpi-value">—</strong>
+          <span class="kpi-unit">건</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-label">배송완료</span>
+          <strong class="kpi-value">—</strong>
+          <span class="kpi-unit">건</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="관제 탭">
+      <button class="tab" type="button" role="tab" id="tab-status" data-tab="status" aria-selected="true" aria-controls="panel-status">연동 현황</button>
+      <button class="tab" type="button" role="tab" id="tab-map" data-tab="map" aria-selected="false" aria-controls="panel-map" tabindex="-1">품목 매핑</button>
+      <button class="tab" type="button" role="tab" id="tab-order" data-tab="order" aria-selected="false" aria-controls="panel-order" tabindex="-1">주문 → 발주서</button>
+      <button class="tab" type="button" role="tab" id="tab-invoice" data-tab="invoice" aria-selected="false" aria-controls="panel-invoice" tabindex="-1">송장 검증</button>
+    </nav>
+
+    <section class="panel" id="panel-status" role="tabpanel" aria-labelledby="tab-status">
+      <p class="panel-desc">채널별 연동 상태와 최근 수집 시각입니다. 숫자는 마지막 동기화 값입니다.</p>
+      <div class="channel-grid"></div>
+
+      <div class="block">
+        <h2 class="block-title">최근 발주 진행</h2>
+        <div id="progressBox"></div>
+      </div>
+
+      <div class="block">
+        <h2 class="block-title">이 페이지의 한계</h2>
+        <ul class="notice" id="limitList"></ul>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+      <p class="panel-desc">마켓 상품명이 아래 정규식에 걸리면 그 품목으로 쥬얼리프룻 발주서를 만듭니다.</p>
+
+      <div class="block">
+        <h2 class="block-title">품목 매핑</h2>
+        <div id="mapTableWrap"></div>
+      </div>
+
+      <div class="block">
+        <h2 class="block-title">매핑 필요</h2>
+        <div id="mapTodoWrap"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-order" role="tabpanel" aria-labelledby="tab-order" hidden>
+      <h2 class="panel-title">주문 → 쥬얼리프룻 발주서</h2>
+      <p class="panel-desc">마켓 주문 엑셀·CSV를 넣으면 쥬얼리프룻 13열 발주서로 바꿔 미리보기와 다운로드를 제공합니다. 파일은 브라우저 밖으로 나가지 않습니다.</p>
+      <div id="order-tool"></div>
+    </section>
+
+    <section class="panel" id="panel-invoice" role="tabpanel" aria-labelledby="tab-invoice" hidden>
+      <h2 class="panel-title">쥬얼리프룻 [배송처리된엑셀] 검증</h2>
+      <p class="panel-desc">쥬얼리프룻 [배송처리된엑셀]을 넣으면 택배사 코드와 운송장을 검사해 마켓별 등록 코드를 보여줍니다.</p>
+      <div id="invoice-tool"></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>늘봄상회 · 늘봄 미니 사방넷</p>
+      <p>숫자는 scripts/sync_sabang_web.py 동기화 결과입니다.</p>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="sb-core.js" defer></script>
+  <script src="sabang.js" defer></script>
+  <script src="tools.js" defer></script>
+</body>
+</html>

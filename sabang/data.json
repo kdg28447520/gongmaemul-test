@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "app": {
+    "name": "늘봄 미니 사방넷",
+    "description": "쿠팡·스마트스토어·토스쇼핑·당근 주문을 한 화면에서 모아 쥬얼리프룻 발주서와 송장으로 잇는 관제탑",
+    "vendor": "주식회사 쥬얼리프룻",
+    "cutoff": "10:00",
+    "partner": "늘봄상회 자체개발"
+  },
+  "generated_at": "2026-11-25 14:27:52",
+  "generated_by": "scripts/sync_sabang_web.py",
+  "collection": {
+    "collected_at": "2026-11-25 13:05:46",
+    "window": {
+      "from": "2026-11-24",
+      "to": "2026-11-25"
+    },
+    "pending_orders": 0,
+    "stored_orders": 0
+  },
+  "channels": [
+    {
+      "key": "coupang",
+      "name": "쿠팡 윙",
+      "mode": "api",
+      "ok": true,
+      "checked_at": "2026-11-25 13:05:44",
+      "error": null,
+      "collected": 0,
+      "counts": {
+        "paid": 0,
+        "preparing": 0,
+        "shipping": 0,
+        "delivered": 0
+      },
+      "scope": "2026-11-24 ~ 2026-11-25 수집 기준"
+    },
+    {
+      "key": "naver",
+      "name": "네이버 스마트스토어",
+      "mode": "api",
+      "ok": true,
+      "checked_at": "2026-11-25 13:05:45",
+      "error": null,
+      "collected": 0,
+      "counts": {
+        "paid": 0,
+        "preparing": 0,
+        "shipping": 0,
+        "delivered": 0
+      },
+      "scope": "2026-11-24 ~ 2026-11-25 수집 기준"
+    },
+    {
+      "key": "toss",
+      "name": "토스쇼핑",
+      "mode": "api",
+      "ok": true,
+      "checked_at": "2026-11-25 13:05:46",
+      "error": null,
+      "collected": 0,
+      "counts": {
+        "paid": 0,
+        "preparing": 0,
+        "shipping": 0,
+        "delivered": 0
+      },
+      "scope": "2026-11-24 ~ 2026-11-25 수집 기준"
+    },
+    {
+      "key": "daangn",
+      "name": "당근 (수동·채팅)",
+      "mode": "manual",
+      "ok": true,
+      "checked_at": "2026-11-25 13:05:46",
+      "error": null,
+      "collected": 0,
+      "note": "스토어 주문은 써니가 채팅으로 확인합니다. 계좌이체 건은 쥬얼리프룻에 직접 발주합니다.",
+      "counts": {
+        "paid": 0,
+        "preparing": 0,
+        "shipping": 0,
+        "delivered": 0
+      },
+      "scope": "2026-11-24 ~ 2026-11-25 수집 기준"
+    }
+  ],
+  "progress": {
+    "date": "2026-11-23",
+    "label": "11/23 쿠팡 주문",
+    "total": 10,
+    "paid": 0,
+    "preparing": 0,
+    "shipping": 8,
+    "delivered": 2,
+    "source": "쿠팡 윙 OPEN API 실시간 조회 (13:20 확인값)",
+    "checked_at": "2026-11-25 13:20:56"
+  },
+  "product_map": [
+    {
+      "match": "엔비사과.*5\\s*kg|envy.*5\\s*kg",
+      "item": "엔비사과 (envy) 가정용 랜덤과 5kg [R]",
+      "supply_price": 13200,
+      "status": "mapped"
+    }
+  ],
+  "map_todo": [
+    {
+      "spec": "엔비사과 10kg",
+      "status": "need_mapping",
+      "note": "5kg만 발주서로 자동 변환됩니다. 10kg을 파실 때는 config/mini_sabangnet.json의 product_map에 한 줄을 추가하면 매핑 완료로 바뀝니다."
+    }
+  ],
+  "limits": [
+    "정적 페이지에서는 마켓 API 키를 숨길 수 없고 쿠팡·토스는 서버 IP 허용제라서 브라우저가 직접 주문을 수집하지 않습니다.",
+    "실주문 수집·발주서 생성·송장 일괄 전송은 써니가 `scripts/mini_sabangnet.py`로 실행하고, 결과만 이 페이지의 숫자로 동기화됩니다.",
+    "이 페이지에서 만든 발주서·송장 검증은 전부 브라우저 안에서만 처리되며 어디로도 전송되지 않습니다."
+  ]
+}
