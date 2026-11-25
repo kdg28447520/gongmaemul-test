@@ -1091,3 +1091,26 @@ a:hover{text-decoration:underline}
   .sb-table--invoice .sb-idx,
   .sb-table--invoice .sb-carrier{display:none}
 }
+
+@media (max-width:640px){
+  .sb-table--order{font-size:11.5px}
+  .sb-table--order th,
+  .sb-table--order td{padding:7px 6px}
+  .sb-table--order td{white-space:nowrap}
+  .sb-table--order th:nth-child(1),
+  .sb-table--order td:nth-child(1),
+  .sb-table--order th:nth-child(2),
+  .sb-table--order td:nth-child(2),
+  .sb-table--order th:nth-child(4),
+  .sb-table--order td:nth-child(4),
+  .sb-table--order th:nth-child(9),
+  .sb-table--order td:nth-child(9),
+  .sb-table--order th:nth-child(10),
+  .sb-table--order td:nth-child(10),
+  .sb-table--order th:nth-child(11),
+  .sb-table--order td:nth-child(11),
+  .sb-table--order th:nth-child(12),
+  .sb-table--order td:nth-child(12){display:none}
+  .sb-table--order td:nth-child(6),
+  .sb-table--order th:nth-child(6){white-space:normal;min-width:110px}
+}

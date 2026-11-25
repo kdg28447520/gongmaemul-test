@@ -138,7 +138,7 @@
         preview.appendChild(el('p', 'sb-empty', '발주서로 만들 수 있는 주문이 아직 없습니다.'));
       } else {
         var wrap = el('div', 'sb-tablewrap');
-        var table = el('table', 'sb-table');
+        var table = el('table', 'sb-table sb-table--order');
         var thead = el('thead');
         var hr = el('tr');
         C.JEWELRY_COLUMNS.forEach(function (label) {
