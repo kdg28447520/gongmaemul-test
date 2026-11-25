@@ -549,8 +549,7 @@
     <!-- ── 셀스위치온 공식 ────────────────── -->
     <div class="sec">
       <div class="sec-h"><h3>① 목표 소싱가 — 경쟁 평균가 × 0.7</h3><span>셀스위치온(미라클) 기준</span></div>
-      <div class="calc">
-        <div class="card">
+      <div class="card">
           <h3>경쟁 판매가 5곳</h3>
           <p class="hint">쿠팡 검색 1~5위의 실제 결제가(쿠폰 적용 후)를 같은 규격·중량으로 넣습니다. 비운 칸은 평균에서 뺍니다.</p>
           <div class="grid5" id="compWrap">
@@ -562,7 +561,7 @@
           </div>
           <div class="unit" style="font-size:11.5px;color:var(--ink-muted);margin-top:7px;line-height:1.6">평균 × 0.7 이하로 소싱해야 수수료·배송을 제하고도 순마진 15~20%가 남습니다.</div>
         </div>
-        <div class="card">
+        <div class="card" style="margin-top:16px">
           <div class="result-head">
             <div>
               <div class="cap">목표 소싱가 (평균 × 0.7)</div>
@@ -577,7 +576,6 @@
           <button type="button" class="btn" id="ssFill" style="margin-top:12px">이 소싱가를 공급가로 넣기</button>
           <p class="note">경쟁가가 이미 바닥이면 0.7을 맞춰도 마진이 남지 않습니다. 그럴 땐 규격(중량)·품종 키워드를 쪼개 다른 시장을 보세요.</p>
         </div>
-      </div>
     </div>
 
     <div class="sec">
@@ -1680,10 +1678,10 @@ function renderSS() {
     const gap = target - cost;
     tRows.push(ledRow(gap >= 0 ? '여유 (목표 − 공급가)' : '초과 (공급가 − 목표)', (gap >= 0 ? '+' : '−') + won(Math.abs(gap)) + '원', gap >= 0 ? 'goal' : 'neg'));
   }
-  if (target && price) {
-    const fee = price * SS_FEE_NORMAL / 100;
-    const profit = price - target - ship - fee;
-    tRows.push(ledRow('목표가로 소싱 시 순이익 (11.66%)', won(profit) + '원 · ' + (price ? (profit / price * 100).toFixed(1) : '0') + '%', profit >= 0 ? 'goal' : 'neg'));
+  if (target && avg) {
+    const fee = avg * SS_FEE_NORMAL / 100;
+    const profit = avg - target - ship - fee;
+    tRows.push(ledRow('경쟁 평균가로 팔 때 순이익 (11.66%)', won(profit) + '원 · ' + (avg ? (profit / avg * 100).toFixed(1) : '0') + '%', profit >= 0 ? 'goal' : 'neg'));
   }
   document.getElementById('ssTargetRows').innerHTML = tRows.join('');
 
@@ -1789,7 +1787,7 @@ function renderEH() {
   document.getElementById('ehKv').innerHTML = [
     ['조사 판매자', sellers.length + '곳', ''],
     ['리뷰 100개 미만', under + '곳', ''],
-    ['상위 평균 리뷰', sellers.length ? won(avg) : '—', '개']
+    ['상위 평균 리뷰', sellers.length ? won(avg) : '—', sellers.length ? '개' : '']
   ].map(([k, v, u]) => '<div><div class="k">' + k + '</div><div class="v">' + v + (u ? '<small>' + u + '</small>' : '') + '</div></div>').join('');
 
   const rows = list.slice().sort((a, b) => a.rank - b.rank).map(x =>
@@ -1828,7 +1826,7 @@ function renderKG() {
   rowsEl.innerHTML = [
     ledRow('판매가', won(p) + '원', 'goal'),
     ledRow('공급가', '−' + won(c) + '원', 'm'),
-    ledRow('배송비', '−' + won(sh) + '원', 'm'),
+    ledRow('배송비', (sh ? '−' + won(sh) : '0') + '원', 'm'),
     ledRow('수수료 ' + SS_FEE_NORMAL + '%', '−' + won(fee) + '원', 'm'),
     ledRow('순이익', won(profit) + '원 · ' + rate.toFixed(1) + '%', 'sum'),
     ledRow('중량', KG(w) + 'kg', 'goal'),
@@ -1994,17 +1992,17 @@ function renderRevCost() {
 
 function renderBlack() {
   const flagged = (SUPS || []).filter(s => s.flag);
-  const el = document.getElementById('defBlack'), supEl = document.getElementById('supWarn');
+  const el = document.getElementById('defBlack'), supEl = document.getElementById('supWarn'), defEl = document.getElementById('defWarn');
+  const banner = flagged.length
+    ? '<b>퇴출·주의 ' + flagged.length + '곳</b> — ' + flagged.map(s => esc(s.name) + '(' + esc(s.flag) + ')').join(', ') + '. 단가가 가장 낮아도 거래하지 않습니다.'
+    : '';
+  if (defEl) defEl.innerHTML = banner ? '<div class="warn">' + banner + '</div>' : '';
   if (el) {
     el.innerHTML = flagged.length
       ? flagged.map(s => '<div class="chk" style="grid-template-columns:1fr"><span class="t"><b>' + esc(s.name) + '</b> <span class="badge no">' + esc(s.flag) + '</span><em>' + esc(s.note || '단가가 싸도 거래하지 않습니다.') + '</em></span></div>').join('')
       : '<p class="hint" style="margin:0">표시된 도매처가 없습니다.</p>';
   }
-  if (supEl) {
-    supEl.innerHTML = flagged.length
-      ? '<div class="warn"><b>퇴출·주의 ' + flagged.length + '곳</b> — ' + flagged.map(s => esc(s.name) + '(' + esc(s.flag) + ')').join(', ') + '. 단가가 가장 낮아도 거래하지 않습니다.</div>'
-      : '';
-  }
+  if (supEl) supEl.innerHTML = banner ? '<div class="warn">' + banner + '</div>' : '';
 }
 
 function defBind() {
