@@ -375,7 +375,8 @@
       var thead = el('thead');
       var hr = el('tr');
       ['#', '주문번호', '택배사(원본)', '채널', '등록 코드', '운송장', '검증'].forEach(function (labelText) {
-        hr.appendChild(el('th', null, labelText));
+        var cls = labelText === '#' ? 'sb-idx' : (labelText === '택배사(원본)' ? 'sb-carrier' : null);
+        hr.appendChild(el('th', cls, labelText));
       });
       thead.appendChild(hr);
       table.appendChild(thead);
