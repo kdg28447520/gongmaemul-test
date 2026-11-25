@@ -371,7 +371,7 @@
         return;
       }
 
-      var table = el('table', 'sb-table');
+      var table = el('table', 'sb-table sb-table--invoice');
       var thead = el('thead');
       var hr = el('tr');
       ['#', '주문번호', '택배사(원본)', '채널', '등록 코드', '운송장', '검증'].forEach(function (labelText) {
@@ -383,9 +383,9 @@
       var tbody = el('tbody');
       rows.slice(0, 200).forEach(function (row) {
         var tr = el('tr');
-        tr.appendChild(el('td', null, row.index));
+        tr.appendChild(el('td', 'sb-idx', row.index));
         tr.appendChild(el('td', 'sb-mono', row.order_no));
-        tr.appendChild(el('td', null, row.carrier_raw));
+        tr.appendChild(el('td', 'sb-carrier', row.carrier_raw));
         tr.appendChild(el('td', null, row.channel_label));
         tr.appendChild(el('td', 'sb-mono', row.code));
         tr.appendChild(el('td', 'sb-mono', row.invoice));

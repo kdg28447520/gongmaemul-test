@@ -1083,3 +1083,11 @@ a:hover{text-decoration:underline}
   .sb-sender{grid-template-columns:1fr}
   .sb-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+@media (max-width:640px){
+  .sb-table--invoice{font-size:11.5px}
+  .sb-table--invoice th,
+  .sb-table--invoice td{padding:7px 6px}
+  .sb-table--invoice .sb-idx,
+  .sb-table--invoice .sb-carrier{display:none}
+}
