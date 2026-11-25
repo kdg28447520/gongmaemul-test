@@ -50,6 +50,42 @@ def host(u):
     return re.sub(r'^https?://', '', u or '').split('/')[0]
 
 
+def build_sourcing(specs, suppliers):
+    """품목·품종별 취급 공급처 수와 최저·차순위 도매처를 미리 계산한다.
+
+    과일 관제탑 '빈집·다중소싱' 탭의 품절 방어 규칙과 같다. 퇴출·주의(flag)가 붙은
+    공급처는 단가가 낮아도 순위에서 빼고 센다. 앱이 없어도 이 값으로 바로 판단할 수 있게
+    data.json 에 함께 남긴다(품목당 공급처 2곳 이상이면 다중 소싱 가능).
+    """
+    buckets = {}
+    for s in specs:
+        group = GROUPS[s[0]]
+        names = [group]
+        if s[1] and s[1] != group:
+            names.append(s[1])
+        for name in names:
+            bucket = buckets.setdefault(name, {})
+            for o in s[10]:
+                sid, price, kg = o[0], o[1], o[2]
+                cur = bucket.get(sid)
+                if cur is None or kg < cur['kg']:
+                    bucket[sid] = {'kg': kg, 'price': price}
+
+    out = {}
+    for name, bucket in buckets.items():
+        rows, dropped = [], []
+        for sid, v in bucket.items():
+            sup = suppliers[sid] if sid < len(suppliers) else {}
+            if sup.get('flag'):
+                dropped.append(sup.get('name'))
+                continue
+            rows.append({'name': sup.get('name'), 'kg': v['kg'], 'price': v['price']})
+        rows.sort(key=lambda r: r['kg'])
+        if rows:
+            out[name] = {'count': len(rows), 'top': rows[:2], 'dropped': dropped}
+    return out
+
+
 def main():
     rows, off = [], 0
     base = f'sb_v_compare?select={COLS}&stock_state=eq.selling&supplier_count=gte.2&order=spec_key.asc'
@@ -125,6 +161,14 @@ def main():
         merge_extra(payload)
     else:
         print('보유 도매처 병합 건너뜀:', merge_error)
+
+    # 품목별 다중 소싱(품절 방어) 지수 — 실패해도 공급가 갱신은 계속한다
+    try:
+        payload['sourcing'] = build_sourcing(payload['specs'], payload['suppliers'])
+        multi = sum(1 for v in payload['sourcing'].values() if v['count'] >= 2)
+        print(f"  다중 소싱 가능 품목 {multi}개 / {len(payload['sourcing'])}개")
+    except Exception as e:
+        print('sourcing 계산 건너뜀:', e)
 
     path = os.path.join(HERE, 'data.json')
     with open(path, 'w') as f:

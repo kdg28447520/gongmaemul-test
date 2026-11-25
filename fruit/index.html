@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>과일 소싱 관제탑 — 도매 최저가·제철·상품명·로스 마진</title>
-<meta name="description" content="과일 위탁판매 셀러용 도매 관제탑. 도매처 58곳의 공급가를 kg당으로 비교하고 로스율·쿠팡 수수료를 반영한 실제 마진을 계산합니다. 네이버 검색량 기반 월별 제철 수요, 쿠팡 상품명 조합, 14일 실행 체크리스트까지 한 화면에.">
+<title>과일 소싱 관제탑 — 도매 최저가·제철·빈집 판독·실마진·ROAS</title>
+<meta name="description" content="과일 위탁판매 셀러용 토탈 소싱 자동화툴. 도매처 58곳의 공급가를 kg당으로 비교하고, 셀스위치온 목표 소싱가(평균×0.7)·쿠팡 일반 11.66%/광고 1.76% 실마진·최소/권장 ROAS, 철대표 제철 선점 배수와 빈집 판독기, 고효율 다중 소싱(품절 방어), 리뷰·클레임 1% 방어 체크리스트까지 한 화면에.">
 <link rel="canonical" href="https://gongmaemul.co.kr/fruit/">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="과일 소싱 관제탑 — 도매 최저가·제철·상품명·로스 마진">
@@ -187,6 +187,51 @@
   .sens td.neg { color: var(--minus); }
   .sens tr[data-on="1"] td { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 
+  /* ── 셀스위치온 · 판독기 ────────────────── */
+  .grid5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .grid5 input { width: 100%; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 4px; }
+  table.cmp thead th { font-size: 11.5px; font-weight: 400; color: var(--ink-muted); padding: 7px 0; border-bottom: 1px solid var(--line-strong); text-align: right; }
+  table.cmp td { padding: 9px 0; border-bottom: 1px solid var(--line); text-align: right; font-family: var(--mono); letter-spacing: -0.02em; }
+  table.cmp th:first-child, table.cmp td:first-child { text-align: left; font-family: inherit; color: var(--ink-soft); }
+  table.cmp td.neg { color: var(--minus); }
+  table.cmp tbody tr:last-child td { border-bottom: 0; }
+  .badge { display: inline-block; font-size: 11.5px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--ink-soft); background: var(--surface); white-space: nowrap; }
+  .badge.ok { color: var(--accent); border-color: #bfd5c6; background: var(--accent-soft); }
+  .badge.mid { color: #8a6a1f; border-color: #e6d9b5; background: #faf4e4; }
+  .badge.no { color: var(--minus); border-color: #e3c6bc; background: #f7e9e4; }
+  .warn { border: 1px solid #e3c6bc; background: #faf1ed; color: #7a3a26; border-radius: 8px; padding: 10px 13px; font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+  .warn b { font-weight: 600; }
+  .kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 12px; }
+  .kv > div { background: var(--surface); padding: 11px 13px; }
+  .kv .k { font-size: 11.5px; color: var(--ink-muted); }
+  .kv .v { font-size: 17px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.02em; margin-top: 2px; }
+  .kv .v small { font-family: inherit; font-size: 11.5px; font-weight: 400; color: var(--ink-muted); margin-left: 2px; }
+  .kv .v.neg { color: var(--minus); }
+  .ehrow { display: grid; grid-template-columns: 38px minmax(0, 1fr) minmax(0, 1.1fr); gap: 8px; align-items: center; margin-bottom: 8px; }
+  .ehrow .rk { font-family: var(--mono); font-size: 12px; color: var(--ink-muted); text-align: right; }
+  .ehrow input { width: 100%; font-size: 13.5px; padding: 7px 9px; }
+  .chk { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: start; }
+  .chk:last-child { border-bottom: 0; }
+  .chk input { width: 16px; height: 16px; margin: 3px 0 0; accent-color: var(--accent); cursor: pointer; }
+  .chk .t { font-size: 13.5px; line-height: 1.5; }
+  .chk .t em { display: block; font-style: normal; font-size: 12px; color: var(--ink-muted); margin-top: 3px; line-height: 1.6; }
+  .chk.on .t { color: var(--ink-muted); }
+  .chk.on .t em { opacity: .8; }
+  .sec-sub { font-size: 12.5px; color: var(--ink-muted); margin: 14px 0 2px; }
+  .mini { font-size: 11.5px; color: var(--ink-muted); font-family: inherit; }
+  .prow { display: grid; grid-template-columns: 26px minmax(0, 1fr) 58px 70px 70px 74px 50px; gap: 8px; align-items: center; padding: 9px 14px; border-bottom: 1px solid var(--line); }
+  .prow:last-child { border-bottom: 0; }
+  .prow:hover { background: #fbfbf8; cursor: pointer; }
+  .prow.head { background: var(--surface-2); font-size: 12px; color: var(--ink-muted); cursor: default; }
+  .prow.head:hover { background: var(--surface-2); }
+  .prow .rk { font-family: var(--mono); font-size: 12.5px; color: var(--ink-muted); text-align: right; }
+  .prow .nm { font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .prow .nm em { font-style: normal; font-weight: 400; font-size: 11.5px; color: var(--ink-muted); margin-left: 6px; }
+  .prow .n { font-family: var(--mono); font-size: 13px; text-align: right; }
+  .prow .n.hot { color: var(--accent); font-weight: 600; }
+  .prow .st { text-align: right; }
+
   .note { font-size: 12.5px; color: var(--ink-muted); line-height: 1.6; margin-top: 14px; }
   .note b { color: var(--ink-soft); font-weight: 500; }
 
@@ -350,6 +395,15 @@
     .lab { grid-template-columns: 1fr; }
   }
   @media (max-width: 700px) {
+    .grid5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .kv { grid-template-columns: 1fr 1fr; }
+    .prow { grid-template-columns: minmax(0, 1fr) 52px 58px 58px; gap: 2px 8px; padding: 10px 12px; }
+    .prow .rk, .prow .st { display: none; }
+    .prow.head { display: none; }
+    .ehrow { grid-template-columns: 32px minmax(0, 1fr); }
+    .ehrow input:nth-of-type(2) { grid-column: 2; }
+  }
+  @media (max-width: 700px) {
     nav.tabs { gap: 14px; flex-wrap: wrap; }
     nav.tabs button { font-size: 13.5px; padding: 8px 0 9px; }
     .srow { grid-template-columns: 24px minmax(0, 1fr) auto; gap: 3px 10px; padding: 11px 12px; }
@@ -385,6 +439,8 @@
       <button role="tab" id="tab-calc" aria-selected="false" data-panel="calc">로스 마진 계산</button>
       <button role="tab" id="tab-season" aria-selected="false" data-panel="season">제철 소싱기</button>
       <button role="tab" id="tab-naming" aria-selected="false" data-panel="naming">상품명 연구소</button>
+      <button role="tab" id="tab-emptyhouse" aria-selected="false" data-panel="emptyhouse">빈집·다중소싱</button>
+      <button role="tab" id="tab-defense" aria-selected="false" data-panel="defense">리뷰·클레임 방어</button>
       <button role="tab" id="tab-calendar" aria-selected="false" data-panel="calendar">14일 실행 캘린더</button>
       <button role="tab" id="tab-sup" aria-selected="false" data-panel="sup">도매처 <span class="cnt" id="supCnt"></span></button>
     </nav>
@@ -424,7 +480,7 @@
 
   <!-- ── 마진 계산 ─────────────────────────────── -->
   <panel id="panel-calc" hidden>
-    <p class="lede">공급가와 판매가를 넣으면 수수료와 <b>로스율</b>을 뺀 순이익이 나옵니다. 로스는 파손·무름으로 환불해 준 몫이라, 판매 한 건이 통째로 사라진 것으로 계산하는 <b>매출 기준</b>이 실제에 가깝습니다.</p>
+    <p class="lede">공급가와 판매가를 넣으면 수수료와 <b>로스율</b>을 뺀 순이익이 나옵니다. 로스는 파손·무름으로 환불해 준 몫이라, 판매 한 건이 통째로 사라진 것으로 계산하는 <b>매출 기준</b>이 실제에 가깝습니다. 아래에 <b>셀스위치온 공식</b>(목표 소싱가 ×0.7 · 일반 11.66%/광고 1.76% 실마진 · 최소/권장 ROAS)이 같은 입력값으로 함께 계산됩니다.</p>
     <div class="calc">
       <form class="card" id="calcForm" onsubmit="return false">
         <h3>입력</h3>
@@ -489,6 +545,63 @@
         <p class="note" id="calcNote"></p>
       </div>
     </div>
+
+    <!-- ── 셀스위치온 공식 ────────────────── -->
+    <div class="sec">
+      <div class="sec-h"><h3>① 목표 소싱가 — 경쟁 평균가 × 0.7</h3><span>셀스위치온(미라클) 기준</span></div>
+      <div class="calc">
+        <div class="card">
+          <h3>경쟁 판매가 5곳</h3>
+          <p class="hint">쿠팡 검색 1~5위의 실제 결제가(쿠폰 적용 후)를 같은 규격·중량으로 넣습니다. 비운 칸은 평균에서 뺍니다.</p>
+          <div class="grid5" id="compWrap">
+            <input type="number" inputmode="numeric" placeholder="1위" aria-label="경쟁 1위 판매가">
+            <input type="number" inputmode="numeric" placeholder="2위" aria-label="경쟁 2위 판매가">
+            <input type="number" inputmode="numeric" placeholder="3위" aria-label="경쟁 3위 판매가">
+            <input type="number" inputmode="numeric" placeholder="4위" aria-label="경쟁 4위 판매가">
+            <input type="number" inputmode="numeric" placeholder="5위" aria-label="경쟁 5위 판매가">
+          </div>
+          <div class="unit" style="font-size:11.5px;color:var(--ink-muted);margin-top:7px;line-height:1.6">평균 × 0.7 이하로 소싱해야 수수료·배송을 제하고도 순마진 15~20%가 남습니다.</div>
+        </div>
+        <div class="card">
+          <div class="result-head">
+            <div>
+              <div class="cap">목표 소싱가 (평균 × 0.7)</div>
+              <div class="big" id="ssTarget">—</div>
+            </div>
+            <div class="rate">
+              <b id="ssAvg">—</b>
+              <span>경쟁 평균가</span>
+            </div>
+          </div>
+          <table class="ledger"><tbody id="ssTargetRows"></tbody></table>
+          <button type="button" class="btn" id="ssFill" style="margin-top:12px">이 소싱가를 공급가로 넣기</button>
+          <p class="note">경쟁가가 이미 바닥이면 0.7을 맞춰도 마진이 남지 않습니다. 그럴 땐 규격(중량)·품종 키워드를 쪼개 다른 시장을 보세요.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h3>② 쿠팡 실마진 — 일반 11.66% / 광고 1.76%</h3><span>위 입력값(공급가·판매가·배송비) 그대로 계산</span></div>
+      <div class="card" id="ssMargin"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h3>③ 광고 ROAS 손익분기</h3><span>광고 주문은 판매수수료 면제 · 광고 수수료 1.76%만</span></div>
+      <div class="card">
+        <div class="result-head">
+          <div>
+            <div class="cap">손해 안 보는 최소 ROAS</div>
+            <div class="big" id="ssBe">—</div>
+          </div>
+          <div class="rate">
+            <b id="ssRec">—</b>
+            <span>권장 ROAS (최소 × 1.5)</span>
+          </div>
+        </div>
+        <table class="ledger"><tbody id="ssRoasRows"></tbody></table>
+        <p class="note" id="ssRoasNote"></p>
+      </div>
+    </div>
   </panel>
 
   <!-- ── 제철 소싱기 ─────────────────────────── -->
@@ -498,6 +611,13 @@
     <div class="subtabs" id="monthBar"></div>
     <div id="seasonBody"><div class="empty">제철 지수를 불러오는 중…</div></div>
     <p class="note" id="seasonNote"></p>
+
+    <!-- ── 철대표 제철 선점 체크 ──────────── -->
+    <div class="sec" id="preemptSec">
+      <div class="sec-h"><h3>제철 선점 체크 — 다음 1~2개월 상승 배수</h3><span>작년 12월·올 1월 지수 ÷ 이번 달 지수</span></div>
+      <div class="board" id="preemptBoard"><div class="empty">불러오는 중…</div></div>
+      <p class="note" id="preemptNote"></p>
+    </div>
   </panel>
 
   <!-- ── 상품명 연구소 ───────────────────────── -->
@@ -571,6 +691,26 @@
           <div class="csbox" id="csBox"></div>
           <button type="button" class="btn" id="csCopy" style="margin-top:10px">문구 복사</button>
         </div>
+        <div class="card" style="margin-top:16px">
+          <h3>정상가·태그 세팅 (쿠팡·토스 공통)</h3>
+          <p class="hint">판매가를 넣으면 정상가 2배(50% 할인 표기)가 나오고, 위에서 고른 키워드로 태그를 만듭니다.</p>
+          <div class="two">
+            <div class="field">
+              <label for="nmPrice">판매가</label>
+              <input type="number" id="nmPrice" inputmode="numeric" placeholder="19900">
+            </div>
+            <div class="field">
+              <label>정상가 (판매가 × 2)</label>
+              <div class="title-out" id="nmList" style="font-size:15px;padding:10px 12px">—</div>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:10px">
+            <label>태그 (쉼표 구분)</label>
+            <div class="csbox" id="nmTags">—</div>
+          </div>
+          <button type="button" class="btn" id="nmTagCopy">태그 복사</button>
+          <p class="note" style="margin-top:10px">정상가를 부풀려 할인률을 높이는 표기는 표시광고법상 문제가 될 수 있습니다. 실제 판매 이력이 있는 가격만 쓰세요.</p>
+        </div>
       </div>
     </div>
     <p class="note">상품명에 넣은 표현은 실제 상품과 같아야 합니다. <b>당도선별·특품</b> 같은 표기는 기준을 지킬 때만 쓰세요. 표시광고법상 실제와 다른 표기는 제재 대상입니다.</p>
@@ -589,9 +729,113 @@
     <p class="note">루틴은 위탁판매 기준 일반 순서입니다. 사업자·통신판매업 신고가 이미 끝났으면 1~3일차를 건너뛰고, 첫 품목이면 <b>4일차 마진 15% 확인</b>을 통과하지 못한 상품은 등록하지 않는 편이 안전합니다.</p>
   </panel>
 
+  <!-- ── 빈집 판독 · 다중 소싱 ──────────── -->
+  <panel id="panel-emptyhouse" hidden>
+    <p class="lede">쿠팡 1~5위의 <b>리뷰 분포</b>로 빈집인지 판정하고, 같은 품목을 취급하는 공급처가 <b>2곳 이상</b>인지 도매 DB에서 자동 대조합니다. 상위에 곰곰(쿠팡 자체브랜드)이 있으면 빈집 판정에서 뺩니다.</p>
+
+    <div class="calc">
+      <div class="card">
+        <h3>① 빈집 판독기</h3>
+        <p class="hint">쿠팡 검색 상위 1~5위의 리뷰 수와 판매자명을 넣습니다. 판매자명에 '곰곰'이 들어가면 자동으로 뺍니다.</p>
+        <div id="ehRows"></div>
+        <div class="unit" style="font-size:11.5px;color:var(--ink-muted);margin-top:8px;line-height:1.6">리뷰 100개 미만 판매자가 많을수록 초기 진입이 쉽습니다. 리뷰 수는 상품 페이지 상단의 전체 리뷰 수를 적습니다.</div>
+      </div>
+      <div class="card">
+        <div class="result-head">
+          <div>
+            <div class="cap">빈집 등급</div>
+            <div class="big" id="ehGrade">—</div>
+          </div>
+          <div class="rate">
+            <b id="ehUnder">—</b>
+            <span>리뷰 100개 미만</span>
+          </div>
+        </div>
+        <div class="kv" id="ehKv"></div>
+        <table class="ledger"><tbody id="ehRowsOut"></tbody></table>
+        <p class="note" id="ehNote"></p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h3>② 1kg당 순마진 — 3,000원 이상 권장</h3><span>수수료 11.66% · 배송비 포함</span></div>
+      <div class="calc">
+        <div class="card">
+          <div class="two">
+            <div class="field"><label for="kgPrice">판매가</label><input type="number" id="kgPrice" inputmode="numeric" placeholder="19900"></div>
+            <div class="field"><label for="kgWeight">중량 (kg)</label><input type="number" id="kgWeight" inputmode="decimal" step="0.1" placeholder="5"></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="kgCost">공급가 (총액)</label><input type="number" id="kgCost" inputmode="numeric" placeholder="10000"></div>
+            <div class="field"><label for="kgShip">배송비</label><input type="number" id="kgShip" inputmode="numeric" value="0"><div class="unit">무료배송이면 0</div></div>
+          </div>
+          <p class="hint" style="margin:2px 0 0">1kg당 순마진이 3,000원 아래면 박스 단위로 팔아도 한 건이 남지 않습니다.</p>
+        </div>
+        <div class="card">
+          <div class="result-head">
+            <div><div class="cap">1kg당 순마진</div><div class="big" id="kgOut">—</div></div>
+            <div class="rate" id="kgWrap"><b id="kgRate">—</b><span id="kgVerdict">값을 넣어주세요</span></div>
+          </div>
+          <table class="ledger"><tbody id="kgRows"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-h"><h3>③ 다중 소싱 매칭 — 품절 방어</h3><span>같은 품목 공급처 2곳 이상이면 OK</span></div>
+      <div class="toolbar">
+        <input type="search" id="msQ" placeholder="품목·품종 (예: 사과, 레드향, 황금향, 대봉감)" value="사과" autocomplete="off">
+      </div>
+      <div class="chips" id="msChips"></div>
+      <div class="card">
+        <div class="result-head">
+          <div><div class="cap">취급 공급처</div><div class="big" id="msCount">—</div></div>
+          <div class="rate"><b id="msBadge">—</b><span>다중 소싱</span></div>
+        </div>
+        <table class="ledger"><tbody id="msRows"></tbody></table>
+        <p class="note" id="msNote"></p>
+      </div>
+    </div>
+    <p class="note">공급처·단가는 도매 스냅샷(data.json) 기준입니다. 발주 전 해당 도매처의 당일 단가표를 다시 확인하세요. 퇴출·주의 표시가 붙은 곳은 순위에서 뺍니다.</p>
+  </panel>
+
+  <!-- ── 리뷰·클레임 방어 ────────────────── -->
+  <panel id="panel-defense" hidden>
+    <p class="lede">초기 리뷰를 <b>안전하게</b> 쌓고 클레임을 1% 이하로 누르는 체크리스트입니다. 체크 상태는 이 브라우저에만 저장됩니다.</p>
+    <div id="defWarn"></div>
+    <div class="calc">
+      <div class="card">
+        <div class="result-head" style="border-bottom:0;padding-bottom:0">
+          <div><div class="cap">진행</div><div class="big" id="defProg">0/14</div></div>
+          <div class="rate"><b id="defPct">0%</b><span>체크 완료</span></div>
+        </div>
+        <div class="pbar" style="margin:12px 0 4px"><i id="defBar" style="width:0%"></i></div>
+        <div id="defList"></div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>리뷰 비용 계산</h3>
+          <p class="hint">가구매·체험단은 건당 비용이 듭니다. 목표 개수와 건당 비용을 넣어 총비용을 먼저 확인하세요.</p>
+          <div class="two">
+            <div class="field"><label for="revN">목표 리뷰 수</label><input type="number" id="revN" inputmode="numeric" value="10"></div>
+            <div class="field"><label for="revCost">건당 비용</label><input type="number" id="revCost" inputmode="numeric" value="9000"><div class="unit">대행 4~5천원 + 택배·수수료</div></div>
+          </div>
+          <div class="kv"><div><div class="k">총비용</div><div class="v" id="revTotal">—</div></div><div><div class="k">건당</div><div class="v" id="revEach">—</div></div><div><div class="k">리스크</div><div class="v" style="font-size:13px;font-family:inherit;font-weight:500">이상거래(FDS)</div></div></div>
+          <p class="note">쿠팡은 가구매를 이상거래로 탐지합니다. 당근 실구매·지인·공식 소액 광고가 안전합니다.</p>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>퇴출·주의 도매처</h3>
+          <p class="hint">단가가 싸도 클레임이 반복된 곳입니다. 위 다중 소싱 순위에서 자동으로 뺍니다.</p>
+          <div id="defBlack"></div>
+        </div>
+      </div>
+    </div>
+  </panel>
+
   <!-- ── 도매처 ────────────────────────────────── -->
   <panel id="panel-sup" hidden>
     <p class="lede">공급가를 받아본 과일 도매처 <b id="supLede"></b>입니다. 구멍이 클래스가 공개한 B2B 목록에 <b>직접 거래·보유 중인 곳</b>을 합쳤고, 가입과 단가 열람이 어디까지 됐는지 함께 적었습니다. 대부분 업체 승인을 받아야 단가가 보이는 B2B라, 가격은 위 최저가 보드에서 확인하고 여기서는 거래처를 고릅니다.</p>
+    <div id="supWarn"></div>
     <div class="chips" id="supChips"></div>
     <div class="toolbar">
       <input type="search" id="sq" placeholder="도매처 이름·별칭·비고 검색 (예: 따고담고, 청도반시, 승인대기)">
@@ -619,7 +863,7 @@
 
 <footer class="foot">
   <p>공급가 출처: <a href="https://xn--9t4b27ensi3ue.xn--2e0by6qn7bb2m79f84o.com/sourcing.html" target="_blank" rel="noopener">구멍이 스카우트</a> 공개 도매가 비교 · 도매처 목록: <a href="https://xn--2e0by6qn7bb2m79f84o.com/b2b.html" target="_blank" rel="noopener">구멍이 클래스 B2B 사이트모음</a> · 2026-11-15 15:07 수집분</p>
-  <p>표시된 공급가는 수집 시점 값입니다. 발주 전 해당 도매처의 당일 단가표를 다시 확인하세요. 마진 계산은 수수료·로스만 반영하며 부가세, 반품 배송비, 광고비는 넣지 않았습니다.</p>
+  <p>표시된 공급가는 수집 시점 값입니다. 발주 전 해당 도매처의 당일 단가표를 다시 확인하세요. 로스 마진 계산은 수수료·로스만 반영하며 반품 배송비·광고비는 넣지 않았습니다. 셀스위치온 실마진·ROAS는 셀스위치온이 공개한 기준(일반 11.66%, 광고 1.76%·판매수수료 면제 모델)으로 계산한 참고값입니다.</p>
 </footer>
 </div>
 
@@ -649,6 +893,8 @@ function init() {
   renderSup();
   bindTabs();
   bindCalc();
+  msBind();
+  renderBlack();
 }
 
 /* ── 탭 ─────────────────────────────────── */
@@ -842,6 +1088,7 @@ function renderCalc() {
     ledger.innerHTML = '<tr><td colspan="2" style="color:var(--ink-muted);font-size:13.5px;padding:14px 0">공급가와 판매가를 넣으면 항목별로 나눠 보여드립니다.</td></tr>';
     document.getElementById('sensTable').innerHTML = '';
     document.getElementById('calcNote').textContent = '';
+    renderSS();
     return;
   }
 
@@ -877,6 +1124,7 @@ function renderCalc() {
   document.getElementById('calcNote').innerHTML =
     `판매가 ${won(c.price)}원에서 마진 20%를 지키려면 공급가는 <b>${won(costAtGoal)}원</b> 이하여야 합니다` +
     (c.cost > costAtGoal ? ` — 지금 공급가는 ${won(c.cost - costAtGoal)}원 초과입니다.` : ' — 지금 공급가는 조건 안에 있습니다.');
+  renderSS();
 }
 
 /* 판매가·마진 목표가 주어졌을 때 넘지 말아야 할 공급가 */
@@ -952,6 +1200,7 @@ function renderSup() {
     (pending ? ` · 가입 승인 대기 <b>${pending}</b>곳` : '') + `. ` +
     `보유 거래처의 단가는 공개 스냅샷에 없어 위 최저가 보드에는 나오지 않습니다. ` +
     `나머지는 <b>partner 계정 승인</b>이 있어야 단가가 보이고, 구글시트로 운영하는 곳은 시트 링크를 받아 열람한 뒤 발주오라에서 발주합니다.`;
+  renderBlack();
 }
 
 /* ── 탭 바인딩 중복 방지 ───────────────── */
@@ -1011,6 +1260,8 @@ function renderSeason() {
   if (SEASON.err) {
     bar.innerHTML = ''; stats.innerHTML = ''; note.textContent = '';
     body.innerHTML = '<div class="board"><div class="empty">제철 지수(season.json)를 불러오지 못했습니다.<br><span style="font-size:12px">' + esc(SEASON.err) + '</span></div></div>';
+    const pb = document.getElementById('preemptBoard');
+    if (pb) pb.innerHTML = '<div class="empty">제철 지수를 불러오지 못해 선점 배수를 계산하지 못했습니다.</div>';
     return;
   }
   if (!SEASON.data) return;
@@ -1063,6 +1314,7 @@ function renderSeason() {
 
   note.innerHTML = '출처: ' + esc(SEASON.data.source || '') + ' · 갱신 ' + esc(SEASON.data.updated_at || '')
     + '<br>' + esc(SEASON.data.note || '');
+  renderPreempt();
 }
 
 /* 제철 품목 → 도매 최저가 탭 필터 */
@@ -1207,6 +1459,7 @@ function labRender() {
   document.getElementById('nmShipHint').textContent = LAB.ship === '냉동'
     ? '냉동 상품은 냉동으로 등록합니다. 해동 후 재냉동 금지, 해동 상태 기준 중량을 상세에 적으세요.'
     : '생과일은 신선으로 등록합니다. 도착 후 2일 안에 클레임이 몰리는 출고일과 수령 예정일을 상세에 적으세요.';
+  renderNmPrice();
 }
 
 function labDatalist() {
@@ -1398,12 +1651,446 @@ function calBind() {
   renderCal();
 }
 
+/* ── 셀스위치온 공식 (미라클) ─────────────── */
+const SS_FEE_NORMAL = 11.66;  // 판매 수수료 10.6% + 부가세 10%
+const SS_FEE_AD = 1.76;       // 광고 수수료 1.6% + 부가세 10% (광고 주문은 판매 수수료 면제)
+const inNum = id => { const el = document.getElementById(id); const v = el ? Number(el.value) : 0; return Number.isFinite(v) ? v : 0; };
+const ledRow = (k, v, cls) => '<tr' + (cls === 'sum' ? ' class="sum"' : cls === 'goal' ? ' class="goal"' : '') + '><td>' + k + '</td><td class="n' + (cls === 'm' ? ' m' : '') + '"' + (cls === 'neg' ? ' style="color:var(--minus);font-weight:600"' : '') + '>' + v + '</td></tr>';
+
+function ssCompetitorAvg() {
+  const vals = Array.from(document.querySelectorAll('#compWrap input')).map(i => Number(i.value)).filter(v => v > 0);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+}
+
+function renderSS() {
+  const targetEl = document.getElementById('ssTarget');
+  if (!targetEl) return;
+  const avg = ssCompetitorAvg();
+  const cost = inNum('cost'), price = inNum('price'), ship = inNum('ship');
+  const target = avg ? Math.round(avg * 0.7) : null;
+
+  document.getElementById('ssAvg').textContent = avg ? won(Math.round(avg)) + '원' : '—';
+  targetEl.textContent = target ? won(target) + '원' : '—';
+
+  const tRows = [];
+  tRows.push(ledRow('경쟁 5곳 평균가', avg ? won(Math.round(avg)) + '원' : '경쟁 판매가를 넣어주세요', 'goal'));
+  if (target) tRows.push(ledRow('목표 소싱가 (평균 × 0.7)', '<b>' + won(target) + '원</b>'));
+  if (cost) tRows.push(ledRow('현재 공급가', won(cost) + '원', 'm'));
+  if (target && cost) {
+    const gap = target - cost;
+    tRows.push(ledRow(gap >= 0 ? '여유 (목표 − 공급가)' : '초과 (공급가 − 목표)', (gap >= 0 ? '+' : '−') + won(Math.abs(gap)) + '원', gap >= 0 ? 'goal' : 'neg'));
+  }
+  if (target && price) {
+    const fee = price * SS_FEE_NORMAL / 100;
+    const profit = price - target - ship - fee;
+    tRows.push(ledRow('목표가로 소싱 시 순이익 (11.66%)', won(profit) + '원 · ' + (price ? (profit / price * 100).toFixed(1) : '0') + '%', profit >= 0 ? 'goal' : 'neg'));
+  }
+  document.getElementById('ssTargetRows').innerHTML = tRows.join('');
+
+  const mEl = document.getElementById('ssMargin');
+  if (!price) {
+    mEl.innerHTML = '<p class="hint" style="margin:0">위 입력란에 공급가·판매가를 넣으면 일반 주문과 광고 주문의 순이익·마진율이 나란히 나옵니다.</p>';
+  } else {
+    const models = [['일반 주문', SS_FEE_NORMAL], ['광고 주문', SS_FEE_AD]];
+    mEl.innerHTML = '<table class="cmp"><thead><tr><th>기준</th><th>수수료</th><th>순이익</th><th>마진율</th></tr></thead><tbody>'
+      + models.map(([name, rate]) => {
+        const fee = price * rate / 100;
+        const profit = price - cost - ship - fee;
+        const mr = price ? profit / price * 100 : 0;
+        return '<tr><td>' + name + ' <span class="mini">' + rate + '%</span></td>'
+          + '<td>−' + won(fee) + '원</td>'
+          + '<td class="' + (profit < 0 ? 'neg' : '') + '">' + won(profit) + '원</td>'
+          + '<td class="' + (profit < 0 ? 'neg' : '') + '">' + mr.toFixed(1) + '%</td></tr>';
+      }).join('') + '</tbody></table>'
+      + '<p class="note" style="margin-top:10px">일반 11.66% = 판매 수수료 10.6% + 부가세 10%입니다. 광고 1.76% = 1.6% + 부가세로, 셀스위치온은 <b>광고로 들어온 주문은 판매 수수료가 면제</b>되는 모델로 계산합니다. 실제 정산에서 두 수수료가 함께 붙는다면 두 값을 더해 보세요. 로스·반품은 넣지 않은 값입니다.</p>';
+  }
+
+  const beEl = document.getElementById('ssBe'), recEl = document.getElementById('ssRec'), roEl = document.getElementById('ssRoasRows');
+  if (!price) {
+    beEl.textContent = '—'; recEl.textContent = '—'; roEl.innerHTML = ledRow('판매가를 넣어주세요', '—', 'goal');
+    document.getElementById('ssRoasNote').textContent = '';
+    return;
+  }
+  const adFee = price * SS_FEE_AD / 100;
+  const adProfit = price - cost - ship - adFee;
+  const be = adProfit > 0 ? price / adProfit : null;
+  const rec = be ? be * 1.5 : null;
+  beEl.textContent = be ? be.toFixed(2) + '배' : '—';
+  beEl.classList.toggle('neg', !be);
+  recEl.textContent = rec ? rec.toFixed(2) + '배' : '—';
+
+  const rRows = [
+    ledRow('판매가 (쿠폰 적용가)', won(price) + '원', 'goal'),
+    ledRow('공급가', '−' + won(cost) + '원', 'm'),
+    ledRow('배송비', '−' + won(ship) + '원', 'm'),
+    ledRow('광고 주문 수수료 ' + SS_FEE_AD + '%', '−' + won(adFee) + '원', 'm'),
+    ledRow('광고 전 마진 (건당 광고비 한도)', won(adProfit) + '원', adProfit > 0 ? 'sum' : 'neg')
+  ];
+  if (be) {
+    rRows.push(ledRow('최소 ROAS (손해 안 보는 선)', be.toFixed(2) + '배', 'goal'));
+    rRows.push(ledRow('권장 ROAS (최소 × 1.5)', rec.toFixed(2) + '배'));
+    rRows.push(ledRow('광고비 부가세 반영 시 (× 1.1)', (be * 1.1).toFixed(2) + '배', 'goal'));
+  }
+  roEl.innerHTML = rRows.join('');
+  document.getElementById('ssRoasNote').innerHTML = be
+    ? 'ROAS = 광고 매출 ÷ 광고비입니다. 최소 ROAS ' + be.toFixed(2) + '배에서 광고비를 더 쓰면 그 주문은 적자입니다. 광고비에 부가세 10%가 붙으므로 <b>' + (be * 1.1).toFixed(2) + '배</b>를 실전 기준으로 두세요.'
+    : '이 가격·원가에서는 광고로 팔면 무조건 손해입니다. 소싱가를 낮추거나 판매가를 올린 뒤 다시 보세요.';
+}
+
+function bindSS() {
+  document.querySelectorAll('#compWrap input').forEach(el => el.addEventListener('input', renderSS));
+  const fill = document.getElementById('ssFill');
+  if (fill) fill.addEventListener('click', () => {
+    const avg = ssCompetitorAvg();
+    if (!avg) { document.querySelector('#compWrap input').focus(); return; }
+    document.getElementById('cost').value = Math.floor(avg * 0.7);
+    renderCalc();
+    document.getElementById('cost').focus({ preventScroll: true });
+  });
+  renderSS();
+}
+
+/* ── 빈집 판독기 ─────────────────────────── */
+function ehBind() {
+  const wrap = document.getElementById('ehRows');
+  if (!wrap) return;
+  wrap.innerHTML = Array.from({ length: 5 }, (_, i) =>
+    '<div class="ehrow"><div class="rk">' + (i + 1) + '위</div>'
+    + '<input type="number" inputmode="numeric" id="ehR' + i + '" placeholder="리뷰 수" aria-label="' + (i + 1) + '위 리뷰 수">'
+    + '<input type="search" id="ehS' + i + '" placeholder="판매자 (곰곰은 자동 제외)" aria-label="' + (i + 1) + '위 판매자"></div>').join('');
+  wrap.querySelectorAll('input').forEach(el => el.addEventListener('input', renderEH));
+  renderEH();
+}
+
+function renderEH() {
+  const gEl = document.getElementById('ehGrade');
+  if (!gEl) return;
+  const list = [];
+  for (let i = 0; i < 5; i++) {
+    const rEl = document.getElementById('ehR' + i), sEl = document.getElementById('ehS' + i);
+    if (!rEl || rEl.value.trim() === '') continue;
+    const seller = (sEl ? sEl.value : '').trim();
+    list.push({ rank: i + 1, rev: Number(rEl.value) || 0, seller, brand: /곰곰|gomsgoms|코팡|coupang/i.test(seller) });
+  }
+  const sellers = list.filter(x => !x.brand);
+  const brands = list.filter(x => x.brand);
+  const under = sellers.filter(x => x.rev < 100).length;
+
+  let grade = '—', cls = '', symbol = '—', verdict = '값을 넣어주세요';
+  if (sellers.length >= 1) {
+    if (under >= 3) { grade = '빈집'; cls = 'ok'; symbol = '✅'; verdict = '진입 유리'; }
+    else if (under >= 1) { grade = '틈새'; cls = 'mid'; symbol = '△'; verdict = '차별화 필요'; }
+    else { grade = '포화'; cls = 'no'; symbol = '❌'; verdict = '진입 비추'; }
+  }
+  gEl.textContent = grade;
+  gEl.style.color = cls === 'ok' ? 'var(--accent)' : cls === 'no' ? 'var(--minus)' : '';
+  document.getElementById('ehUnder').textContent = sellers.length ? under + '곳' : '—';
+  const avg = sellers.length ? Math.round(sellers.reduce((a, b) => a + b.rev, 0) / sellers.length) : 0;
+  document.getElementById('ehKv').innerHTML = [
+    ['조사 판매자', sellers.length + '곳', ''],
+    ['리뷰 100개 미만', under + '곳', ''],
+    ['상위 평균 리뷰', sellers.length ? won(avg) : '—', '개']
+  ].map(([k, v, u]) => '<div><div class="k">' + k + '</div><div class="v">' + v + (u ? '<small>' + u + '</small>' : '') + '</div></div>').join('');
+
+  const rows = list.slice().sort((a, b) => a.rank - b.rank).map(x =>
+    '<tr><td>' + x.rank + '위' + (x.seller ? ' · ' + esc(x.seller) : '') + '</td>'
+    + '<td class="n' + (x.rev < 100 && !x.brand ? ' m' : '') + '"' + (x.brand ? ' style="color:var(--ink-muted)"' : '') + '>' + won(x.rev) + '</td>'
+    + '<td class="n">' + (x.brand ? '<span class="badge">자체브랜드 제외</span>' : x.rev < 100 ? '<span class="badge ok">빈집</span>' : '<span class="badge no">경쟁</span>') + '</td></tr>');
+  document.getElementById('ehRowsOut').innerHTML = rows.length
+    ? '<tr class="goal"><td>판매자</td><td class="n" style="text-align:right">리뷰</td><td class="n" style="text-align:right">판정</td></tr>' + rows.join('')
+    : '<tr><td colspan="3" style="color:var(--ink-muted);font-size:13.5px;padding:14px 0">1~5위 리뷰 수를 넣으면 판정이 나옵니다. 판매자명은 선택입니다.</td></tr>';
+
+  let note = '리뷰 100개 미만 판매자가 3곳 이상이면 <b>빈집</b>, 1~2곳이면 <b>틈새</b>, 0곳이면 <b>포화</b>입니다.';
+  if (brands.length) note += ' 곰곰 등 자체브랜드 ' + brands.length + '곳은 판정에서 뺐습니다 — 같은 가격으로는 이길 수 없으니 품종·규격을 달리 잡으세요.';
+  document.getElementById('ehNote').innerHTML = note;
+}
+
+/* ── 1kg당 순마진 ────────────────────────── */
+function renderKG() {
+  const out = document.getElementById('kgOut');
+  if (!out) return;
+  const p = inNum('kgPrice'), w = inNum('kgWeight'), c = inNum('kgCost'), sh = inNum('kgShip');
+  const rowsEl = document.getElementById('kgRows'), rateEl = document.getElementById('kgRate'), vEl = document.getElementById('kgVerdict'), wrap = document.getElementById('kgWrap');
+  if (!p || !w) {
+    out.textContent = '—'; rateEl.textContent = '—'; vEl.textContent = '판매가·중량을 넣어주세요'; wrap.className = 'rate';
+    rowsEl.innerHTML = '<tr><td colspan="2" style="color:var(--ink-muted);font-size:13.5px;padding:14px 0">판매가와 중량을 넣으면 1kg당 순마진이 나옵니다.</td></tr>';
+    return;
+  }
+  const fee = p * SS_FEE_NORMAL / 100;
+  const profit = p - c - sh - fee;
+  const perKg = profit / w;
+  const rate = profit / p * 100;
+  out.textContent = won(Math.round(perKg)) + '원';
+  out.classList.toggle('neg', perKg < 0);
+  rateEl.textContent = won(profit) + '원';
+  vEl.textContent = perKg >= 3000 ? '권장 이상' : perKg >= 2000 ? '2,000원대 · 보통' : '부족';
+  wrap.className = 'rate ' + (perKg >= 3000 ? 'good' : perKg < 2000 ? 'bad' : '');
+  rowsEl.innerHTML = [
+    ledRow('판매가', won(p) + '원', 'goal'),
+    ledRow('공급가', '−' + won(c) + '원', 'm'),
+    ledRow('배송비', '−' + won(sh) + '원', 'm'),
+    ledRow('수수료 ' + SS_FEE_NORMAL + '%', '−' + won(fee) + '원', 'm'),
+    ledRow('순이익', won(profit) + '원 · ' + rate.toFixed(1) + '%', 'sum'),
+    ledRow('중량', KG(w) + 'kg', 'goal'),
+    ledRow('1kg당 순마진', won(Math.round(perKg)) + '원', perKg >= 3000 ? 'goal' : 'neg')
+  ].join('');
+}
+
+function kgBind() {
+  ['kgPrice', 'kgWeight', 'kgCost', 'kgShip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderKG);
+  });
+  renderKG();
+}
+
+/* ── 다중 소싱 매칭 (고효율 품절 방어) ───── */
+const MS_CHIPS = ['사과', '감귤', '레드향', '황금향', '딸기', '대봉감', '샤인머스', '엔비', '대추'];
+
+function sourcingMatch(kw) {
+  const q = String(kw || '').trim().toLowerCase();
+  if (!q || !DATA) return null;
+  const bySup = new Map();
+  SPECS.forEach(s => {
+    const g = DATA.groups[s[0]], v = String(s[1] || '');
+    if (!(g.toLowerCase().indexOf(q) >= 0 || v.toLowerCase().indexOf(q) >= 0)) return;
+    (s[10] || []).forEach(o => {
+      const cur = bySup.get(o[0]);
+      if (!cur || o[2] < cur.kg) {
+        bySup.set(o[0], { sid: o[0], kg: o[2], price: o[1], cutoff: o[3] || '', spec: (s[4] ? KG(s[4]) + 'kg' : '—') + (s[3] ? ' · ' + s[3] : ''), group: g, variety: v });
+      }
+    });
+  });
+  const all = Array.from(bySup.values()).sort((a, b) => a.kg - b.kg);
+  return {
+    all,
+    live: all.filter(r => !SUPS[r.sid].flag),
+    flagged: all.filter(r => !!SUPS[r.sid].flag)
+  };
+}
+
+function renderMS() {
+  const qEl = document.getElementById('msQ');
+  if (!qEl) return;
+  if (!DATA) {
+    document.getElementById('msCount').textContent = '—';
+    document.getElementById('msRows').innerHTML = '<tr><td colspan="4" style="color:var(--ink-muted);font-size:13.5px;padding:14px 0">도매 스냅샷을 불러오는 중입니다.</td></tr>';
+    return;
+  }
+  const res = sourcingMatch(qEl.value);
+  const countEl = document.getElementById('msCount'), badgeEl = document.getElementById('msBadge'), rowsEl = document.getElementById('msRows'), noteEl = document.getElementById('msNote');
+  if (!res || !res.live.length) {
+    countEl.textContent = '—'; badgeEl.textContent = '—'; badgeEl.className = '';
+    rowsEl.innerHTML = '<tr><td colspan="4" style="color:var(--ink-muted);font-size:13.5px;padding:14px 0">이 품목을 취급하는 공급처를 스냅샷에서 찾지 못했습니다. 다른 이름(품종명)으로 넣어보세요.</td></tr>';
+    noteEl.textContent = '';
+    return;
+  }
+  const n = res.live.length;
+  countEl.textContent = n + '곳';
+  badgeEl.textContent = n >= 2 ? '2곳 이상 · 방어 OK' : '단일 공급처 · 위험';
+  badgeEl.className = n >= 2 ? 'badge ok' : 'badge mid';
+  badgeEl.style.fontSize = '12px';
+
+  const head = '<tr class="goal"><td>도매처</td><td class="n" style="text-align:right">kg단가</td><td class="n" style="text-align:right">규격</td><td class="n" style="text-align:right">마감</td></tr>';
+  rowsEl.innerHTML = head + res.live.slice(0, 5).map((r, i) =>
+    '<tr><td>' + (i === 0 ? '최저 ' : i === 1 ? '차순위 ' : '') + esc(SUPS[r.sid].name)
+    + (SUPS[r.sid].own ? ' <span class="mini">보유</span>' : '') + '</td>'
+    + '<td class="n">' + won(r.kg) + '원</td>'
+    + '<td class="n mini" style="font-family:var(--mono)">' + esc(r.spec) + '</td>'
+    + '<td class="n mini">' + esc(r.cutoff || '—') + '</td></tr>').join('');
+
+  let note = '<b>' + esc(qEl.value.trim()) + '</b> 취급 공급처 ' + n + '곳';
+  if (n >= 2) {
+    const second = res.live[1];
+    const gapPct = res.live[0].kg ? ((second.kg - res.live[0].kg) / res.live[0].kg * 100) : 0;
+    note += ' — 최저 ' + esc(SUPS[res.live[0].sid].name) + ' ' + won(res.live[0].kg) + '원/kg, 차순위 ' + esc(SUPS[second.sid].name) + ' ' + won(second.kg) + '원/kg(' + (gapPct >= 0 ? '+' : '') + gapPct.toFixed(1) + '%). 한 곳이 품절나면 차순위로 바꾸면 됩니다.';
+  } else {
+    note += ' — 한 곳뿐입니다. 품절·출고 지연이 곧 판매 중단이니 다른 품종이나 규격으로 넓혀 2곳 이상 확보하세요.';
+  }
+  if (res.flagged.length) {
+    note += '<br>퇴출·주의 도매처 ' + res.flagged.length + '곳(' + res.flagged.map(r => esc(SUPS[r.sid].name)).join(', ') + ')은 단가가 낮아도 순위에서 뺐습니다.';
+  }
+  noteEl.innerHTML = note;
+}
+
+function msBind() {
+  const qEl = document.getElementById('msQ');
+  const chips = document.getElementById('msChips');
+  if (!qEl || !chips) return;
+  chips.innerHTML = MS_CHIPS.map(c => '<button type="button" data-q="' + c + '" aria-pressed="' + (c === qEl.value) + '">' + c + '</button>').join('');
+  const sync = () => chips.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.q === qEl.value.trim())));
+  chips.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    qEl.value = b.dataset.q; sync(); renderMS();
+  }));
+  qEl.addEventListener('input', () => { sync(); renderMS(); });
+  renderMS();
+}
+
+/* ── 리뷰·클레임 방어 (오공 · 제리) ──────── */
+const DEFS = [
+  { g: '초기 리뷰 (오공 · 고효율)', items: [
+    ['상품 1개만 잡고 리뷰 10~30개를 목표로 한다', '고효율은 초기 리뷰 20~30개로 최신성·전환을 잡는다고 말합니다. 10개도 세부 키워드에서는 효과가 있습니다.'],
+    ['가구매 대행 대신 당근 실구매·지인 구매로 정품 리뷰를 만든다', '대행은 건당 4~5천원에 택배·수수료가 붙어 실제 8천~1만원/건입니다. 쿠팡 이상거래(FDS)에 걸리면 정산 동결·계정 정지 위험이 있습니다.'],
+    ['하루 2~3개씩 분산하고 모바일 검색 유입·실사용 사진으로 남긴다', '같은 날 몰아 넣으면 패턴이 남습니다. 상품컷보다 생활 사진이 자연스럽습니다.'],
+    ['체험단은 자율 작성 양식으로 모으고 검색 유입으로 남긴다', '단축링크 직결 구매는 쿠팡 노출 가점이 없습니다. 고객이 검색창에서 키워드를 직접 치고 들어와야 순위가 붙습니다.']
+  ]},
+  { g: '클레임 1% 방어 (제리)', items: [
+    ['상세 최하단에 수령 2일 내 연락·사진 3종 요청 문구를 넣는다', '박스 전경·문제 부위·운송장 3장이 없으면 접수하지 않는 기준을 세웁니다. 상품명 연구소 탭에서 문구를 복사할 수 있습니다.'],
+    ['출고일·수령 예정일·보관법을 상세에 적는다', '신선식품 클레임은 수령 직후 2일에 몰립니다. 언제 나갔는지 보이면 무리한 환불 요구가 줄어듭니다.'],
+    ['완충·냉장 포장으로 파손·압상을 줄인다', '박스 안 유격이 파손의 주원인입니다. 난좌·완충재를 아끼지 않습니다.'],
+    ['샘플 1박스는 브릭스 4체크를 통과한 뒤 거래한다', '한 박스에서 5개 이상 당도를 재고(사과 13Brix 이상), 당도·맛·외관/등급 괴리·포장 완충을 각 5점으로 매겨 20점 중 15점 이상만 거래합니다.'],
+    ['농부에게 지난 시즌 클레임 비율과 손상 사례를 묻는다', '클레임 0%라고 답하는 곳은 거릅니다. 솔직하게 개선책을 말하는 농가가 오래 갑니다.'],
+    ['클레임 발생 건은 원인·수량·환불액을 기록한다', '클레임율이 1%를 넘으면 그 소싱처를 바꾸는 기준으로 삼습니다.']
+  ]},
+  { g: '도매처 · 소싱 (고효율)', items: [
+    ['같은 품목 공급처를 2곳 이상 확보한다', '한 곳이 품절·출고 지연이면 판매가 멈춥니다. 빈집·다중소싱 탭에서 도매 DB로 자동 대조됩니다.'],
+    ['퇴출·주의 도매처는 단가가 싸도 쓰지 않는다', '곰팡이 클레임이 반복된 곳은 환불·평점 손실이 단가 차이를 덮습니다.'],
+    ['품종 키워드를 쪼개 세부 키워드로 진입한다', '샤인머스캣 → 씨없는포도, 신고배 → 나주배처럼 큰 카테고리를 피합니다.'],
+    ['제철 2주 전에 등록해 시즌 상승을 탄다', '제철 소싱기의 상승 배수로 12월·1월 수요를 미리 확인합니다.']
+  ]}
+];
+const DEF_KEY = 'fruitDefense.v1';
+const DEF = { done: {} };
+function defTotal() { return DEFS.reduce((a, g) => a + g.items.length, 0); }
+function defSave() { try { localStorage.setItem(DEF_KEY, JSON.stringify({ done: DEF.done })); } catch (e) {} }
+function defLoad() { try { const d = JSON.parse(localStorage.getItem(DEF_KEY) || '{}'); if (d && typeof d.done === 'object') DEF.done = d.done; } catch (e) {} }
+
+function defProgress() {
+  const total = defTotal();
+  const done = Object.keys(DEF.done).filter(k => DEF.done[k]).length;
+  document.getElementById('defProg').textContent = done + '/' + total;
+  document.getElementById('defPct').textContent = Math.round(done / total * 100) + '%';
+  document.getElementById('defBar').style.width = Math.round(done / total * 100) + '%';
+}
+
+function renderDef() {
+  const list = document.getElementById('defList');
+  if (!list) return;
+  let idx = 0;
+  list.innerHTML = DEFS.map(g => '<div class="sec-sub">' + g.g + '</div>' + g.items.map(it => {
+    idx++;
+    const id = 'd' + idx, on = !!DEF.done[id];
+    return '<label class="chk' + (on ? ' on' : '') + '"><input type="checkbox" data-d="' + id + '"' + (on ? ' checked' : '') + '>'
+      + '<span class="t">' + it[0] + '<em>' + it[1] + '</em></span></label>';
+  }).join('')).join('');
+  list.querySelectorAll('input[data-d]').forEach(cb => cb.addEventListener('change', () => {
+    const row = cb.closest('.chk');
+    if (cb.checked) { DEF.done[cb.dataset.d] = true; if (row) row.classList.add('on'); }
+    else { delete DEF.done[cb.dataset.d]; if (row) row.classList.remove('on'); }
+    defSave();
+    defProgress();
+  }));
+  defProgress();
+}
+
+function renderRevCost() {
+  const n = inNum('revN'), c = inNum('revCost');
+  const t = document.getElementById('revTotal'), e = document.getElementById('revEach');
+  if (!t) return;
+  t.textContent = n * c ? won(n * c) + '원' : '—';
+  t.className = 'v' + (n * c >= 100000 ? ' neg' : '');
+  e.textContent = c ? won(c) + '원' : '—';
+}
+
+function renderBlack() {
+  const flagged = (SUPS || []).filter(s => s.flag);
+  const el = document.getElementById('defBlack'), supEl = document.getElementById('supWarn');
+  if (el) {
+    el.innerHTML = flagged.length
+      ? flagged.map(s => '<div class="chk" style="grid-template-columns:1fr"><span class="t"><b>' + esc(s.name) + '</b> <span class="badge no">' + esc(s.flag) + '</span><em>' + esc(s.note || '단가가 싸도 거래하지 않습니다.') + '</em></span></div>').join('')
+      : '<p class="hint" style="margin:0">표시된 도매처가 없습니다.</p>';
+  }
+  if (supEl) {
+    supEl.innerHTML = flagged.length
+      ? '<div class="warn"><b>퇴출·주의 ' + flagged.length + '곳</b> — ' + flagged.map(s => esc(s.name) + '(' + esc(s.flag) + ')').join(', ') + '. 단가가 가장 낮아도 거래하지 않습니다.</div>'
+      : '';
+  }
+}
+
+function defBind() {
+  defLoad();
+  renderDef();
+  renderRevCost();
+  renderBlack();
+  ['revN', 'revCost'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', renderRevCost);
+  });
+}
+
+/* ── 정상가 · 태그 (상품명 연구소) ───────── */
+function renderNmPrice() {
+  const list = document.getElementById('nmList');
+  if (!list) return;
+  const p = inNum('nmPrice');
+  list.textContent = p ? won(Math.round(p * 2)) + '원' : '—';
+  const tags = document.getElementById('nmTags');
+  if (!tags) return;
+  const name = (LAB.item || '').trim();
+  const picked = labRelList().filter(r => LAB.rel.has(r));
+  const words = [name].concat(picked.length ? picked : labRelList().slice(0, 3)).filter(Boolean);
+  const uniq = words.filter((v, i, a) => a.indexOf(v) === i);
+  tags.textContent = uniq.length ? uniq.join(', ') : '—';
+}
+
+function nmBind() {
+  const pEl = document.getElementById('nmPrice');
+  if (pEl) pEl.addEventListener('input', renderNmPrice);
+  const btn = document.getElementById('nmTagCopy');
+  if (btn) btn.addEventListener('click', () => copyText(document.getElementById('nmTags').textContent, btn));
+  renderNmPrice();
+}
+
+/* ── 철대표 제철 선점 체크 ───────────────── */
+function renderPreempt() {
+  const board = document.getElementById('preemptBoard');
+  if (!board || !SEASON.data) return;
+  const months = SEASON.months, cur = SEASON.month;
+  const curM = mNum(cur);
+  const targets = [1, 2].map(step => {
+    const m = ((curM - 1 + step) % 12) + 1;
+    const key = months.find(k => mNum(k) === m) || null;
+    return { m, key };
+  });
+  const rows = SEASON.data.items.map(it => {
+    const now = it.monthly[cur] || 0;
+    const mult = targets.map(t => (now > 0 && t.key && it.monthly[t.key] != null) ? it.monthly[t.key] / now : null);
+    return { it, now, mult };
+  }).filter(r => r.now > 0);
+  rows.sort((a, b) => Math.max(b.mult[0] || 0, b.mult[1] || 0) - Math.max(a.mult[0] || 0, a.mult[1] || 0));
+  const top = rows.slice(0, 20);
+  const pick3 = top.filter(r => (r.mult[0] || 0) >= 1.5 || (r.mult[1] || 0) >= 1.5).slice(0, 3);
+
+  const head = '<div class="prow head"><div class="rk">#</div><div>품목</div><div class="n">' + curM + '월 지수</div>'
+    + '<div class="n">' + targets[0].m + '월 배수</div><div class="n">' + targets[1].m + '월 배수</div><div class="st">판정</div><div></div></div>';
+  board.innerHTML = head + top.map((r, i) => {
+    const best = Math.max(r.mult[0] || 0, r.mult[1] || 0);
+    const b = best >= 2 ? ['강선점', 'ok'] : best >= 1.5 ? ['선점', 'ok'] : best >= 1.2 ? ['관찰', 'mid'] : ['비수기', 'no'];
+    const cell = v => '<div class="n' + (v && v >= 1.5 ? ' hot' : '') + '">' + (v ? v.toFixed(1) + '×' : '—') + '</div>';
+    return '<div class="prow" data-n="' + esc(r.it.name) + '"><div class="rk">' + (i + 1) + '</div>'
+      + '<div class="nm">' + esc(r.it.name) + '</div>'
+      + '<div class="n">' + Math.round(r.now) + '</div>'
+      + cell(r.mult[0]) + cell(r.mult[1])
+      + '<div class="st"><span class="badge ' + b[1] + '">' + b[0] + '</span></div><div></div></div>';
+  }).join('');
+  board.querySelectorAll('.prow[data-n]').forEach(r => r.addEventListener('click', () => goBoard(r.dataset.n)));
+
+  const noteEl = document.getElementById('preemptNote');
+  if (noteEl) noteEl.innerHTML = '배수 = ' + esc(targets.map(t => (t.key || '') + '(' + t.m + '월)').join(' · ')) + ' 지수 ÷ 이번 달 ' + esc(cur) + ' 지수입니다. 1.5배 이상이면 2주 전 선점 후보'
+    + (pick3.length ? ' — ' + pick3.map(r => '<b>' + esc(r.it.name) + '</b>').join(', ') : '') + '. 지금 등록해 리뷰를 쌓아두면 상승 달에 순위를 받습니다.';
+}
+
 /* ── 새 탭 초기화 ────────────────────────── */
 bindTabs();
 if (location.hash) openTab(location.hash.slice(1));
 seasonInit();
 labBind();
 calBind();
+ssBind();
+ehBind();
+kgBind();
+defBind();
+nmBind();
 
 renderSupChips();
 document.getElementById('sq').addEventListener('input', renderSup);

@@ -132,6 +132,34 @@ def month_buckets(daily, start, end):
     return {m: acc[m][0] / acc[m][1] for m in months}
 
 
+def build_preempt(items, months):
+    """다음 1~2개월의 제철 상승 배수를 미리 계산한다(철대표 제철 선점 체크).
+
+    배수 = 창 안에서 같은 달의 지수(작년·올해) ÷ 이번 달 지수.
+    월 버킷이 12개뿐이라 12월은 작년 12월, 1월은 올 1월 값이 잡힌다.
+    앱이 없어도 이 값으로 바로 판단할 수 있게 season.json 에 함께 남긴다.
+    """
+    cur = months[-1]
+    cur_m = int(cur[5:7])
+    targets = []
+    for step in (1, 2):
+        m = (cur_m - 1 + step) % 12 + 1
+        key = next((k for k in months if int(k[5:7]) == m), None)
+        targets.append({'month': m, 'key': key})
+    rows = []
+    for it in items:
+        now = it['monthly'].get(cur) or 0
+        if not now:
+            continue
+        mult = []
+        for t in targets:
+            v = it['monthly'].get(t['key']) if t['key'] else None
+            mult.append(round(v / now, 2) if v else None)
+        rows.append({'name': it['name'], 'index': now, 'mult': mult})
+    rows.sort(key=lambda r: max([x or 0 for x in r['mult']]), reverse=True)
+    return {'base_month': cur, 'targets': targets, 'items': rows}
+
+
 def build(dry_run=False):
     today = dt.date.today()
     end = today - dt.timedelta(days=1)          # 일별 데이터는 하루 늦게 반영
@@ -192,6 +220,12 @@ def build(dry_run=False):
         'items': items,
     }
     if not dry_run:
+        try:
+            payload['preempt'] = build_preempt(items, months)
+            hot = sum(1 for r in payload['preempt']['items'] if max([x or 0 for x in r['mult']]) >= 1.5)
+            print('  선점 후보(1.5배 이상)', hot, '품목')
+        except Exception as e:
+            print('preempt 계산 건너뜀:', e)
         with open(OUT, 'w', encoding='utf-8') as f:
             json.dump(payload, f, ensure_ascii=False, indent=1)
         print('저장:', OUT, '· 품목', len(items), '· 기간', period)
