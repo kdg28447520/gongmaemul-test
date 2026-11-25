@@ -58,7 +58,7 @@
     var fields = [
       ['name', '보내는분 이름', '늘봄상회'],
       ['phone', '연락처', '010-0000-0000'],
-      ['address', '주소', '경기도 안산시 …']
+      ['address', '주소', '서울시 중구 세종대로 1 (예시)']
     ];
     var senderInputs = {};
     fields.forEach(function (spec) {
