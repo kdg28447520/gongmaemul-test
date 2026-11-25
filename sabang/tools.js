@@ -375,7 +375,9 @@
       var thead = el('thead');
       var hr = el('tr');
       ['#', '주문번호', '택배사(원본)', '채널', '등록 코드', '운송장', '검증'].forEach(function (labelText) {
-        var cls = labelText === '#' ? 'sb-idx' : (labelText === '택배사(원본)' ? 'sb-carrier' : null);
+        var cls = labelText === '#' ? 'sb-idx'
+          : (labelText === '택배사(원본)' ? 'sb-carrier'
+            : (labelText === '채널' ? 'sb-channel' : null));
         hr.appendChild(el('th', cls, labelText));
       });
       thead.appendChild(hr);
@@ -387,7 +389,7 @@
         tr.appendChild(el('td', 'sb-idx', row.index));
         tr.appendChild(el('td', 'sb-mono', row.order_no));
         tr.appendChild(el('td', 'sb-carrier', row.carrier_raw));
-        tr.appendChild(el('td', null, row.channel_label));
+        tr.appendChild(el('td', 'sb-channel', row.channel_label));
         tr.appendChild(el('td', 'sb-mono', row.code));
         tr.appendChild(el('td', 'sb-mono', row.invoice));
         var td = el('td');

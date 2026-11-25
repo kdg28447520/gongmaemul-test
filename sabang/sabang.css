@@ -1089,7 +1089,10 @@ a:hover{text-decoration:underline}
   .sb-table--invoice th,
   .sb-table--invoice td{padding:7px 6px}
   .sb-table--invoice .sb-idx,
-  .sb-table--invoice .sb-carrier{display:none}
+  .sb-table--invoice .sb-carrier,
+  .sb-table--invoice .sb-channel{display:none}
+  .sb-table--invoice th,
+  .sb-table--invoice td{white-space:nowrap}
 }
 
 @media (max-width:640px){
