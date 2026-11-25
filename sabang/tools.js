@@ -88,7 +88,7 @@
     fileInput.accept = '.xlsx,.xls,.csv';
     var sampleBtn = el('button', 'sb-btn', '샘플 주문');
     sampleBtn.type = 'button';
-    var fileName = el('span', 'sb-file', '선택된 파일 없음');
+    var fileName = el('span', 'sb-file', '');
     toolbar.appendChild(fileInput);
     toolbar.appendChild(sampleBtn);
     toolbar.appendChild(fileName);
@@ -249,6 +249,10 @@
     });
 
     render();
+
+    document.addEventListener('sabang:data', function () {
+      if (state.records.length) render();
+    });
   }
 
   /* ───────────────────────── 송장 검증 ───────────────────────── */
@@ -260,7 +264,7 @@
     fileInput.accept = '.xlsx,.xls';
     var sampleBtn = el('button', 'sb-btn', '샘플');
     sampleBtn.type = 'button';
-    var fileName = el('span', 'sb-file', '선택된 파일 없음');
+    var fileName = el('span', 'sb-file', '');
     toolbar.appendChild(fileInput);
     toolbar.appendChild(sampleBtn);
     toolbar.appendChild(fileName);
@@ -448,6 +452,10 @@
     drop.addEventListener('drop', function (event) {
       var file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
       handleFile(file);
+    });
+
+    document.addEventListener('sabang:data', function () {
+      if (state.rows.length) render();
     });
 
     csvBtn.addEventListener('click', function () {

@@ -150,8 +150,10 @@
     box.appendChild(bar);
 
     const legend = el('div', 'pg-legend');
-    legend.appendChild(el('span', null, '배송중 ' + num(shipping)));
-    legend.appendChild(el('span', null, '배송완료 ' + num(delivered)));
+    const keyShip = el('span', 'pg-key', '배송중 ' + num(shipping));
+    const keyDone = el('span', 'pg-key pg-key--done', '배송완료 ' + num(delivered));
+    legend.appendChild(keyShip);
+    legend.appendChild(keyDone);
     box.appendChild(legend);
 
     box.appendChild(el(
