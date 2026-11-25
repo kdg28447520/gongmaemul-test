@@ -286,6 +286,12 @@
     var initial = buttons.filter(function (b) { return b.getAttribute('data-tab') === hash; })[0] || buttons[0];
     activateTab(initial);
 
+    window.addEventListener('hashchange', function () {
+      var key = (location.hash || '').replace('#', '');
+      var target = buttons.filter(function (b) { return b.getAttribute('data-tab') === key; })[0];
+      if (target) activateTab(target);
+    });
+
     var refresh = document.getElementById('refreshBtn');
     if (refresh) refresh.addEventListener('click', function () { location.reload(); });
   }
