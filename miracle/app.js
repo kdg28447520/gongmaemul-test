@@ -112,6 +112,10 @@ document.addEventListener('click', e => {
     if ($('#view-' + t)) { e.preventDefault(); setTab(t); }
   }
 });
+window.addEventListener('hashchange', () => {
+  const t = location.hash.slice(1);
+  if (t && $('#view-' + t) && t !== S.tab) setTab(t);
+});
 
 /* ══════════════════ 소싱 탐색 ══════════════════ */
 function specName(s) {
