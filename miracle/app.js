@@ -897,7 +897,8 @@ function buildName(f) {
   return uniq.join(' ');
 }
 function buildTags(f) {
-  const base = [f.item, f.variety, f.weight, f.grade, f.origin, f.p1, f.p2, '산지직송', '제철과일', '가정용', '선물용', '못난이', '아삭한', '새벽출고', '무료배송', '국내산', f.farm, '과일', '당도선별', '소포장'];
+  const base = [f.item, f.variety, f.weight, f.grade, f.origin, f.p1, f.p2, '산지직송', '제철과일', '가정용', '선물용', '소포장',
+    (/무료/.test(f.ship) ? '무료배송' : ''), f.farm, f.item + '선물', f.variety + '선물'];
   const out = [];
   base.filter(Boolean).forEach(t => {
     const c = cleanBanned(String(t).replace(/\s+/g, ''), []);
@@ -931,7 +932,8 @@ function detailText(f) {
   lines.push('');
   lines.push('· 품질 — ' + (f.grade ? `${f.grade} 상품으로 선별했습니다. ` : '') + '크기와 모양이 조금씩 다를 수 있습니다.');
   lines.push('· 맛 — ' + (f.p1 || '제철에 맞춰 수확한 신선한 과일입니다.'));
-  lines.push('· 포장 — ' + (f.p2 || '완충재로 안전하게 포장합니다.'));
+  lines.push('· 포장 — 완충재로 안전하게 포장해 보내드립니다.');
+  lines.push('· 배송 — ' + (f.ship || '무료배송 · 산지직송'));
   lines.push('');
   lines.push('[이런 분께]');
   lines.push(`· ${f.item}를 합리적인 가격에 찾는 분`);
@@ -1066,7 +1068,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127c');
+    const r = await fetch('data.json?v=20261127d');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
