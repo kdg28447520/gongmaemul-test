@@ -268,6 +268,10 @@ $('#kwOut').addEventListener('click', e => {
 });
 
 /* ══════════════════ 공산품 ══════════════════ */
+function shipFee(w) {
+  const m = String(w.ship || '').replace(/,/g, '').match(/(\d+)\s*원/);
+  return m ? +m[1] : 0;
+}
 function goodsList() {
   let list = DATA.wholesale || [];
   if (S.gv) list = list.filter(w => w.v === S.gv);
@@ -280,8 +284,9 @@ function renderGoods() {
   const shown = list.slice(0, S.glimit);
   const sug = dp => Math.ceil(dp * S.gmul / 100) * 100;
   $('#gRows').innerHTML = shown.length ? shown.map(w => {
+    const sf = shipFee(w), cost = w.dp ? w.dp + sf : null;
     const sp = w.dp ? sug(w.dp) : null;
-    const m = w.dp && sp ? marginOf({ cost: w.dp, price: sp }, MKT.coupang) : null;
+    const m = cost && sp ? marginOf({ cost, price: sp }, MKT.coupang) : null;
     return `<div class="g-row" data-w="${esc(w.p)}|${esc(w.v)}">
       <div class="g-name"><div class="t">${esc(w.n)}</div><div class="m">${esc(w.v)} · ${esc(w.sup || '-')}${w.tag ? ' · ' + esc(w.tag) : ''}${w.moq && w.moq !== '1' ? ' · MOQ ' + esc(w.moq) : ''}${w.ship ? ' · 배송 ' + esc(w.ship) : ''}</div></div>
       <div class="r g-price">${w.dp ? `<b>${won(w.dp)}원</b>` : `<span class="help">미노출</span>`}</div>
@@ -298,7 +303,7 @@ function renderGoods() {
     <div><div class="k">확보 상품</div><div class="v">${won((DATA.wholesale || []).length)}<small>건</small></div></div>
     <div><div class="k">도매가 확인</div><div class="v">${won(withPrice)}<small>건</small></div></div>
     <div><div class="k">도매처</div><div class="v">${vendors.length}<small>곳</small></div></div>
-    <div><div class="k">마진 기준</div><div class="v" style="font-size:15px">쿠팡 11.66%<small>×${S.gmul} 판매가</small></div></div>`;
+    <div><div class="k">마진 기준</div><div class="v" style="font-size:15px">쿠팡 11.66%<small>도매가+배송 × ${S.gmul}</small></div></div>`;
   $('#gMarginHead').textContent = `마진(×${S.gmul})`;
   $('#gCount').textContent = (DATA.wholesale || []).length;
 }
@@ -317,7 +322,7 @@ $('#gRows').addEventListener('click', e => {
     const [p, v] = add.dataset.addW.split('|');
     const w = (DATA.wholesale || []).find(x => x.p === p && x.v === v);
     if (!w) return;
-    S.sheets[S.cur].rows.push({ name: w.n, cost: String(w.dp), price: String(Math.ceil(w.dp * S.gmul / 100) * 100), coupon: '' });
+    S.sheets[S.cur].rows.push({ name: w.n, cost: String(w.dp + shipFee(w)), price: String(Math.ceil(w.dp * S.gmul / 100) * 100), coupon: '' });
     saveSheets(); renderCalc(); setTab('calc');
     toast('마진 계산기에 넣었습니다.');
     return;
@@ -1061,7 +1066,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127b');
+    const r = await fetch('data.json?v=20261127c');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
