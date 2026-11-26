@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미라클 소싱기 — 도매 최저가·목표 소싱가·마진·ROAS·금지어·등록 도우미</title>
+<meta name="description" content="과일·공산품 위탁판매 셀러용 무료 소싱 자동화툴. 도매처 58곳 공급가 비교, 목표 소싱가(경쟁 평균×0.7), 쿠팡·토스 마진과 손익분기·권장 ROAS, 4마켓 수수료 비교, 금지어 검사, 상품명·태그·고시정보·상세 문구 생성까지 한 화면에.">
+<link rel="canonical" href="https://gongmaemul.co.kr/miracle/">
+<meta property="og:title" content="미라클 소싱기 — 무료 소싱·마진·ROAS·등록 도우미">
+<meta property="og:description" content="도매처 58곳 공급가 실시간 비교 · 목표 소싱가 0.7 룰 · 쿠팡/토스 마진 · 손익분기 ROAS · 금지어 검사 · 상세 문구 생성.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gongmaemul.co.kr/miracle/">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<link rel="stylesheet" href="app.css?v=20261126">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand-row">
+      <div class="brand">미라클 소싱기 <span>Miracle Sourcing</span></div>
+      <div class="top-links">
+        <a href="https://gongmaemul.co.kr/fruit/">과일 관제탑</a>
+        <a href="https://gongmaemul.co.kr/hub/">전체 도구</a>
+      </div>
+    </div>
+    <p class="synced" id="metaLine">도매 공급가를 불러오는 중…</p>
+    <nav class="tabs" id="tabs" aria-label="화면">
+      <button type="button" data-tab="sourcing" aria-selected="true">소싱 탐색</button>
+      <button type="button" data-tab="goods" aria-selected="false">공산품 도매</button>
+      <button type="button" data-tab="calc" aria-selected="false">마진 계산기</button>
+      <button type="button" data-tab="markets" aria-selected="false">4마켓 비교</button>
+      <button type="button" data-tab="ban" aria-selected="false">금지어 검사</button>
+      <button type="button" data-tab="maker" aria-selected="false">등록 도우미</button>
+      <button type="button" data-tab="guide" aria-selected="false">가이드</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ══════════════════ 소싱 탐색 ══════════════════ -->
+<section id="view-sourcing" class="panel">
+  <p class="lede">확보한 과일 도매처 <b id="sSupCount">58</b>곳의 규격별 공급가를 kg당으로 비교합니다. 줄을 누르면 도매처별 단가·출고마감이 열리고, <b>마진 계산기에 바로 넣을 수 있습니다.</b></p>
+  <div class="statline" id="sStats"></div>
+  <div class="toolbar">
+    <input type="search" id="sQ" placeholder="품목·품종·등급으로 검색 (예: 부사, 못난이, 5kg)" aria-label="검색">
+    <select id="sSort" class="sortsel" aria-label="정렬">
+      <option value="kg">kg당 최저가 낮은 순</option>
+      <option value="cnt">공급처 많은 순</option>
+      <option value="season">이번 달 수요(제철) 높은 순</option>
+      <option value="gap">공급가 격차 큰 순</option>
+    </select>
+    <label class="chk"><input type="checkbox" id="sOwn"> 가입·승인 도매처만</label>
+    <label class="chk"><input type="checkbox" id="sThin"> 공급처 3곳 이하(빈집)</label>
+  </div>
+  <div class="chips" id="sGroups"></div>
+  <div class="board">
+    <div class="thead s-thead">
+      <span>품목 · 규격</span><span class="r">kg당 최저</span><span>최저 도매처</span><span class="r">공급처</span><span class="r">제철</span><span></span>
+    </div>
+    <div id="sRows"></div>
+  </div>
+  <div class="more-row"><button type="button" class="btn ghost" id="sMore" hidden>더 보기</button><span class="help" id="sCount"></span></div>
+</section>
+
+<!-- ══════════════════ 공산품 도매 ══════════════════ -->
+<section id="view-goods" class="panel" hidden>
+  <p class="lede">확보한 공산품 도매 DB <b id="gCount">742</b>건입니다. 도매가가 확인된 상품은 권장소매가 기준 마진을 바로 보여주고, <b>[계산기에 넣기]</b>로 마진·ROAS 계산기로 넘깁니다. 단가 미노출 상품은 도매처 승인 후 확인하세요.</p>
+  <div class="statline" id="gStats"></div>
+  <div class="toolbar">
+    <input type="search" id="gQ" placeholder="상품명·공급사로 검색 (예: 수납장, 선반, 목쿠션)" aria-label="검색">
+    <select id="gVendor" class="sortsel" aria-label="도매처"><option value="">도매처 전체</option></select>
+    <label class="chk"><input type="checkbox" id="gPrice"> 도매가 확인된 상품만</label>
+  </div>
+  <div class="board">
+    <div class="thead g-thead">
+      <span>상품</span><span class="r">도매가</span><span class="r">권장소매가</span><span class="r">마진(권장가)</span><span></span>
+    </div>
+    <div id="gRows"></div>
+  </div>
+  <div class="more-row"><button type="button" class="btn ghost" id="gMore" hidden>더 보기</button><span class="help" id="gCountLine"></span></div>
+  <p class="foot-note">도매꾹 10건은 과거 확보분입니다. 신규 소싱에서는 비공개 전문몰·1688 단가를 쿠팡 최저가와 1:1 대조하는 기준을 그대로 쓰세요.</p>
+</section>
+
+<!-- ══════════════════ 마진 계산기 ══════════════════ -->
+<section id="view-calc" class="panel" hidden>
+  <p class="lede">원가·판매가를 넣으면 수수료와 부가세를 뺀 <b>예상 순수익·최종 마진율</b>이 바로 나옵니다. 경쟁 판매가 5곳으로 <b>목표 소싱가(평균×0.7)</b>를 잡고, 광고 주문의 <b>손익분기·권장 ROAS</b>까지 이어서 계산하세요. 입력은 이 브라우저에 자동 저장됩니다.</p>
+
+  <div class="calc-head">
+    <div class="mtabs" id="mktTabs" role="tablist" aria-label="마켓">
+      <button type="button" role="tab" data-mkt="coupang" aria-selected="true">쿠팡</button>
+      <button type="button" role="tab" data-mkt="toss" aria-selected="false">토스쇼핑</button>
+    </div>
+    <div class="fee-line" id="feeLine"></div>
+  </div>
+
+  <div class="sheets" id="calcSheets">
+    <div class="chip-row" id="cChips"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>① 여러 상품 한 번에</h2>
+      <div class="head-tools">
+        <form id="optForm" class="inline-form">
+          <input type="text" id="optName" placeholder="과일 이름 (예: 엔비사과)" aria-label="과일 이름">
+          <button type="submit" class="btn sm">1·2·3·5kg 줄 만들기</button>
+        </form>
+        <button type="button" class="btn ghost sm" id="calcDemo">예시 채우기</button>
+        <button type="button" class="btn ghost sm" id="csvOut">CSV 내려받기</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl calc-tbl" id="calcTbl">
+        <thead><tr>
+          <th>상품명</th><th class="r">원가</th><th class="r">판매가</th><th class="r">쿠폰적용 최종가</th>
+          <th class="r">수수료</th><th class="r">수수료 부가세</th><th class="r">예상 순수익</th><th class="r">최종 마진율</th><th class="r">할인쿠폰</th><th></th>
+        </tr></thead>
+        <tbody id="calcBody"></tbody>
+        <tfoot id="calcFoot"></tfoot>
+      </table>
+    </div>
+    <div class="row-tools">
+      <button type="button" class="btn ghost sm" id="calcAdd">+ 줄 추가</button>
+      <button type="button" class="btn ghost sm" id="calcClear">표 비우기</button>
+      <span class="help" id="calcSum"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>② 경쟁 판매가로 목표 소싱가</h2>
+      <span class="help">같은 상품을 파는 다른 판매자 판매가를 5곳까지 적으면 평균가와 <b>목표 소싱가(평균가 × 0.7)</b>가 나옵니다. 이 아래로 사 오면 수수료·배송을 빼고도 순마진 15~20%를 지킬 수 있습니다.</span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl comp-tbl">
+        <thead><tr><th>상품명</th><th class="r">경쟁 1</th><th class="r">경쟁 2</th><th class="r">경쟁 3</th><th class="r">경쟁 4</th><th class="r">경쟁 5</th><th class="r">평균가</th><th class="r">목표 소싱가</th></tr></thead>
+        <tbody id="compBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>③ 광고 ROAS</h2>
+      <span class="help" id="roasHelp"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl roas-tbl">
+        <thead><tr><th>상품명</th><th class="r">원가</th><th class="r">판매가</th><th class="r">손해 안 보는 최소 ROAS</th><th class="r">권장 ROAS (× 1.5)</th><th></th></tr></thead>
+        <tbody id="roasBody"></tbody>
+      </table>
+    </div>
+    <div class="row-tools"><button type="button" class="btn ghost sm" id="roasAdd">+ 줄 추가</button><span class="help">광고 ROAS는 광고비 VAT 별도 기준입니다. 최소 ROAS보다 낮으면 광고할수록 손해입니다.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>④ 순수익 마진계산기 (체험단 반영)</h2>
+      <span class="help">개당 순수익에 실제 판매 개수를 곱하고, 체험단에 나간 리뷰비·택배·물건값·수수료를 한 번에 뺀 <b>실제 순수익</b>입니다.</span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl nm-tbl">
+        <thead><tr><th>상품명</th><th class="r">원가</th><th class="r">판매가</th><th class="r">수수료</th><th class="r">개당 순수익</th><th class="r">마진율</th><th class="r">판매 개수</th><th class="r">순수익</th><th></th></tr></thead>
+        <tbody id="nmBody"></tbody>
+      </table>
+    </div>
+    <div class="nm-exp">
+      <div class="nm-exp-fields">
+        <label>건당 리뷰비+택배값 <input type="text" inputmode="numeric" id="nmPer" placeholder="예: 6,000"></label>
+        <label>체험단 개수 <input type="text" inputmode="numeric" id="nmCnt" placeholder="예: 30"></label>
+        <label>체험단 물건값 <input type="text" inputmode="numeric" id="nmGoods" placeholder="보낸 상품 판매가"></label>
+      </div>
+      <div class="nm-exp-out" id="nmExpOut"></div>
+    </div>
+    <div class="nm-total" id="nmTotal"></div>
+  </div>
+</section>
+
+<!-- ══════════════════ 4마켓 비교 ══════════════════ -->
+<section id="view-markets" class="panel" hidden>
+  <p class="lede">상품 하나를 넣으면 <b>쿠팡·토스쇼핑·스마트스토어·당근</b>에서 수수료를 뺀 순수익과 손익분기 ROAS를 나란히 보여줍니다. 수수료율은 마켓·카테고리·등급마다 다르니 표에서 직접 고칠 수 있습니다.</p>
+  <div class="card">
+    <div class="card-head"><h2>계산할 상품</h2><span class="help" id="mkHint"></span></div>
+    <div class="mk-inputs">
+      <label>원가(공급가+배송) <input type="text" inputmode="numeric" id="mkCost" placeholder="예: 12,900"></label>
+      <label>판매가 <input type="text" inputmode="numeric" id="mkPrice" placeholder="예: 22,900"></label>
+      <label>목표 마진율 <input type="text" inputmode="numeric" id="mkTarget" value="20">%</label>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl mk-tbl" id="mkTbl">
+      <thead><tr>
+        <th>마켓</th><th class="r">일반 수수료</th><th class="r">광고주문 수수료</th><th class="r">수수료</th><th class="r">순수익</th><th class="r">마진율</th><th class="r">손익분기 ROAS</th><th class="r">권장 ROAS</th><th class="r">목표 마진 최소 판매가</th>
+      </tr></thead>
+      <tbody id="mkBody"></tbody>
+    </table>
+  </div>
+  <p class="foot-note" id="mkNote"></p>
+</section>
+
+<!-- ══════════════════ 금지어 검사 ══════════════════ -->
+<section id="view-ban" class="panel" hidden>
+  <p class="lede">상품명·상세 문구·광고 문구를 붙여 넣으면 <b>식품 표시광고·쿠팡 정책에서 문제되는 표현</b>을 실시간으로 잡아 줍니다. 빨간 표시가 있으면 등록 전에 고치세요. (표현을 거르지 않고 알려만 주니 최종 판단은 직접 하세요.)</p>
+  <div class="ban-grid">
+    <div class="card">
+      <div class="card-head"><h2>검사할 문구</h2><button type="button" class="btn ghost sm" id="banSample">예시 넣기</button></div>
+      <textarea id="banIn" rows="8" placeholder="예: 26년산 엔비사과 5kg 못난이 가정용 산지직송 / 아삭한 식감이 오래가는 사과" aria-label="검사할 문구"></textarea>
+      <div class="ban-meter" id="banMeter"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>결과</h2><span class="help">대체 표현을 눌러 복사할 수 있습니다.</span></div>
+      <div id="banOut" class="ban-out"><p class="help">문구를 넣으면 여기에 결과가 나옵니다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>표시광고 기준 (요약)</h2></div>
+    <ul class="rule-list">
+      <li><b>질병의 예방·치료에 효능이 있다는 표현</b> — 건강기능식품이 아닌 식품에는 쓸 수 없습니다. (예: 혈당, 변비, 면역, 다이어트)</li>
+      <li><b>의약품으로 오인시키는 표현</b> — 효능·효과, 약효, 처방, 복용 같은 말은 식품에 쓰지 않습니다.</li>
+      <li><b>최상급·배타적 표현</b> — 최고, 최상, 최강, 최초, 유일, 1등, 1위, No.1은 근거 자료 없이 쓸 수 없습니다.</li>
+      <li><b>절대적 보장</b> — 100%, 무조건, 완벽, 보장, 누구나. 실제로 지킬 수 없는 약속이 됩니다.</li>
+      <li><b>인증 오표기</b> — GAP·무농약·유기농은 인증서를 갖춘 상품에만, 인증번호와 함께 씁니다.</li>
+      <li><b>원산지·등급</b> — 원산지 표시는 실제 산지와 같아야 하고, 등급(특·상)은 선별 기준과 맞아야 합니다.</li>
+    </ul>
+    <p class="foot-note">근거: 식품 등의 표시·광고에 관한 법률(부당한 표시·광고), 쿠팡 상품명·상품평 정책. 실제 심의 기준은 바뀔 수 있으니 등록 전 판매 채널 공지를 확인하세요.</p>
+  </div>
+</section>
+
+<!-- ══════════════════ 등록 도우미 ══════════════════ -->
+<section id="view-maker" class="panel" hidden>
+  <p class="lede">품목·중량·원산지만 넣으면 <b>노출 상품명·검색 태그·고시정보·상세 문구(HTML)</b>를 한 번에 만듭니다. 금지어는 생성 단계에서 자동으로 걸러지고, 최종 문구는 복사해서 쿠팡윙·스마트스토어·토스에 그대로 붙이면 됩니다.</p>
+  <div class="maker-grid">
+    <div class="card">
+      <div class="card-head"><h2>상품 정보</h2><span class="help" id="mkPick"></span></div>
+      <div class="form-grid">
+        <label>품목 <input type="text" id="fItem" placeholder="예: 사과" value="사과"></label>
+        <label>품종·상품 <input type="text" id="fVariety" placeholder="예: 엔비사과" value="엔비사과"></label>
+        <label>중량 <input type="text" id="fWeight" placeholder="예: 5kg" value="5kg"></label>
+        <label>등급·상태 <input type="text" id="fGrade" placeholder="예: 못난이, 특, 가정용" value="가정용"></label>
+        <label>원산지 <input type="text" id="fOrigin" placeholder="예: 경북 안동" value="경북 안동"></label>
+        <label>생산자·농장 <input type="text" id="fFarm" placeholder="예: 늘봄상회 협력농장" value="늘봄상회 협력농장"></label>
+        <label>판매가 <input type="text" inputmode="numeric" id="fPrice" placeholder="예: 22,900"></label>
+        <label>배송 <input type="text" id="fShip" value="무료배송 · 산지직송"></label>
+        <label class="span2">강조 포인트 1 <input type="text" id="fPoint1" placeholder="6자까지 (예: 아삭한 식감)" value="아삭한 식감"></label>
+        <label class="span2">강조 포인트 2 <input type="text" id="fPoint2" placeholder="예: 산지직송" value="산지직송"></label>
+        <label>마켓 <select id="fMarket">
+          <option value="coupang">쿠팡</option><option value="smartstore">스마트스토어</option>
+          <option value="toss">토스쇼핑</option><option value="danggeun">당근</option>
+        </select></label>
+        <label>상품 상태 <select id="fState">
+          <option value="fresh">신선(과일·채소)</option><option value="goods">가공·공산품</option>
+        </select></label>
+      </div>
+      <div class="row-tools">
+        <button type="button" class="btn primary" id="fGo">상품 문구 만들기</button>
+        <span class="help" id="fWarn"></span>
+      </div>
+    </div>
+    <div class="card out-card">
+      <div class="card-head"><h2>만들어진 문구</h2><span class="help" id="fOutNote"></span></div>
+      <div class="out-block" id="outName"></div>
+      <div class="out-block" id="outTags"></div>
+      <div class="out-block" id="outGosi"></div>
+      <div class="out-block" id="outDetail"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ 가이드 ══════════════════ -->
+<section id="view-guide" class="panel" hidden>
+  <p class="lede">셀스위치온(미라클)에서 쓰는 계산식과 등록 순서를 무료 도구로 옮겼습니다. 공식·수치의 출처를 함께 적었으니 숫자가 바뀌면 표에서 직접 고쳐 쓰세요.</p>
+
+  <div class="guide-grid">
+    <div class="card">
+      <h2>6단계 실행 순서</h2>
+      <ol class="steps">
+        <li><b>키워드 선정</b> — 네이버 데이터랩 검색 추이, 제철 시점(매출의 70%를 좌우), 평균 시장가, SNS 이슈 4가지를 봅니다. 이 화면의 <a href="#sourcing">제철 지수</a>와 함께 보세요.</li>
+        <li><b>소싱·마진</b> — 쿠팡 경쟁 상위 5곳의 판매가 평균 × 0.7 이하가 목표 소싱가. 수수료·배송비를 빼고 순마진 15~20%를 지키는 선입니다.</li>
+        <li><b>콘텐츠</b> — 실물 촬영 없이도 단면·연출컷을 만들어 상세페이지 상단에 배치합니다. 사진은 3장 이상을 권장합니다.</li>
+        <li><b>상품 등록</b> — 옵션을 중량별로 나누고(1·2·3·5kg) 카테고리·검색필터 2~3개를 고릅니다. <a href="#maker">등록 도우미</a>로 상품명·태그·고시정보를 만드세요.</li>
+        <li><b>노출</b> — 체험단은 고객이 쿠팡 검색창에 키워드를 직접 쳐서 들어와야 랭킹 가점이 붙습니다. 단축 링크 직결 구매는 가점이 없습니다.</li>
+        <li><b>재고·쿠폰</b> — 재고를 9개처럼 낮게 유지해 긴박감을 주고, 24시간 할인쿠폰을 반복 발급합니다. 쿠팡 상품평 조작은 판매 중지·계정 정지 사유입니다.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>수수료·ROAS 공식</h2>
+      <table class="tbl rule-tbl">
+        <thead><tr><th>항목</th><th>계산</th></tr></thead>
+        <tbody>
+          <tr><td>쿠팡 일반</td><td>판매가 × 10.6% + 부가세 1.06% = <b>11.66%</b></td></tr>
+          <tr><td>토스 일반</td><td>결제 1.6% + 판매 8% = 9.6%, 부가세 10% → <b>10.56%</b></td></tr>
+          <tr><td>토스 광고 주문</td><td>판매수수료 면제, 결제 1.6% + 부가세 → <b>1.76%</b></td></tr>
+          <tr><td>예상 순수익</td><td>쿠폰적용 최종가 − 원가 − 수수료 − 수수료 부가세</td></tr>
+          <tr><td>최종 마진율</td><td>예상 순수익 ÷ 쿠폰적용 최종가</td></tr>
+          <tr><td>목표 소싱가</td><td>경쟁 판매가 평균 × <b>0.7</b></td></tr>
+          <tr><td>광고 가능 금액</td><td>판매가 − 원가 − 판매가 × 광고주문 수수료</td></tr>
+          <tr><td>손익분기 ROAS</td><td>판매가 ÷ (광고 가능 금액 ÷ 1.1) — 광고비 VAT 별도</td></tr>
+          <tr><td>권장 ROAS</td><td>손익분기 ROAS × <b>1.5</b></td></tr>
+        </tbody>
+      </table>
+      <p class="foot-note">쿠팡 10.6%는 농산물 위탁판매에서 쓰는 기준값입니다. 실제 카테고리 수수료와 다르면 계산기 ⚙에서 바꾸세요.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>등록 전 체크리스트</h2><span class="help" id="ckDone">0 / 0</span></div>
+    <ul class="checklist" id="checklist"></ul>
+    <p class="foot-note">쿠팡 등록 시 자동으로 들어가는 기본값: 판매자배송 · 브랜드 없음 · CJ대한통운 · 신선냉동 · 무료배송 · 묶음배송 불가 · 재고 9999 · 부가세 면세(2단계에서 과세 전환 가능) · 인증·신고 대상 아님 · 병행수입 아님 · 전체 연령 · 검색필터 2~3개 · 고시정보(품목·용량·생산자·원산지, 나머지 "상품 상세페이지 참조") · 초도·반품배송비 미설정 시 5,000원.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>도매처 현황</h2><span class="help" id="supLine"></span></div>
+    <div class="tbl-wrap">
+      <table class="tbl sup-tbl">
+        <thead><tr><th>도매처</th><th>유형</th><th class="r">취급</th><th>상태</th><th></th></tr></thead>
+        <tbody id="supBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>데이터 출처</h2></div>
+    <ul class="src-list" id="srcList"></ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>미라클 소싱기 — 늘봄상회 소싱 도구. 셀스위치온(주식회사 미라클아카데미)과 무관한 자체 제작 무료 도구이며, 계산식은 공개 화면에 적힌 공식을 옮겨 담았습니다.</p>
+    <p class="help">도매 공급가는 수집 시점 스냅샷입니다. 실제 발주 전 도매처 화면에서 단가·재고를 다시 확인하세요.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app.js?v=20261126"></script>
+</body>
+</html>
