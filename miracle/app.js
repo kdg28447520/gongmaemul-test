@@ -191,7 +191,7 @@ function renderSourcing() {
     <div><div class="k">도매처</div><div class="v">${DATA.suppliers.length}<small>곳</small></div></div>
     <div><div class="k">규격(품목·등급·중량)</div><div class="v">${won(DATA.specs.length)}<small>개</small></div></div>
     <div><div class="k">비교 공급가</div><div class="v">${won(offers)}<small>건</small></div></div>
-    <div><div class="k">공급가 갱신</div><div class="v" style="font-size:15px">${esc(DATA.as_of || '-')}<small>${esc(DATA.synced_at ? DATA.synced_at.slice(11) : '')}</small></div></div>`;
+    <div><div class="k">공급가 갱신</div><div class="v" style="font-size:14px;white-space:nowrap">${esc(DATA.as_of || '-')}<small>${esc(DATA.synced_at ? DATA.synced_at.slice(11) : '')}</small></div></div>`;
   $('#sSupCount').textContent = DATA.suppliers.length;
 }
 function renderGroups() {
@@ -1088,7 +1088,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127j');
+    const r = await fetch('data.json?v=20261127k');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
@@ -1107,9 +1107,5 @@ async function boot() {
   renderGuide();
   const h = location.hash.replace('#', '');
   setTab(['sourcing', 'goods', 'calc', 'markets', 'ban', 'maker', 'guide'].includes(h) ? h : 'sourcing');
-  /* 소싱에서 넘어올 때 보여줄 예시 (첫 방문에만) */
-  if (!store.get('seeded-v1', false)) {
-    store.set('seeded-v1', true);
-  }
 }
 boot();
