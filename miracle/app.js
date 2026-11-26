@@ -170,7 +170,7 @@ function renderSourcing() {
       <div class="r s-kg">${won(s[5])}<small>원/kg</small><div class="help">${won(s[6])}원</div></div>
       <div class="s-sup">${esc(sup.name || '-')}</div>
       <div class="r s-cnt"><b>${s[8]}</b>곳</div>
-      <div class="season">${season && season.now != null ? `<b class="${season.vs > 1 ? 'up' : ''}">${season.now.toFixed(0)}</b><span class="${season.vs > 1 ? 'up' : ''}">${season.vs ? (season.vs > 1 ? '▲' : '▼') + Math.abs((season.vs - 1) * 100).toFixed(0) + '%' : '지수'}</span>` : '<span class="help">—</span>'}</div>
+      <div class="season" title="이번 달 네이버 검색 지수(최대 100) · 연평균 대비">${season && season.now != null ? `<b class="${season.vs > 1 ? 'up' : ''}">${season.now.toFixed(0)}</b><span class="${season.vs > 1 ? 'up' : ''}">${season.vs ? (season.vs > 1 ? '▲' : '▼') + Math.abs((season.vs - 1) * 100).toFixed(0) + '%' : '지수'}</span>` : '<span class="help">—</span>'}</div>
       <div class="s-act r"><button type="button" class="icon-btn" aria-label="펼치기">${open ? '▲' : '▼'}</button></div>
       ${detail}
     </div>`;
@@ -233,6 +233,39 @@ function addSpecToCalc(s) {
   setTab('calc');
   toast(`kg당 ${won(perKg)}원으로 1·2·3·5·10kg 원가를 넣었습니다. 판매가를 채우세요.`);
 }
+
+/* ══════════════════ 키워드 확인 ══════════════════ */
+$('#kwForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const q = $('#kwQ').value.trim();
+  if (!q) return;
+  const ql = q.toLowerCase();
+  const hit = DATA.specs.map((s, i) => ({ i, s })).filter(({ s }) => specQuery(s).includes(ql));
+  let html = '';
+  if (hit.length) {
+    hit.sort((a, b) => a.s[5] - b.s[5]);
+    const best = hit[0].s, season = seasonOf(best[1], DATA.groups[best[0]]);
+    html += `<div class="kw-sum"><b>${esc(q)}</b> · 도매 규격 <b>${won(hit.length)}개</b> · 도매처 <b>${won(Math.max(...hit.map(h => h.s[8])))}곳</b> · kg당 최저 <b>${won(best[5])}원</b>
+      ${season && season.now != null ? ` · 이번 달 수요지수 <b>${season.now.toFixed(0)}</b> (평균 대비 ${season.vs > 1 ? '+' : ''}${((season.vs - 1) * 100).toFixed(0)}%)` : ''}</div>`;
+    html += `<div class="tbl-wrap"><table class="tbl kw-tbl"><thead><tr><th>품목 · 규격</th><th class="r">kg당</th><th class="r">규격가</th><th>최저 도매처</th><th class="r">공급처</th></tr></thead><tbody>` +
+      hit.slice(0, 8).map(({ i, s }) => `<tr><td>${esc(specName(s))}${s[2] ? ' · ' + esc(s[2]) : ''} · ${s[4]}kg</td><td class="r">${won(s[5])}원</td><td class="r">${won(s[6])}원</td><td>${esc((SUP()[s[7]] || {}).name || '-')}</td><td class="r">${s[8]}곳</td></tr>`).join('') +
+      `</tbody></table></div>` + (hit.length > 8 ? `<p class="help" style="margin:6px 0 0">상위 8개만 표시 — 위 검색창에 키워드를 넣으면 전체가 나옵니다.</p>` : '');
+  } else {
+    html += `<div class="kw-sum"><b>${esc(q)}</b> — 우리 도매 DB에 일치하는 규격이 없습니다. 도매처에 문의하거나 품종·등급을 바꿔 검색해 보세요.</div>`;
+  }
+  const u = encodeURIComponent(q);
+  html += `<div class="kw-links">
+    <a class="btn ghost sm" href="https://www.coupang.com/np/search?q=${u}" target="_blank" rel="noopener">쿠팡에서 "${esc(q)}" 검색</a>
+    <a class="btn ghost sm" href="https://datalab.naver.com/keyword/trendSearch.naver" target="_blank" rel="noopener">네이버 데이터랩 (검색어 붙여넣기)</a>
+    <a class="btn ghost sm" href="https://datalab.naver.com/shoppingInsight/sCategory.naver" target="_blank" rel="noopener">쇼핑인사이트</a>
+    <button type="button" class="btn ghost sm" data-kwcopy="${esc(q)}">키워드 복사</button>
+  </div>`;
+  $('#kwOut').innerHTML = html;
+});
+$('#kwOut').addEventListener('click', e => {
+  const b = e.target.closest('[data-kwcopy]');
+  if (b) copyText(b.dataset.kwcopy, '키워드를 복사했습니다');
+});
 
 /* ══════════════════ 공산품 ══════════════════ */
 function goodsList() {
@@ -1028,7 +1061,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127a');
+    const r = await fetch('data.json?v=20261127b');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {

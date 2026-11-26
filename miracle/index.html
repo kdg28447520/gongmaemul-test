@@ -12,7 +12,7 @@
 <meta property="og:url" content="https://gongmaemul.co.kr/miracle/">
 <link rel="icon" href="/favicon.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
-<link rel="stylesheet" href="app.css?v=20261127a">
+<link rel="stylesheet" href="app.css?v=20261127b">
 </head>
 <body>
 <header class="top">
@@ -62,6 +62,15 @@
     <div id="sRows"></div>
   </div>
   <div class="more-row"><button type="button" class="btn ghost" id="sMore" hidden>더 보기</button><span class="help" id="sCount"></span></div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="card-head"><h2>키워드 확인</h2><span class="help">키워드를 넣으면 우리 도매 DB의 규격·최저가를 먼저 보여주고, 수요 확인은 네이버 데이터랩·쿠팡 검색으로 바로 넘깁니다.</span></div>
+    <form class="inline-form" id="kwForm">
+      <input type="search" id="kwQ" placeholder="예: 엔비사과, 황금향, 대봉감" aria-label="키워드">
+      <button type="submit" class="btn primary sm">확인</button>
+    </form>
+    <div id="kwOut" class="kw-out"><p class="help" style="margin:10px 0 0">키워드를 넣으면 도매 규격과 최저가, 검색 링크가 나옵니다.</p></div>
+  </div>
 </section>
 
 <!-- ══════════════════ 공산품 도매 ══════════════════ -->
@@ -103,6 +112,7 @@
   <div class="card">
     <div class="card-head">
       <h2>① 여러 상품 한 번에</h2>
+      <span class="help mobile-hint">표는 손가락으로 옆으로 넘겨 보세요.</span>
       <div class="head-tools">
         <form id="optForm" class="inline-form">
           <input type="text" id="optName" placeholder="과일 이름 (예: 엔비사과)" aria-label="과일 이름">
@@ -337,6 +347,6 @@
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script src="app.js?v=20261127a"></script>
+<script src="app.js?v=20261127b"></script>
 </body>
 </html>
