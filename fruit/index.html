@@ -877,7 +877,7 @@ let DATA = null, SUPS = [], SPECS = [];
 const state = { group: '전체', q: '', sort: 'kg', shown: 60, open: -1 };
 
 /* ── 데이터 ─────────────────────────────── */
-fetch('data.json?v=202611260651')
+fetch('data.json?v=202611270655')
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(d => { DATA = d; SUPS = d.suppliers; SPECS = d.specs; init(); })
   .catch(e => {
