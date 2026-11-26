@@ -281,6 +281,10 @@ input[type="search"]{flex:1 1 260px}
   .nm-tbl{min-width:800px}
   .nm-tbl th:nth-child(4),.nm-tbl td:nth-child(4){display:none}
   .tbl td.r input{max-width:100px}
+  .calc-tbl th:first-child,.calc-tbl td:first-child,.nm-tbl th:first-child,.nm-tbl td:first-child,.comp-tbl th:first-child,.comp-tbl td:first-child{
+    position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 var(--line)
+  }
+  .calc-tbl thead th:first-child,.nm-tbl thead th:first-child,.comp-tbl thead th:first-child{background:var(--surface-2)}
   .wrap{padding:0 14px 64px}
   .top-in{padding:11px 14px 0}
   nav.tabs{gap:18px}

@@ -1082,7 +1082,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127e');
+    const r = await fetch('data.json?v=20261127f');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
