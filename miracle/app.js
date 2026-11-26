@@ -175,7 +175,7 @@ function renderSourcing() {
     return `<div class="s-row${open ? ' open' : ''}" data-spec="${i}">
       <div class="s-name"><div class="t">${esc(specName(s))}</div><div class="m">${tags}</div></div>
       <div class="r s-kg">${won(p.perKg)}<small>원/kg</small><div class="help">${won(p.price)}원</div></div>
-      <div class="s-sup">${esc(sup.name || '-')}${sup.own ? ' <span class="mini-tag">가입</span>' : ''}</div>
+      <div class="s-sup">${esc(sup.name || '-')}${sup.own ? ' <span class="mini-tag">가입</span>' : ''}${sup.flag ? ` <span class="mini-tag" style="color:#a03a22;border-color:rgba(160,58,34,.4)" title="퇴출·주의 도매처 — 다른 공급처 단가가 없어 참고로만 보여줍니다">${esc(sup.flag)}</span>` : ''}</div>
       <div class="r s-cnt"><b>${s[8]}</b>곳</div>
       <div class="season" title="이번 달 네이버 검색 지수(최대 100) · 연평균 대비">${season && season.now != null ? `<b class="${season.vs > 1 ? 'up' : ''}">${season.now.toFixed(0)}</b><span class="${season.vs > 1 ? 'up' : ''}">${season.vs ? (season.vs > 1 ? '▲' : '▼') + Math.abs((season.vs - 1) * 100).toFixed(0) + '%' : '지수'}</span>` : '<span class="help">—</span>'}</div>
       <div class="s-act r"><button type="button" class="icon-btn" aria-label="펼치기">${open ? '▲' : '▼'}</button></div>
@@ -1088,7 +1088,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127i');
+    const r = await fetch('data.json?v=20261127j');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
