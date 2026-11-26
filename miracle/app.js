@@ -1003,8 +1003,22 @@ function renderMaker() {
     <details class="prev-wrap"><summary>상세페이지 미리보기 (780px)</summary><div class="prev-frame"><iframe id="fPrev" sandbox="" title="상세페이지 미리보기"></iframe></div></details>`;
   const fr = $('#fPrev');
   if (fr) fr.srcdoc = '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><style>body{margin:0;background:#fff}</style></head><body>' + html + '</body></html>';
+  requestAnimationFrame(fitPreview);
   window.__mk = { name, tags, gosi, text, html };
 }
+function fitPreview() {
+  const fr = $('#fPrev');
+  if (!fr || !fr.parentElement) return;
+  const box = fr.parentElement, avail = box.clientWidth || 600, s = Math.min(1, avail / 780);
+  fr.style.width = '780px';
+  fr.style.height = '1500px';
+  fr.style.transformOrigin = 'top left';
+  fr.style.transform = `scale(${s})`;
+  box.style.height = Math.round(700 * s) + 'px';
+  box.style.overflow = 'hidden';
+}
+window.addEventListener('resize', () => { if (S.tab === 'maker') fitPreview(); });
+document.addEventListener('toggle', e => { if (e.target && e.target.classList && e.target.classList.contains('prev-wrap') && e.target.open) setTimeout(fitPreview, 30); }, true);
 $('#fGo').addEventListener('click', renderMaker);
 $('#view-maker').addEventListener('click', e => {
   const b = e.target.closest('[data-copy]');
@@ -1068,7 +1082,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127d');
+    const r = await fetch('data.json?v=20261127e');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {

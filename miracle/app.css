@@ -235,8 +235,8 @@ input[type="search"]{flex:1 1 260px}
 .warn-line{font-size:12.5px;color:var(--neg);margin-top:6px}
 .prev-wrap{margin-top:10px}
 .prev-wrap summary{font-size:12.5px;color:var(--ink-soft);cursor:pointer;padding:4px 0}
-.prev-frame{margin-top:8px;border:1px solid var(--line);border-radius:8px;overflow:auto;background:#fff;max-height:760px}
-.prev-frame iframe{width:780px;height:760px;border:0;display:block}
+.prev-frame{margin-top:8px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;height:700px}
+.prev-frame iframe{width:780px;height:1500px;border:0;display:block;transform-origin:top left}
 
 /* ── guide ── */
 .guide-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;align-items:start}
