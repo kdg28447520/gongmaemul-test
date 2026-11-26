@@ -123,30 +123,37 @@ function specName(s) {
   if (s[1] && s[1] !== g) parts.push(s[1]);
   return parts.join(' ');
 }
-function specQuery(s) {
-  const sup = SUP()[s[7]] ? SUP()[s[7]].name : '';
+function pickOf(s) {
+  /* 퇴출·주의(flag) 도매처는 순위에서 빼고 가장 싼 정상 공급처를 고른다 (관제탑과 같은 규칙) */
+  const offs = (s[10] || []).map(o => ({ sid: o[0], price: o[1], perKg: o[2], cut: o[3] }));
+  const ok = offs.filter(o => !((SUP()[o.sid] || {}).flag));
+  const use = ok.length ? ok : offs;
+  use.sort((a, b) => a.perKg - b.perKg);
+  return use[0] || { sid: s[7], price: s[6], perKg: s[5], cut: '' };
+}
+function specQuery(s, p) {
+  const sup = SUP()[p.sid] ? SUP()[p.sid].name : '';
   return [DATA.groups[s[0]], s[1], s[2], s[3], s[4] + 'kg', sup].filter(Boolean).join(' ').toLowerCase();
 }
 function sourcingList() {
-  let list = DATA.specs.map((s, i) => ({ i, s }));
+  let list = DATA.specs.map((s, i) => ({ i, s, p: pickOf(s) }));
   if (S.g) list = list.filter(x => DATA.groups[x.s[0]] === S.g);
-  if (S.q) { const q = S.q.toLowerCase(); list = list.filter(x => specQuery(x.s).includes(q)); }
-  if (S.own) list = list.filter(x => { const u = SUP()[x.s[7]]; return u && u.own; });
+  if (S.q) { const q = S.q.toLowerCase(); list = list.filter(x => specQuery(x.s, x.p).includes(q)); }
+  if (S.own) list = list.filter(x => { const u = SUP()[x.p.sid]; return u && u.own; });
   if (S.thin) list = list.filter(x => x.s[8] <= 3);
   const se = x => { const v = seasonOf(x.s[1], DATA.groups[x.s[0]]); return v && v.now != null ? v.now : -1; };
-  if (S.sort === 'kg') list.sort((a, b) => a.s[5] - b.s[5] || b.s[8] - a.s[8]);
-  else if (S.sort === 'cnt') list.sort((a, b) => b.s[8] - a.s[8] || a.s[5] - b.s[5]);
-  else if (S.sort === 'season') list.sort((a, b) => se(b) - se(a) || a.s[5] - b.s[5]);
-  else if (S.sort === 'gap') list.sort((a, b) => (b.s[9] / Math.max(1, b.s[5])) - (a.s[9] / Math.max(1, a.s[5])));
+  if (S.sort === 'kg') list.sort((a, b) => a.p.perKg - b.p.perKg || b.s[8] - a.s[8]);
+  else if (S.sort === 'cnt') list.sort((a, b) => b.s[8] - a.s[8] || a.p.perKg - b.p.perKg);
+  else if (S.sort === 'season') list.sort((a, b) => se(b) - se(a) || a.p.perKg - b.p.perKg);
+  else if (S.sort === 'gap') list.sort((a, b) => (b.s[9] / Math.max(1, b.p.perKg)) - (a.s[9] / Math.max(1, a.p.perKg)));
   return list;
 }
 function renderSourcing() {
   const list = sourcingList();
   const shown = list.slice(0, S.limit);
-  $('#sRows').innerHTML = shown.length ? shown.map(({ i, s }) => {
-    const sup = SUP()[s[7]] || {};
+  $('#sRows').innerHTML = shown.length ? shown.map(({ i, s, p }) => {
+    const sup = SUP()[p.sid] || {};
     const season = seasonOf(s[1], DATA.groups[s[0]]);
-    const ratio = s[9] && s[5] ? s[9] / s[5] : 1;
     const open = S.open === i;
     const tags = [
       s[2] ? `<span class="tag">${esc(s[2])}</span>` : '',
@@ -158,17 +165,17 @@ function renderSourcing() {
       <table><thead><tr><th>도매처</th><th style="text-align:right">규격가(${s[4]}kg)</th><th style="text-align:right">kg당</th><th>출고마감</th></tr></thead><tbody>
       ${(s[10] || []).map(o => {
         const u = SUP()[o[0]] || {};
-        return `<tr><td>${esc(u.name || '-')}${u.own ? ' <span class="mini-tag">가입</span>' : ''}</td><td class="n">${won(o[1])}원</td><td class="n">${won(o[2])}원</td><td>${esc(o[3] || '—')}</td></tr>`;
+        return `<tr><td>${esc(u.name || '-')}${u.own ? ' <span class="mini-tag">가입</span>' : ''}${u.flag ? ` <span class="mini-tag" style="color:#a03a22;border-color:rgba(160,58,34,.4)">${esc(u.flag)}</span>` : ''}</td><td class="n">${won(o[1])}원</td><td class="n">${won(o[2])}원</td><td>${esc(o[3] || '—')}</td></tr>`;
       }).join('')}</tbody></table>
       <div class="act">
         <button type="button" class="btn primary sm" data-add-kg="${i}">1·2·3·5·10kg 계산기에 넣기</button>
         ${sup.url ? `<a class="btn ghost sm" href="${esc(sup.url)}" target="_blank" rel="noopener">도매처 열기</a>` : ''}
-        <span class="help">원가는 kg당 ${won(s[5])}원 × 중량으로 넣습니다. 배송비는 도매처 정책을 확인해 더하세요.</span>
+        <span class="help">원가는 kg당 ${won(p.perKg)}원 × 중량으로 넣습니다. 배송비는 도매처 정책을 확인해 더하세요.</span>
       </div></div>` : '';
     return `<div class="s-row${open ? ' open' : ''}" data-spec="${i}">
       <div class="s-name"><div class="t">${esc(specName(s))}</div><div class="m">${tags}</div></div>
-      <div class="r s-kg">${won(s[5])}<small>원/kg</small><div class="help">${won(s[6])}원</div></div>
-      <div class="s-sup">${esc(sup.name || '-')}</div>
+      <div class="r s-kg">${won(p.perKg)}<small>원/kg</small><div class="help">${won(p.price)}원</div></div>
+      <div class="s-sup">${esc(sup.name || '-')}${sup.own ? ' <span class="mini-tag">가입</span>' : ''}</div>
       <div class="r s-cnt"><b>${s[8]}</b>곳</div>
       <div class="season" title="이번 달 네이버 검색 지수(최대 100) · 연평균 대비">${season && season.now != null ? `<b class="${season.vs > 1 ? 'up' : ''}">${season.now.toFixed(0)}</b><span class="${season.vs > 1 ? 'up' : ''}">${season.vs ? (season.vs > 1 ? '▲' : '▼') + Math.abs((season.vs - 1) * 100).toFixed(0) + '%' : '지수'}</span>` : '<span class="help">—</span>'}</div>
       <div class="s-act r"><button type="button" class="icon-btn" aria-label="펼치기">${open ? '▲' : '▼'}</button></div>
@@ -212,7 +219,7 @@ $('#sRows').addEventListener('click', e => {
   if (add) {
     e.stopPropagation();
     const s = DATA.specs[+add.dataset.addKg];
-    addSpecToCalc(s);
+    addSpecToCalc(s, pickOf(s).perKg);
     return;
   }
   const row = e.target.closest('.s-row');
@@ -223,8 +230,7 @@ $('#sRows').addEventListener('click', e => {
 });
 
 /* 소싱 → 마진 계산기 */
-function addSpecToCalc(s) {
-  const perKg = s[5];
+function addSpecToCalc(s, perKg) {
   const name = specName(s) + (s[2] ? ' ' + s[2] : '');
   [1, 2, 3, 5, 10].forEach(kg => {
     S.sheets[S.cur].rows.push({ name: `${name} ${kg}kg`, cost: String(perKg * kg), price: '', coupon: '' });
@@ -243,12 +249,12 @@ $('#kwForm').addEventListener('submit', e => {
   const hit = DATA.specs.map((s, i) => ({ i, s })).filter(({ s }) => specQuery(s).includes(ql));
   let html = '';
   if (hit.length) {
-    hit.sort((a, b) => a.s[5] - b.s[5]);
-    const best = hit[0].s, season = seasonOf(best[1], DATA.groups[best[0]]);
-    html += `<div class="kw-sum"><b>${esc(q)}</b> · 도매 규격 <b>${won(hit.length)}개</b> · 도매처 <b>${won(Math.max(...hit.map(h => h.s[8])))}곳</b> · kg당 최저 <b>${won(best[5])}원</b>
+    hit.sort((a, b) => pickOf(a.s).perKg - pickOf(b.s).perKg);
+    const best = hit[0].s, bp = pickOf(best), season = seasonOf(best[1], DATA.groups[best[0]]);
+    html += `<div class="kw-sum"><b>${esc(q)}</b> · 도매 규격 <b>${won(hit.length)}개</b> · 도매처 <b>${won(Math.max(...hit.map(h => h.s[8])))}곳</b> · kg당 최저 <b>${won(bp.perKg)}원</b>
       ${season && season.now != null ? ` · 이번 달 수요지수 <b>${season.now.toFixed(0)}</b> (평균 대비 ${season.vs > 1 ? '+' : ''}${((season.vs - 1) * 100).toFixed(0)}%)` : ''}</div>`;
     html += `<div class="tbl-wrap"><table class="tbl kw-tbl"><thead><tr><th>품목 · 규격</th><th class="r">kg당</th><th class="r">규격가</th><th>최저 도매처</th><th class="r">공급처</th></tr></thead><tbody>` +
-      hit.slice(0, 8).map(({ i, s }) => `<tr><td>${esc(specName(s))}${s[2] ? ' · ' + esc(s[2]) : ''} · ${s[4]}kg</td><td class="r">${won(s[5])}원</td><td class="r">${won(s[6])}원</td><td>${esc((SUP()[s[7]] || {}).name || '-')}</td><td class="r">${s[8]}곳</td></tr>`).join('') +
+      hit.slice(0, 8).map(({ i, s }) => `<tr><td>${esc(specName(s))}${s[2] ? ' · ' + esc(s[2]) : ''} · ${s[4]}kg</td><td class="r">${won(pickOf(s).perKg)}원</td><td class="r">${won(pickOf(s).price)}원</td><td>${esc((SUP()[pickOf(s).sid] || {}).name || '-')}</td><td class="r">${s[8]}곳</td></tr>`).join('') +
       `</tbody></table></div>` + (hit.length > 8 ? `<p class="help" style="margin:6px 0 0">상위 8개만 표시 — 위 검색창에 키워드를 넣으면 전체가 나옵니다.</p>` : '');
   } else {
     html += `<div class="kw-sum"><b>${esc(q)}</b> — 우리 도매 DB에 일치하는 규격이 없습니다. 도매처에 문의하거나 품종·등급을 바꿔 검색해 보세요.</div>`;
@@ -1082,7 +1088,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127h');
+    const r = await fetch('data.json?v=20261127i');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
