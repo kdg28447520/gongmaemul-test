@@ -159,6 +159,12 @@ input[type="search"]{flex:1 1 260px}
 .tbl .r{text-align:right}
 .tbl input{width:100%;padding:7px 8px;font-size:13px;border-radius:6px;border-color:rgba(24,24,20,.16)}
 .tbl input.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.r,.tbl th.r{white-space:nowrap}
+.tbl td.r input{max-width:122px;margin-left:auto;display:block;text-align:right;font-variant-numeric:tabular-nums}
+.tbl td:first-child input{min-width:148px}
+.nm-tbl td.r input,.roas-tbl td.r input{max-width:104px}
+.calc-tbl th:first-child{width:24%}
+.roas-tbl th:first-child,.nm-tbl th:first-child{width:22%}
 .calc-tbl{min-width:940px}
 .comp-tbl{min-width:820px}
 .roas-tbl{min-width:720px}
@@ -184,7 +190,7 @@ input[type="search"]{flex:1 1 260px}
 .mk-tbl{min-width:900px}
 .mk-tbl input{width:84px;text-align:right}
 .mk-tbl .best{background:#f3f8f3}
-.mk-tbl .best td:first-child::after{content:" 최고";font-size:10.5px;color:var(--pos);border:1px solid var(--pos);border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:1px}
+.best-tag{font-size:10.5px;color:var(--pos);border:1px solid var(--pos);border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:1px;font-weight:500}
 
 /* ── ban ── */
 .ban-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-bottom:18px}
@@ -221,6 +227,10 @@ input[type="search"]{flex:1 1 260px}
 .gosi-tbl th{width:120px;text-align:left;font-weight:500;color:var(--ink-muted);padding:6px 8px;border-bottom:1px solid rgba(24,24,20,.07);background:var(--surface-2)}
 .gosi-tbl td{padding:6px 8px;border-bottom:1px solid rgba(24,24,20,.07)}
 .warn-line{font-size:12.5px;color:var(--neg);margin-top:6px}
+.prev-wrap{margin-top:10px}
+.prev-wrap summary{font-size:12.5px;color:var(--ink-soft);cursor:pointer;padding:4px 0}
+.prev-frame{margin-top:8px;border:1px solid var(--line);border-radius:8px;overflow:auto;background:#fff;max-height:760px}
+.prev-frame iframe{width:780px;height:760px;border:0;display:block}
 
 /* ── guide ── */
 .guide-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:18px;align-items:start}

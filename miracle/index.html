@@ -66,16 +66,17 @@
 
 <!-- ══════════════════ 공산품 도매 ══════════════════ -->
 <section id="view-goods" class="panel" hidden>
-  <p class="lede">확보한 공산품 도매 DB <b id="gCount">742</b>건입니다. 도매가가 확인된 상품은 권장소매가 기준 마진을 바로 보여주고, <b>[계산기에 넣기]</b>로 마진·ROAS 계산기로 넘깁니다. 단가 미노출 상품은 도매처 승인 후 확인하세요.</p>
+  <p class="lede">확보한 공산품 도매 DB <b id="gCount">742</b>건입니다. 도매가가 확인된 상품은 <b>제안 판매가(도매가 × 배수)</b> 기준 마진을 바로 보여주고, <b>[계산기에 넣기]</b>로 마진·ROAS 계산기로 넘깁니다. 단가 미노출 상품은 도매처 승인 후 확인하세요.</p>
   <div class="statline" id="gStats"></div>
   <div class="toolbar">
     <input type="search" id="gQ" placeholder="상품명·공급사로 검색 (예: 수납장, 선반, 목쿠션)" aria-label="검색">
     <select id="gVendor" class="sortsel" aria-label="도매처"><option value="">도매처 전체</option></select>
     <label class="chk"><input type="checkbox" id="gPrice"> 도매가 확인된 상품만</label>
+    <label class="chk" style="margin-left:2px">제안 판매가 <input type="text" inputmode="decimal" id="gMul" value="2" aria-label="판매가 배수" style="width:46px;padding:5px 7px">배</label>
   </div>
   <div class="board">
     <div class="thead g-thead">
-      <span>상품</span><span class="r">도매가</span><span class="r">권장소매가</span><span class="r">마진(권장가)</span><span></span>
+      <span>상품</span><span class="r">도매가</span><span class="r">제안 판매가</span><span class="r" id="gMarginHead">마진(×2)</span><span></span>
     </div>
     <div id="gRows"></div>
   </div>

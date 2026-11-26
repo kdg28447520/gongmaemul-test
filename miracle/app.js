@@ -74,7 +74,7 @@ const S = {
   /* 소싱 */
   q: '', g: '', sort: 'kg', own: false, thin: false, limit: 60, open: null,
   /* 공산품 */
-  gq: '', gv: '', gprice: false, glimit: 60,
+  gq: '', gv: '', gprice: false, glimit: 60, gmul: 2,
   /* 계산기 */
   mkt: 'coupang',
   sheets: [], cur: 0,
@@ -241,12 +241,14 @@ function goodsList() {
 function renderGoods() {
   const list = goodsList();
   const shown = list.slice(0, S.glimit);
+  const sug = dp => Math.ceil(dp * S.gmul / 100) * 100;
   $('#gRows').innerHTML = shown.length ? shown.map(w => {
-    const m = w.dp && w.rp ? marginOf({ cost: w.dp, price: w.rp }, MKT.coupang) : null;
+    const sp = w.dp ? sug(w.dp) : null;
+    const m = w.dp && sp ? marginOf({ cost: w.dp, price: sp }, MKT.coupang) : null;
     return `<div class="g-row" data-w="${esc(w.p)}|${esc(w.v)}">
-      <div class="g-name"><div class="t">${esc(w.n)}</div><div class="m">${esc(w.v)} · ${esc(w.sup || '-')}${w.tag ? ' · ' + esc(w.tag) : ''}${w.moq && w.moq !== '1' ? ' · MOQ ' + esc(w.moq) : ''}</div></div>
+      <div class="g-name"><div class="t">${esc(w.n)}</div><div class="m">${esc(w.v)} · ${esc(w.sup || '-')}${w.tag ? ' · ' + esc(w.tag) : ''}${w.moq && w.moq !== '1' ? ' · MOQ ' + esc(w.moq) : ''}${w.ship ? ' · 배송 ' + esc(w.ship) : ''}</div></div>
       <div class="r g-price">${w.dp ? `<b>${won(w.dp)}원</b>` : `<span class="help">미노출</span>`}</div>
-      <div class="r g-rp">${w.rp ? won(w.rp) + '원' : '—'}</div>
+      <div class="r g-rp">${sp ? won(sp) + '원' : '—'}</div>
       <div class="r g-margin">${m ? `<b class="${m.net < 0 ? 'neg' : 'pos'}">${money(m.net)}</b> <span class="help">${pct1(m.rate)}</span>` : '<span class="help">—</span>'}</div>
       <div class="r g-act">${w.dp ? `<button type="button" class="btn ghost sm" data-add-w="${esc(w.p)}|${esc(w.v)}">계산기에 넣기</button>` : ''}</div>
     </div>`;
@@ -259,7 +261,8 @@ function renderGoods() {
     <div><div class="k">확보 상품</div><div class="v">${won((DATA.wholesale || []).length)}<small>건</small></div></div>
     <div><div class="k">도매가 확인</div><div class="v">${won(withPrice)}<small>건</small></div></div>
     <div><div class="k">도매처</div><div class="v">${vendors.length}<small>곳</small></div></div>
-    <div><div class="k">마진 기준</div><div class="v" style="font-size:15px">쿠팡 11.66%<small>권장소매가</small></div></div>`;
+    <div><div class="k">마진 기준</div><div class="v" style="font-size:15px">쿠팡 11.66%<small>×${S.gmul} 판매가</small></div></div>`;
+  $('#gMarginHead').textContent = `마진(×${S.gmul})`;
   $('#gCount').textContent = (DATA.wholesale || []).length;
 }
 function renderVendors() {
@@ -269,6 +272,7 @@ function renderVendors() {
 $('#gQ').addEventListener('input', e => { S.gq = e.target.value.trim(); S.glimit = 60; renderGoods(); });
 $('#gVendor').addEventListener('change', e => { S.gv = e.target.value; S.glimit = 60; renderGoods(); });
 $('#gPrice').addEventListener('change', e => { S.gprice = e.target.checked; renderGoods(); });
+$('#gMul').addEventListener('change', e => { const v = parseFloat(String(e.target.value).replace(/[^\d.]/g, '')); S.gmul = v > 0 && v < 10 ? v : 2; e.target.value = S.gmul; renderGoods(); });
 $('#gMore').addEventListener('click', () => { S.glimit += 60; renderGoods(); });
 $('#gRows').addEventListener('click', e => {
   const add = e.target.closest('[data-add-w]');
@@ -276,7 +280,7 @@ $('#gRows').addEventListener('click', e => {
     const [p, v] = add.dataset.addW.split('|');
     const w = (DATA.wholesale || []).find(x => x.p === p && x.v === v);
     if (!w) return;
-    S.sheets[S.cur].rows.push({ name: w.n, cost: String(w.dp), price: w.rp ? String(w.rp) : '', coupon: '' });
+    S.sheets[S.cur].rows.push({ name: w.n, cost: String(w.dp), price: String(Math.ceil(w.dp * S.gmul / 100) * 100), coupon: '' });
     saveSheets(); renderCalc(); setTab('calc');
     toast('마진 계산기에 넣었습니다.');
     return;
@@ -695,7 +699,7 @@ function renderMarkets() {
   $('#mkTarget').value = S.mk.target;
   const cost = toNum(S.mk.cost), price = toNum(S.mk.price), target = toNum(S.mk.target);
   const m = MKT[S.mkt];
-  $('#mkHint').textContent = `원가는 공급가에 도매처 배송비까지 더한 금액으로 넣으세요. 판매 마켓이 ${m.name}이면 마진 계산기의 수수료와 같은 기준입니다.`;
+  $('#mkHint').textContent = '원가는 공급가에 도매처 배송비까지 더한 금액으로 넣으세요. 수수료율은 표에서 직접 고칠 수 있고, 고친 값은 이 브라우저에 저장됩니다.';
   let best = null, results = [];
   MK_ROWS.forEach(r => {
     const rates = S.mkRates[r.key];
@@ -707,7 +711,7 @@ function renderMarkets() {
     if (price > 0 && (best == null || net > best.net)) best = results[results.length - 1];
   });
   $('#mkBody').innerHTML = results.map(x => `<tr data-mk="${x.r.key}" class="${best && best.r.key === x.r.key ? 'best' : ''}">
-    <td><b>${x.r.name}</b><div class="help">${esc(x.r.note)}</div></td>
+    <td><b>${x.r.name}</b>${best && best.r.key === x.r.key ? '<span class="best-tag">최고</span>' : ''}<div class="help">${esc(x.r.note)}</div></td>
     <td class="r"><input type="text" inputmode="decimal" data-mkr="${x.r.key}|g" value="${x.g}" aria-label="${x.r.name} 일반 수수료율">%</td>
     <td class="r"><input type="text" inputmode="decimal" data-mkr="${x.r.key}|ad" value="${x.ad}" aria-label="${x.r.name} 광고주문 수수료율">%</td>
     <td class="r">${price > 0 ? money(x.fee) : '-'}</td>
@@ -887,6 +891,15 @@ function detailText(f) {
   lines.push('· 맛 — ' + (f.p1 || '제철에 맞춰 수확한 신선한 과일입니다.'));
   lines.push('· 포장 — ' + (f.p2 || '완충재로 안전하게 포장합니다.'));
   lines.push('');
+  lines.push('[이런 분께]');
+  lines.push(`· ${f.item}를 합리적인 가격에 찾는 분`);
+  lines.push('· 가정에서 매일 챙겨 드시는 분');
+  lines.push('· 선물·답례품을 준비하는 분');
+  lines.push('');
+  lines.push('[보관 안내]');
+  lines.push(f.state === 'fresh' ? '· 받은 뒤 냉장 보관하고, 드시기 전 흐르는 물에 가볍게 씻어 주세요.' : '· 직사광선을 피해 서늘한 곳에 보관하세요.');
+  lines.push('· 신선식품은 출고 후 1~2일 안에 드시면 가장 좋습니다.');
+  lines.push('');
   lines.push('[배송 안내]');
   lines.push(`· ${f.ship || '무료배송 · 산지직송'}`);
   lines.push('· 평일 오전 주문은 당일~다음 영업일 출고됩니다. 산지 사정에 따라 1~2일 늦어질 수 있습니다.');
@@ -942,7 +955,10 @@ function renderMaker() {
   $('#outGosi').innerHTML = `<h3>고시정보 <button type="button" class="btn ghost sm" data-copy="gosi">표 복사</button></h3>
     <table class="gosi-tbl"><tbody>${gosi.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>`;
   $('#outDetail').innerHTML = `<h3>상세 문구 <button type="button" class="btn ghost sm" data-copy="text">문구 복사</button><button type="button" class="btn ghost sm" data-copy="html">HTML 복사</button></h3>
-    <div class="out-box">${esc(text)}</div>`;
+    <div class="out-box">${esc(text)}</div>
+    <details class="prev-wrap"><summary>상세페이지 미리보기 (780px)</summary><div class="prev-frame"><iframe id="fPrev" sandbox="" title="상세페이지 미리보기"></iframe></div></details>`;
+  const fr = $('#fPrev');
+  if (fr) fr.srcdoc = '<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><style>body{margin:0;background:#fff}</style></head><body>' + html + '</body></html>';
   window.__mk = { name, tags, gosi, text, html };
 }
 $('#fGo').addEventListener('click', renderMaker);
