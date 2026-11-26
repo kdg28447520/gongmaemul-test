@@ -195,6 +195,8 @@ input[type="search"]{flex:1 1 260px}
 .mk-inputs input{width:170px}
 .mk-tbl{min-width:900px}
 .mk-tbl input{width:84px;text-align:right}
+.mk-tbl td.r input{display:inline-block;margin-left:0;width:70px}
+.rate-cell{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
 .mk-tbl .best{background:#f3f8f3}
 .best-tag{font-size:10.5px;color:var(--pos);border:1px solid var(--pos);border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:1px;font-weight:500}
 

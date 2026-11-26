@@ -754,8 +754,8 @@ function renderMarkets() {
   });
   $('#mkBody').innerHTML = results.map(x => `<tr data-mk="${x.r.key}" class="${best && best.r.key === x.r.key ? 'best' : ''}">
     <td><b>${x.r.name}</b>${best && best.r.key === x.r.key ? '<span class="best-tag">최고</span>' : ''}<div class="help">${esc(x.r.note)}</div></td>
-    <td class="r"><input type="text" inputmode="decimal" data-mkr="${x.r.key}|g" value="${x.g}" aria-label="${x.r.name} 일반 수수료율">%</td>
-    <td class="r"><input type="text" inputmode="decimal" data-mkr="${x.r.key}|ad" value="${x.ad}" aria-label="${x.r.name} 광고주문 수수료율">%</td>
+    <td class="r"><span class="rate-cell"><input type="text" inputmode="decimal" data-mkr="${x.r.key}|g" value="${x.g}" aria-label="${x.r.name} 일반 수수료율">%</span></td>
+    <td class="r"><span class="rate-cell"><input type="text" inputmode="decimal" data-mkr="${x.r.key}|ad" value="${x.ad}" aria-label="${x.r.name} 광고주문 수수료율">%</span></td>
     <td class="r">${price > 0 ? money(x.fee) : '-'}</td>
     <td class="r"><b class="${x.net < 0 ? 'neg' : 'pos'}">${price > 0 ? money(x.net) : '-'}</b></td>
     <td class="r">${price > 0 ? pct1(x.netRate) : '-'}</td>
@@ -1082,7 +1082,7 @@ $('#checklist').addEventListener('change', e => {
 /* ══════════════════ boot ══════════════════ */
 async function boot() {
   try {
-    const r = await fetch('data.json?v=20261127f');
+    const r = await fetch('data.json?v=20261127g');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
   } catch (e) {
