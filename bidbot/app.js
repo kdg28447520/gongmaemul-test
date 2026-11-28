@@ -902,7 +902,7 @@
     const c = S.company;
     return `<div class="p-sign">
       ${todayKr()}<br>
-      <span>${esc(c.addr)}</span><br>
+      ${c.addr ? `<span>${esc(c.addr)}</span><br>` : ""}
       <span>상호: ${esc(c.name)} &nbsp; 대표자: ${esc(c.ceo)} <span class="p-stamp">(인)</span></span><br>
       <span>사업자등록번호: ${esc(c.biz)} &nbsp; 연락처: ${esc(c.tel)}</span>
       ${c.mail ? `<br><span>이메일: ${esc(c.mail)}</span>` : ""}
